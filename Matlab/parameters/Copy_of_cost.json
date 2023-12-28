@@ -1,0 +1,33 @@
+{
+    "qC": 0.1,
+    "qL": 1000.0,
+    "qVs": 0.2,
+    
+    "qMu": 0.1,
+    
+    "qR": 1E-4,
+    
+    "qBeta": 10E0,
+    "betaKinCost": 1,
+    
+    "rThrottle": 1E-3,
+    "rSteeringAngle": 1E-9,
+    "rBrakes": 1E-2,
+    "rVs": 1E-5,
+    
+    "rdThrottle": 1E2,
+    "rdSteeringAngle": 5E2,
+    "rdBrakes": 1E2,
+    "rdVs": 1E-4,
+    
+    "qCNmult": 1000.0,
+    "qRNmult": 10.0,
+    
+    "scQuadTrack": 100.0,
+    "scQuadTire": 100.0,
+    "scQuadAlpha": 1000.0,
+    
+    "scLinTrack": 10.0,
+    "scLinTire": 10.0,
+    "scLinAlpha": 10.0
+}

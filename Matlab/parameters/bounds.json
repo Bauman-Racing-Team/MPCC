@@ -13,7 +13,7 @@
 
     "upperStateBounds":{
       "yawU": 6.28,
-      "vxU": 15.0,
+      "vxU": 30.0,
       "vyU": 10.0,
       "rU": 2.5,
       "sU": 2500.0,

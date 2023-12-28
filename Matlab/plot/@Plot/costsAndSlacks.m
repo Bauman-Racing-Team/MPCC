@@ -10,8 +10,8 @@ function costsAndSlacks(obj)
         slacks(obj.config.NS+1:2*obj.config.NS,:,i) = obj.log(i).mpcHorizon.slacks.lower;
     end
 
-    tiledlayout(2*obj.config.NS+1,1); % cost, upper and lower slacks on all soft constraints
-
+%     tiledlayout(2*obj.config.NS+1,1); % cost, upper and lower slacks on all soft constraints
+    tiledlayout(1,1); 
     % cost values on all iterations
 
     cost = nexttile;
@@ -24,11 +24,13 @@ function costsAndSlacks(obj)
     end
 
     plot(cost,1:length(obj.log),costs);
-    ylim padded;
+    ylim auto;
 
     title(cost,'cost');
     ylabel(cost,'cost');
 
+    figure;
+    tiledlayout(obj.config.NS,1); 
     % frontSlipAngle slack for upper bound
 
     frontSlipAngleUpperSlack = nexttile;
@@ -38,7 +40,7 @@ function costsAndSlacks(obj)
         plot(frontSlipAngleUpperSlack,1:obj.config.N,slacks(1,:,i));
     end
 
-    ylim padded;
+    ylim auto;
 
     title(frontSlipAngleUpperSlack,'frontSlipAngleUpperSlack');
     ylabel(frontSlipAngleUpperSlack,'frontSlipAngleUpperSlack');
@@ -52,7 +54,7 @@ function costsAndSlacks(obj)
         plot(frontSlipAngleLowerSlack,1:obj.config.N,slacks(obj.config.NS+1,:,i));
     end
 
-    ylim padded;
+    ylim auto;
 
     title(frontSlipAngleLowerSlack,'frontSlipAngleLowerSlack');
     ylabel(frontSlipAngleLowerSlack,'frontSlipAngleLowerSlack');
@@ -66,7 +68,7 @@ function costsAndSlacks(obj)
         plot(rearSlipAngleUpperSlack,1:obj.config.N,slacks(2,:,i));
     end
 
-    ylim padded;
+    ylim auto;
 
     title(rearSlipAngleUpperSlack,'rearSlipAngleUpperSlack');
     ylabel(rearSlipAngleUpperSlack,'rearSlipAngleUpperSlack');
@@ -80,11 +82,14 @@ function costsAndSlacks(obj)
         plot(rearSlipAngleLowerSlack,1:obj.config.N,slacks(obj.config.NS+2,:,i));
     end
 
-    ylim padded;
+    ylim auto;
 
     title(rearSlipAngleLowerSlack,'rearSlipAngleLowerSlack');
     ylabel(rearSlipAngleLowerSlack,'rearSlipAngleLowerSlack');
 
+
+    figure;
+    tiledlayout(obj.config.NS,1); 
     % Track R slack for upper bound
 
     trackRUpperSlack = nexttile;
@@ -94,7 +99,7 @@ function costsAndSlacks(obj)
         plot(trackRUpperSlack,1:obj.config.N,slacks(3,:,i));
     end
 
-    ylim padded;
+    ylim auto;
 
     title(trackRUpperSlack,'trackRUpperSlack');
     ylabel(trackRUpperSlack,'trackRUpperSlack');
@@ -108,9 +113,36 @@ function costsAndSlacks(obj)
         plot(trackRLowerSlack,1:obj.config.N,slacks(obj.config.NS+3,:,i));
     end
 
-    ylim padded;
+    ylim auto;
 
     title(trackRLowerSlack,'trackRLowerSlack');
     ylabel(trackRLowerSlack,'trackRLowerSlack');
-end
 
+    % Friction ellipse slack for upper bound
+    
+    FrictionUpperSlack= nexttile;
+    hold on;
+
+    for i = 1:length(obj.log)
+        plot(FrictionUpperSlack,1:obj.config.N,slacks(obj.config.NS+4,:,i));
+    end
+
+    ylim auto;
+
+    title(FrictionUpperSlack,'FrictionUpperSlack');
+    ylabel(FrictionUpperSlack,'FrictionUpperSlack');
+
+    % Friction ellipse slack for upper bound
+    
+    FrictionLowerSlack= nexttile;
+    hold on;
+
+    for i = 1:length(obj.log)
+        plot(FrictionLowerSlack,1:obj.config.N,slacks(obj.config.NS+4,:,i));
+    end
+
+    ylim auto;
+
+    title(FrictionLowerSlack,'FrictionLowerSlack');
+    ylabel(FrictionLowerSlack,'FrictionLowerSlack');
+end

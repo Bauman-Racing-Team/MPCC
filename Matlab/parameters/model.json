@@ -7,7 +7,7 @@
     "maxAlpha": 0.07,
     
     "vxMin": 1.0,
-    "vRef": 15.0,
+    "vRef": 25.0,
 
     "sTrustRegion": 30.0
 }
