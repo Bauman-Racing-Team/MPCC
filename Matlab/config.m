@@ -1,11 +1,11 @@
 function config = config()
     config.solver = 'acados'; % ipopt, acados
-    config.simulator = 'dynamic'; % kinematic, simple_dynamic, dynamic
+    config.simulator = 'combined_dynamic'; % kinematic, simple_dynamic, dynamic
     config.NX = 11;
     config.NU  = 4;
     
     config.NB = 11;  % max number of bounds
-    config.NS = 3; % number of soft constraints
+    config.NS = 5; % number of soft constraints
 
     config.N = 100; % horizon length
     config.NSpline = 5000; % number of track approximation points

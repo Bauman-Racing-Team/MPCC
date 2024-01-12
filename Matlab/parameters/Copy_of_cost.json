@@ -1,6 +1,6 @@
 {
     "qC": 0.1,
-    "qL": 100.0,
+    "qL": 1000.0,
     "qVs": 0.2,
     
     "qMu": 0.1,
@@ -10,10 +10,10 @@
     "qBeta": 10E0,
     "betaKinCost": 1,
     
-    "rThrottle": 1E-6,
+    "rThrottle": 1E-3,
     "rSteeringAngle": 1E-9,
-    "rBrakes": 1E-6,
-    "rVs": 1E-6,
+    "rBrakes": 1E-2,
+    "rVs": 1E-5,
     
     "rdThrottle": 1E2,
     "rdSteeringAngle": 5E2,
