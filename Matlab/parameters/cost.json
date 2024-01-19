@@ -23,7 +23,7 @@
     "qCNmult": 1000.0,
     "qRNmult": 10.0,
     
-    "scQuadTrack": 1000.0,
+    "scQuadTrack": 100.0,
     "scQuadTire": 1E9,
     "scQuadAlpha": 1E9,
     
