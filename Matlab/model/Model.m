@@ -145,10 +145,10 @@ classdef Model
             sar = atan2((vy-r*lr),vx);
 
             % latteral front force
-            Ffy = -saf*20000;
+            Ffy = -saf*29117;
 
             % latteral rear force
-            Fry = -sar*20000;
+            Fry = -sar*29117;
 
             % drag force
             Fdrag = obj.car.cd*vx^2.0;
