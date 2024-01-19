@@ -217,9 +217,9 @@ classdef Acados < handle
 
             % Coeffs for soft constraints penalization
             % quadratic part
-            Z = diag([obj.parameters.costs.scQuadAlpha, obj.parameters.costs.scQuadAlpha, obj.parameters.costs.scQuadTrack,100,100]);
+            Z = diag([obj.parameters.costs.scQuadAlpha, obj.parameters.costs.scQuadAlpha, obj.parameters.costs.scQuadTrack,obj.parameters.costs.scQuadTire,obj.parameters.costs.scQuadTire]);
             % linear part
-            z = [obj.parameters.costs.scLinAlpha; obj.parameters.costs.scLinAlpha; obj.parameters.costs.scLinTrack;10;10];
+            z = [obj.parameters.costs.scLinAlpha; obj.parameters.costs.scLinAlpha; obj.parameters.costs.scLinTrack;obj.parameters.costs.scLinTire;obj.parameters.costs.scLinTire];
             
             jsh = eye(obj.config.NS); % all constraints are softened
             
@@ -324,8 +324,6 @@ classdef Acados < handle
                 slacks.upper(:,i) = obj.ocp.get('su',1);
                 slacks.lower(:,i) = obj.ocp.get('sl',1);
             end
-            slacks.lower(:,1)
-            slacks.upper(:,1)
         end
 
         function fillParametersVector(obj)

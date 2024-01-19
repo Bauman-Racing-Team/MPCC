@@ -137,6 +137,12 @@ function model = getModel(parameters)
     Ffy = 2*Dfy*sin(Cfy*atan(Bfy*saf-Efy*(Bfy*saf-atan(Bfy*saf))));
     Ffx = (-cbf*brakes)/rDyn*tanh(vx)+2*parameters.tire.QSY1*Ffz*tanh(vx);
     
+    % latteral front force
+    Ffy = -saf*29117;
+
+    % latteral rear force
+    Fry = -sar*29117;
+
     %   muy*Fz=2030.5; %a
     %   mux*Fz=2118.04; %b
     %   (Ffx/2118.04)^2+(Ffy/2030.5)^2<1;
