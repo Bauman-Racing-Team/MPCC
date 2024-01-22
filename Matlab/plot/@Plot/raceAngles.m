@@ -170,7 +170,10 @@ function raceAngles(obj)
     ezplot(equation, [-2118.04, 2118.04, -2030.5, 2030.5]);
     h = get(gca, 'Children');
     set(h, 'Color', 'r','LineStyle','--');
-    plot(Ffx(10:end),Ffy(10:end),'.')
+    plot(Ffx,Ffy,'.')
+    title('Tire force of front force');
+    xlabel('Ffx');
+    ylabel('Ffy');
 
     figure;
     hold on;
@@ -184,8 +187,9 @@ function raceAngles(obj)
 
 %     ylim padded;
 
-    title('asdsaasdd');
-    ylabel('asdsaasdd');
+    title('Tire force of rear force');
+    xlabel('Frx');
+    ylabel('Fry');
 
 
 end
