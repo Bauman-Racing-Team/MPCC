@@ -81,8 +81,10 @@ function model = getModel(parameters)
               parameters.costs.rBrakes, ...
               parameters.costs.rVs]);
 
-    cost_expr_ext_cost = error'*Q*error+input'*R*input+qVs*(vRef-vs)^2;
-    cost_expr_ext_cost_e = error'*Q*error+qVs*(vRef-vs)^2;
+%     cost_expr_ext_cost = error'*Q*error+input'*R*input+qVs*(vRef-vs)^2;
+%     cost_expr_ext_cost_e = error'*Q*error+qVs*(vRef-vs)^2;
+    cost_expr_ext_cost = error'*Q*error+input'*R*input-qVs*vs;
+    cost_expr_ext_cost_e = error'*Q*error-qVs*vs;
 
     % constraints 
     lf = parameters.car.lf;

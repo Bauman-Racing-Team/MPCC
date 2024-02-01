@@ -2,7 +2,7 @@
     "nSqp": 5,
     "nReset": 2,
     "sqpMixing": 0.9,
-    "nSim": 650,
+    "nSim": 1000,
     "ts": 0.05,
     "v0": 0.0
 }

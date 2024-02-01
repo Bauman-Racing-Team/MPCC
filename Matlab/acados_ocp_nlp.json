@@ -68,10 +68,10 @@
 			"_ArraySize_": [1,0],
 			"_ArrayData_": []
 		},
-		"Zl": [1000,1000,100,100,100],
-		"Zu": [1000,1000,100,100,100],
-		"zl": [10,10,10,10,10],
-		"zu": [10,10,10,10,10],
+		"Zl": [10000000,10000000,1000,10000000,10000000],
+		"Zu": [10000000,10000000,1000,10000000,10000000],
+		"zl": [100,100,10,100,100],
+		"zu": [100,100,10,100,100],
 		"cost_type_0": "EXTERNAL",
 		"cost_ext_fun_type_0": "casadi",
 		"cost_source_ext_cost_0": [],
@@ -305,8 +305,8 @@
 			"_ArraySize_": [1,0],
 			"_ArrayData_": []
 		},
-		"lh": [-0.07,-0.07,0,0,0],
-		"uh": [0.07,0.07,1,1,1],
+		"lh": [-0.05,-0.05,0,0,0],
+		"uh": [0.05,0.05,1,1,1],
 		"lh_0": {
 			"_ArrayType_": "double",
 			"_ArraySize_": [1,0],
@@ -825,7 +825,7 @@
 		"nlp_solver_warm_start_first_qp": [],
 		"rti_phase": 0,
 		"qp_solver_cond_N": 5,
-		"qp_solver_iter_max": 60,
+		"qp_solver_iter_max": 50,
 		"qp_solver_tol_stat": [],
 		"reg_epsilon": 0.0001,
 		"qp_solver_tol_eq": [],
@@ -873,8 +873,8 @@
 		0,
 		0
 	],
-	"acados_include_path": "\/home\/jinlong\/baumanracing\/MPCC_My\/Matlab\/..\/External\/acados\/include",
-	"acados_lib_path": "\/home\/jinlong\/baumanracing\/MPCC_My\/Matlab\/..\/External\/acados\/lib",
+	"acados_include_path": "\/home\/jinlong\/baumanracing\/MPCC\/Matlab\/..\/External\/acados\/include",
+	"acados_lib_path": "\/home\/jinlong\/baumanracing\/MPCC\/Matlab\/..\/External\/acados\/lib",
 	"problem_class": "OCP",
 	"simulink_opts": {
 		"outputs": {
@@ -923,7 +923,7 @@
 		"samplingtime": "t0"
 	},
 	"cython_include_dirs": [],
-	"code_export_directory": "\/home\/jinlong\/baumanracing\/MPCC_My\/Matlab\/c_generated_code",
+	"code_export_directory": "\/home\/jinlong\/baumanracing\/MPCC\/Matlab\/c_generated_code",
 	"json_file": "acados_ocp_nlp.json",
 	"shared_lib_ext": ".so",
 	"acados_link_libs": {
