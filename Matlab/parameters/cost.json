@@ -23,9 +23,9 @@
     "qCNmult": 1000.0,
     "qRNmult": 10.0,
     
-    "scQuadTrack": 1000.0,
-    "scQuadTire": 1E6,
-    "scQuadAlpha": 1E6,
+    "scQuadTrack": 1E3,
+    "scQuadTire": 1E4,
+    "scQuadAlpha": 1E4,
     
     "scLinTrack": 10.0,
     "scLinTire": 100.0,

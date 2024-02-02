@@ -24,7 +24,7 @@ classdef Acados < handle
         initialStateGuess
         initialControlGuess
         validInitialGuess
-
+        n_non_solves_
         f
         paramVec
     end
@@ -44,7 +44,7 @@ classdef Acados < handle
             obj.ocpOpts = acados_ocp_opts();
 
             obj.validInitialGuess = false;
-
+            obj.n_non_solves_ = 0;
             obj.track.centerLine = ArcLengthSpline(config,parameters.mpcModel);
             obj.track.outerBorder = ArcLengthSpline(config,parameters.mpcModel);
             obj.track.innerBorder = ArcLengthSpline(config,parameters.mpcModel);
@@ -227,7 +227,7 @@ classdef Acados < handle
             Z = diag([scQuadAlpha, scQuadAlpha, scQuadTrack,scQuadTire,scQuadTire]);
             % linear part
             z = [scLinAlpha; scLinAlpha; scLinTrack;scLinTire;scLinTire];
-            
+
             jsh = eye(obj.config.NS); % all constraints are softened
             
             % Coeffs for track onyl 
@@ -279,31 +279,48 @@ classdef Acados < handle
               obj.generateNewInitialGuess(x0);
             end
             
-            obj.fillParametersVector();
-            
-            obj.ocp.set('constr_x0', obj.initialStateGuess(:,1))
+            n_non_solves_sqp_ = 0;
+            for i = 1:obj.parameters.config.nSqp
 
-            obj.ocp.set('init_x', obj.initialStateGuess);
-            obj.ocp.set('init_u', obj.initialControlGuess);
-            obj.ocp.set('init_pi', zeros(obj.config.NX, obj.config.N));
-
-            obj.ocp.solve();
-
-            status = obj.ocp.get('status');
-
-            obj.initialStateGuess = obj.ocp.get('x');
-            obj.initialControlGuess = obj.ocp.get('u');
-
-            sol = MpcReturn;
-
-            sol.x0 = obj.initialStateGuess(:,1);
-            sol.u0 = obj.initialControlGuess(:,1);
-            sol.mpcHorizon.states = obj.initialStateGuess;
-            sol.mpcHorizon.inputs = obj.initialControlGuess;
-            sol.mpcHorizon.slacks = obj.getSlacks();
-            sol.solverStatus = status;
-            sol.cost = obj.ocp.get_cost;
-            sol.circlesCenters = obj.getConstraintsCirclesCenters();
+                obj.fillParametersVector();
+                
+                obj.ocp.set('constr_x0', obj.initialStateGuess(:,1))
+    
+                obj.ocp.set('init_x', obj.initialStateGuess);
+                obj.ocp.set('init_u', obj.initialControlGuess);
+                obj.ocp.set('init_pi', zeros(obj.config.NX, obj.config.N));
+    
+                obj.ocp.solve();
+    
+                status = obj.ocp.get('status');
+    
+                obj.initialStateGuess = obj.ocp.get('x');
+                obj.initialControlGuess = obj.ocp.get('u');
+    
+                sol = MpcReturn;
+                if status ~= 0
+                    n_non_solves_sqp_ = n_non_solves_sqp_+1;
+                end
+                if status == 0||status == 2||status == 3
+                    sol.x0 = obj.initialStateGuess(:,1);
+                    sol.u0 = obj.initialControlGuess(:,1);
+                    sol.mpcHorizon.states = obj.initialStateGuess;
+                    sol.mpcHorizon.inputs = obj.initialControlGuess;
+                    sol.mpcHorizon.slacks = obj.getSlacks();
+                    sol.solverStatus = status;
+                    sol.cost = obj.ocp.get_cost;
+                    sol.circlesCenters = obj.getConstraintsCirclesCenters();
+                end
+                max_error = max(obj.parameters.config.nSqp-1,1);
+                if n_non_solves_sqp_ >= max_error
+                    obj.n_non_solves_ = obj.n_non_solves_+1;
+                else
+                    obj.n_non_solves_ = 0;
+                end
+                if obj.n_non_solves_ >= obj.parameters.config.nReset
+                    obj.validInitialGuess = false;
+                end
+            end
         end
 
         function centers = getConstraintsCirclesCenters(obj)
