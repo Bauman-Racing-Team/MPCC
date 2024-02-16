@@ -256,9 +256,7 @@ classdef Acados < handle
             obj.ocpOpts.set('nlp_solver_tol_eq', 1e-4);
             obj.ocpOpts.set('nlp_solver_tol_ineq', 1e-4);
             obj.ocpOpts.set('nlp_solver_tol_comp', 1e-4);
-%             obj.ocpOpts.set('nlp_solver_max_iter', 55);
 
-%             disp(obj.ocpOpts.opts_struct)
             obj.ocp = acados_ocp(obj.ocpModel, obj.ocpOpts);
         end
 
