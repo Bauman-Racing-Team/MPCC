@@ -5,3 +5,5 @@ Matlab/build
 Matlab/c_generated_code
 Matlab/data
 Matlab/parameters/Copy_of_cost.json
+acados_ocp_nlp.json
+*.asv
