@@ -30,6 +30,8 @@ classdef Plot < handle
 
         costsAndSlacks(obj) % plot costs on horizons and slacks values
 
+        constrAndSlacks(obj) % plot constraints plus slacks values
+
         raceAngles(obj) % plot angles on the race
 
         velocities(obj) % plot velocities on the race

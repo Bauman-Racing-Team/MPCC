@@ -342,9 +342,9 @@ classdef Acados < handle
         function slacks = getSlacks(obj)
             slacks.upper = zeros(obj.config.NS,obj.config.N);
             slacks.lower = zeros(obj.config.NS,obj.config.N);
-            for i = 1:obj.config.N
-                slacks.upper(:,i) = obj.ocp.get('su',i-1);
-                slacks.lower(:,i) = obj.ocp.get('sl',i-1);
+            for i = 1:obj.config.N-1
+                slacks.upper(:,i) = obj.ocp.get('su',i);
+                slacks.lower(:,i) = obj.ocp.get('sl',i);
             end
         end
 
