@@ -228,6 +228,10 @@ classdef Acados < handle
             % linear part
             z = [scLinAlpha; scLinAlpha; scLinTrack;scLinTire;scLinTire];
 
+%             Z = diag([0, 0, 0,0,0]);
+            % linear part
+%             z = [0; 0; 0;0;0];
+            
             jsh = eye(obj.config.NS); % all constraints are softened
             
             % Coeffs for track onyl 
@@ -322,20 +326,22 @@ classdef Acados < handle
         end
 
         function centers = getConstraintsCirclesCenters(obj)
-            centers = zeros(2,obj.config.N+1);
+            centers = zeros(4,obj.config.N+1);
             newStateGuess = obj.ocp.get('x');
             for i = 1:obj.config.N+1
                 
                 xTrack = obj.paramVec(1,i);
                 yTrack = obj.paramVec(2,i);
-                %phiTrack = obj.paramVec(3,i);
-                %s0 = obj.paramVec(4,i);
+                phiTrack = obj.paramVec(3,i);
+                s0 = obj.paramVec(4,i);
 
                 %centers(1,i) = xTrack + (newStateGuess(7,i)-s0)*cos(phiTrack);
                 %centers(2,i) = yTrack + (newStateGuess(7,i)-s0)*sin(phiTrack);
 
                 centers(1,i) = xTrack;
                 centers(2,i) = yTrack;
+                centers(3,i) = phiTrack;
+                centers(4,i) = s0;
             end
         end
 

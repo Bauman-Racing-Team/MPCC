@@ -125,8 +125,8 @@ function raceAngles(obj)
 
     yline(-obj.parameters.mpcModel.maxDistProj,'--red','minDistProj'); % lower bound
     yline(obj.parameters.mpcModel.maxDistProj,'--red','maxDistProj'); % upper bound
-    yline(-1,'--red','minDistProj'); % lower bound
-    yline(1,'--red','maxDistProj'); % upper bound
+    yline(-obj.parameters.mpcModel.rOut,'--red','minROut'); % lower bound
+    yline(obj.parameters.mpcModel.rOut,'--red','maxROut'); % upper bound
     axis ([0 length(obj.log) -obj.parameters.mpcModel.maxDistProj-0.5 obj.parameters.mpcModel.maxDistProj+0.5]);
 
     % Ellipse
