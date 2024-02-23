@@ -359,10 +359,10 @@ classdef Acados < handle
                 qC = obj.parameters.costs.qC;
                 qL = obj.parameters.costs.qL;
                 qVs = obj.parameters.costs.qVs;
-                rThrottle = obj.parameters.costs.rThrottle;
-                rSteeringAngle = obj.parameters.costs.rSteeringAngle;
-                rBrakes = obj.parameters.costs.rBrakes;
-                rVs = obj.parameters.costs.rVs;
+                rdThrottle = obj.parameters.costs.rdThrottle;
+                rdSteeringAngle = obj.parameters.costs.rdSteeringAngle;
+                rdBrakes = obj.parameters.costs.rdBrakes;
+                rdVs = obj.parameters.costs.rdVs;
 
                 s0 = obj.initialStateGuess(7,i);
                 
@@ -371,8 +371,8 @@ classdef Acados < handle
 
                 phiTrack = full(atan2(obj.track.centerLineDerivativesInterpolation.y(s0),obj.track.centerLineDerivativesInterpolation.x(s0)));
 
-                obj.ocp.set('p',[xTrack;yTrack;phiTrack;s0;qC;qL;qVs;rThrottle;rSteeringAngle;rBrakes;rVs],i-1);
-                obj.paramVec(:,i) = [xTrack;yTrack;phiTrack;s0;qC;qL;qVs;rThrottle;rSteeringAngle;rBrakes;rVs];
+                obj.ocp.set('p',[xTrack;yTrack;phiTrack;s0;qC;qL;qVs;rdThrottle;rdSteeringAngle;rdBrakes;rdVs],i-1);
+                obj.paramVec(:,i) = [xTrack;yTrack;phiTrack;s0;qC;qL;qVs;rdThrottle;rdSteeringAngle;rdBrakes;rdVs];
                                                                     
             end            
         end
@@ -462,15 +462,15 @@ classdef Acados < handle
 
         function [cost_expr_ext_cost,cost_expr_ext_cost_e] = computeCost(obj)
             % Coeffs for control inputs penalization
-            rThrottle = obj.paramVec(8,1);
-            rSteeringAngle = obj.paramVec(9,1);
-            rBrakes = obj.paramVec(10,1);
-            rVs = obj.paramVec(11,1);
+            rdThrottle = obj.paramVec(8,1);
+            rdSteeringAngle = obj.paramVec(9,1);
+            rdBrakes = obj.paramVec(10,1);
+            rdVs = obj.paramVec(11,1);
 
-            R = diag([rThrottle, ...
-                      rSteeringAngle, ...
-                      rBrakes, ...
-                      rVs]);
+            R = diag([rdThrottle, ...
+                      rdSteeringAngle, ...
+                      rdBrakes, ...
+                      rdVs]);
             
             cost_expr_ext_cost = 0;
 
