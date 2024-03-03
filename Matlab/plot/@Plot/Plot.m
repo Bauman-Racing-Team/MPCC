@@ -10,7 +10,7 @@ classdef Plot < handle
     
     methods (Access = public)
 
-        function obj = Plot(config,parameters,track,log,carModel;)
+        function obj = Plot(config,parameters,track,log,carModel)
             obj.config = config;
             obj.parameters = parameters;
             obj.track = track;
