@@ -48,6 +48,8 @@ track = Track(cones_blue, cones_yellow);
 
 simulator = Simulator(config,parameters.car,parameters.tire);
 
+carModel = Model(parameters.car,parameters.tire);
+
 mpc.setTrack(track);
 
 trackCenter = mpc.getTrack().getPath();

@@ -136,30 +136,8 @@ function raceAngles(obj)
     Ffx = zeros(length(obj.log),1);
     Ffy = zeros(length(obj.log),1);
     for i = 1:length(obj.log)
-            vx = states(4,i);
-            vy = states(5,i);
-            r = states(6,i);
-            throttle = states(8,i);
-            steeringAngle = states(9,i);
-            brakes = states(10,i);
-            lr = obj.parameters.car.lr;
-            rearSlipAngles(i) = atan2(vy-r*lr,vx);
-
-    m = obj.parameters.car.m;
-    gAcc = obj.parameters.car.g;
-    cbf=obj.parameters.car.cbf;
-    rDyn = obj.parameters.car.rDyn;
-    sar = atan2((vy-r*lr),vx);
-
-    Fry(i) = -sar*obj.parameters.tire.Cy;
-
-    Ffz = lr*m*gAcc/(2.0*(lf+lr));
-    saf = atan2((vy+r*lf),vx)-steeringAngle;
-
-    Ffx(i) = (-cbf*brakes)/rDyn*tanh(vx)+2*obj.parameters.tire.QSY1*Ffz*tanh(vx);
-  
-    Ffy(i) = -saf*obj.parameters.tire.Cy;
-
+        state = states(:,i);
+        [Ffx(i),Ffy(i),Frx(i),Fry(i)] = obj.carModel.initSimpleFrictionEllipseConstraint(state);
     end
 
     figure;
@@ -184,22 +162,8 @@ function raceAngles(obj)
     set(h, 'Color', 'r','LineStyle','--');
     plot(Frx,Fry,'.')
 
-%     plot(rearSlipAngle,1:length(obj.
-%     plot(rearSlipAngle,1:length(obj.log),rearSlipAngles);
-
-%     ylim padded;
-%     plot(rearSlipAngle,1:length(obj.log),rearSlipAngles);
-
-%     ylim padded;log),rearSlipAngles);
-
-%     ylim padded;
-
     title('Tire force of rear force');
     xlabel('Frx');
     ylabel('Fry');
 
-
 end
-
-
-

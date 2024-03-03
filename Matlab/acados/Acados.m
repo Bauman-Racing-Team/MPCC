@@ -228,10 +228,6 @@ classdef Acados < handle
             % linear part
             z = [scLinAlpha; scLinAlpha; scLinTrack;scLinTire;scLinTire];
 
-%             Z = diag([0, 0, 0,0,0]);
-            % linear part
-%             z = [0; 0; 0;0;0];
-            
             jsh = eye(obj.config.NS); % all constraints are softened
             
             % Coeffs for track onyl 

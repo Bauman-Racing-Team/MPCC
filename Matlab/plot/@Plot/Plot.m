@@ -5,15 +5,17 @@ classdef Plot < handle
         parameters;
         track;
         log;
+        carModel;
     end
     
     methods (Access = public)
 
-        function obj = Plot(config,parameters,track,log)
+        function obj = Plot(config,parameters,track,log,carModel)
             obj.config = config;
             obj.parameters = parameters;
             obj.track = track;
             obj.log = log;
+            obj.carModel = carModel;
         end
         
         carPositions(obj) % plot race track and car positions in X,Y coords on all horizons from log
