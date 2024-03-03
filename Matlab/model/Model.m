@@ -11,7 +11,7 @@ classdef Model
             obj.tire = tire;
         end
 
-    function [constrF,constrR] = initSimpleFrictionEllipseConstraint(obj,states) 
+    function [Ffx,Ffy,Frx,Fry] = initSimpleFrictionEllipseConstraint(obj,states) 
                     vx = states(4);
                     vy = states(5);
                     r = states(6);
@@ -67,11 +67,9 @@ classdef Model
                     % latteral rear force
                     Fry = -sar*obj.tire.Cy;
 
-                    constrF = (Ffx/obj.car.muxFz)^2+(Ffy/obj.car.muyFz)^2;
-                    constrR = (Frx/obj.car.muxFz)^2+(Fry/obj.car.muyFz)^2;
         end
         
-        function [constrF,constrR] = initFrictionEllipseConstraint(obj, states)
+        function [Ffx,Ffy,Frx,Fry] = initFrictionEllipseConstraint(obj, states)
                     vx = states(4);
                     vy = states(5);
                     r = states(6);
@@ -158,8 +156,6 @@ classdef Model
                     % latteral rear force
                     Fry = 2*Dry*sin(Cry*atan(Bry*sar-Ery*(Bry*sar-atan(Bry*sar))));
 
-                    constrF = (Ffx/obj.car.muxFz)^2+(Ffy/obj.car.muyFz)^2;
-                    constrR = (Frx/obj.car.muxFz)^2+(Fry/obj.car.muyFz)^2;
         end
         function rhs = initKinematicModel(obj, states, controls)
             yaw = states(3);
