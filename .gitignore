@@ -7,4 +7,4 @@ Matlab/data
 Matlab/parameters/Copy_of_cost.json
 acados_ocp_nlp.json
 *.asv
-acados_ocp_nlp.json
+Matlab/simulationRos.m

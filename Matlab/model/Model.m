@@ -296,7 +296,7 @@ classdef Model
             sar = atan2((vy-r*lr),vx);
 
             % latteral front force
-            Ffy = -saf*obj.tire.Cy;
+            Ffy = -saf*obj
 
             % latteral rear force
             Fry = -sar*obj.tire.Cy;

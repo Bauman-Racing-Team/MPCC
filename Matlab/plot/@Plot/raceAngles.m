@@ -184,7 +184,13 @@ function raceAngles(obj)
     set(h, 'Color', 'r','LineStyle','--');
     plot(Frx,Fry,'.')
 
+%     plot(rearSlipAngle,1:length(obj.
 %     plot(rearSlipAngle,1:length(obj.log),rearSlipAngles);
+
+%     ylim padded;
+%     plot(rearSlipAngle,1:length(obj.log),rearSlipAngles);
+
+%     ylim padded;log),rearSlipAngles);
 
 %     ylim padded;
 
