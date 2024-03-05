@@ -16,18 +16,18 @@
     "rVs": 1E-6,
         
     "rdThrottle": 1E2,
-    "rdSteeringAngle": 1E2,
+    "rdSteeringAngle": 5E2,
     "rdBrakes": 1E2,
     "rdVs": 1E-4,
     
     "qCNmult": 1000.0,
     "qRNmult": 10.0,
     
-    "scQuadTrack": 1E4,
-    "scQuadTire": 1E4,
-    "scQuadAlpha": 1E4,
+    "scQuadTrack": 1E3,
+    "scQuadTire": 1E3,
+    "scQuadAlpha": 1E3,
     
-    "scLinTrack": 100.0,
-    "scLinTire": 100.0,
-    "scLinAlpha": 100.0
+    "scLinTrack": 10.0,
+    "scLinTire": 10.0,
+    "scLinAlpha": 10.0
 }

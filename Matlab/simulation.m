@@ -80,7 +80,6 @@ for i = 1:parameters.config.nSim
                 error('The maximum number of attempts has been reached ')
             end
         end
-        x00(:,i) = x0;
         disp("Iteraton:");
         disp(i);
 %         if mpcSol.solverStatus ~= 0

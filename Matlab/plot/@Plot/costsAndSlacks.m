@@ -87,9 +87,6 @@ function costsAndSlacks(obj)
     title(rearSlipAngleLowerSlack,'rearSlipAngleLowerSlack');
     ylabel(rearSlipAngleLowerSlack,'rearSlipAngleLowerSlack');
 
-
-    figure;
-    tiledlayout(obj.config.NS,1); 
     % Track R slack for upper bound
 
     trackRUpperSlack = nexttile;
@@ -104,6 +101,9 @@ function costsAndSlacks(obj)
     title(trackRUpperSlack,'trackRUpperSlack');
     ylabel(trackRUpperSlack,'trackRUpperSlack');
 
+    figure;
+    tiledlayout(obj.config.NS,1); 
+    
     % Track R slack for lower bound
 
     trackRLowerSlack = nexttile;
@@ -118,31 +118,59 @@ function costsAndSlacks(obj)
     title(trackRLowerSlack,'trackRLowerSlack');
     ylabel(trackRLowerSlack,'trackRLowerSlack');
 
-    % Friction ellipse slack for upper bound
+    %Front Friction ellipse slack for lower bound
     
-    FrictionUpperSlack= nexttile;
+    frontFrictionUpperSlack= nexttile;
     hold on;
 
     for i = 1:length(obj.log)
-        plot(FrictionUpperSlack,1:obj.config.N,slacks(obj.config.NS+4,:,i));
+        plot(frontFrictionUpperSlack,1:obj.config.N,slacks(4,:,i));
     end
 
     ylim auto;
 
-    title(FrictionUpperSlack,'FrictionUpperSlack');
-    ylabel(FrictionUpperSlack,'FrictionUpperSlack');
+    title(frontFrictionUpperSlack,'frontFrictionUpperSlack');
+    ylabel(frontFrictionUpperSlack,'frontFrictionUpperSlack');
 
-    % Friction ellipse slack for upper bound
+    % Front Friction ellipse slack for lower bound
     
-    FrictionLowerSlack= nexttile;
+    frontFrictionLowerSlack= nexttile;
     hold on;
 
     for i = 1:length(obj.log)
-        plot(FrictionLowerSlack,1:obj.config.N,slacks(obj.config.NS+4,:,i));
+        plot(frontFrictionLowerSlack,1:obj.config.N,slacks(obj.config.NS+4,:,i));
     end
 
     ylim auto;
 
-    title(FrictionLowerSlack,'FrictionLowerSlack');
-    ylabel(FrictionLowerSlack,'FrictionLowerSlack');
+    title(frontFrictionLowerSlack,'frontFrictionLowerSlack');
+    ylabel(frontFrictionLowerSlack,'frontFrictionLowerSlack');
+
+    %Rear Friction ellipse slack for upper bound
+    
+    rearFrictionUpperSlack= nexttile;
+    hold on;
+
+    for i = 1:length(obj.log)
+        plot(rearFrictionUpperSlack,1:obj.config.N,slacks(5,:,i));
+    end
+
+    ylim auto;
+
+    title(rearFrictionUpperSlack,'rearFrictionUpperSlack');
+    ylabel(rearFrictionUpperSlack,'rearFrictionUpperSlack');
+
+    % Friction ellipse slack for upper bound
+    
+    rearFrictionLowerSlack= nexttile;
+    hold on;
+
+    for i = 1:length(obj.log)
+        plot(rearFrictionLowerSlack,1:obj.config.N,slacks(obj.config.NS+5,:,i));
+    end
+
+    ylim auto;
+
+    title(rearFrictionLowerSlack,'rearFrictionLowerSlack');
+    ylabel(rearFrictionLowerSlack,'rearFrictionLowerSlack');
 end

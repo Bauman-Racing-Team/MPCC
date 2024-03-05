@@ -70,7 +70,7 @@ function constrAndSlacks(obj)
 
     slacks9 = zeros(1,length(obj.log));
     for i = 1:length(obj.log)
-      slacks9(i)=sum(slacks(5,:,i))/100;
+      slacks9(i)=slacks(5,1,i);
     end
 
     % front Friction ellipse slack for upper bound
@@ -166,7 +166,9 @@ function constrAndSlacks(obj)
 
     carModel = Model(obj.parameters.car,obj.parameters.tire);
     for i = 1:length(states)
-        [constrF(i),constrR(i)] = carModel.initSimpleFrictionEllipseConstraint(states(:,i));
+        [Ffx,Ffy,Frx,Fry] = carModel.initSimpleFrictionEllipseConstraint(states(:,i));
+        constrF(i) = (Ffx/obj.parameters.car.muxFz)^2+(Ffy/obj.parameters.car.muyFz)^2;
+        constrR(i) = (Frx/obj.parameters.car.muxFz)^2+(Fry/obj.parameters.car.muyFz)^2;
     end
 
     figure;
