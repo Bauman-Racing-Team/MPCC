@@ -4,10 +4,10 @@
     
     "maxDistProj": 3.0,
     
-    "maxAlpha": 0.07,
+    "maxAlpha": 0.05,
     
     "vxMin": 1.0,
-    "vRef": 15.0,
+    "vRef": 30.0,
 
     "sTrustRegion": 30.0
 }

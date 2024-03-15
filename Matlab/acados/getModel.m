@@ -101,6 +101,12 @@ function model = getModel(parameters)
     % track constraint
     constr_expr_h = [constr_expr_h;(x-xTrack)^2 + (y-yTrack)^2];
 
+    % friction ellipse constraint
+    [Ffx,Ffy,Frx,Fry] = carModel.initFrictionEllipseConstraint(state);
+    constrF = (Ffx/parameters.car.muxFz)^2+(Ffy/parameters.car.muyFz)^2;
+    constrR = (Frx/parameters.car.muxFz)^2+(Fry/parameters.car.muyFz)^2;
+    constr_expr_h = [constr_expr_h;constrF;constrR];
+
     % model filling
     model.f_expl_expr = f_expl;
     model.f_impl_expr = f_impl;

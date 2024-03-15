@@ -56,8 +56,8 @@ classdef Acados < handle
             import casadi.*;
 
             obj.track.centerLine.gen2DSpline([track.x;track.x],[track.y;track.y]);
-            obj.track.outerBorder.gen2DSpline([track.xOuter;track.xOuter],[track.yOuter,track.yOuter]);
-            obj.track.innerBorder.gen2DSpline([track.xInner;track.xInner],[track.yInner,track.yInner]);
+            obj.track.outerBorder.gen2DSpline([track.xOuter;track.xOuter],[track.yOuter;track.yOuter]);
+            obj.track.innerBorder.gen2DSpline([track.xInner;track.xInner],[track.yInner;track.yInner]);
 
             centerLine = obj.track.centerLine.getPath();
             outerBoredr = obj.track.outerBorder.getPath();
@@ -206,31 +206,36 @@ classdef Acados < handle
             constr_lh = [constr_lh,0];
             
             constr_uh = [constr_uh,obj.parameters.mpcModel.rOut^2];
+
+            % friction ellipse constraint bounds
+            constr_lh = [constr_lh,0,0];
+            
+            constr_uh = [constr_uh,1,1];
            
             obj.ocpModel.set('constr_lh',constr_lh);
             obj.ocpModel.set('constr_uh',constr_uh);
 
             % Coeffs for soft constraints penalization
             % quadratic part
-            Z = diag([obj.parameters.costs.scQuadAlpha, obj.parameters.costs.scQuadAlpha, obj.parameters.costs.scQuadTrack]);
+            Z = diag([obj.parameters.costs.scQuadAlpha, obj.parameters.costs.scQuadAlpha, obj.parameters.costs.scQuadTrack,obj.parameters.costs.scQuadTire,obj.parameters.costs.scQuadTire]);
             % linear part
-            z = [obj.parameters.costs.scLinAlpha; obj.parameters.costs.scLinAlpha; obj.parameters.costs.scLinTrack];
+            z = [obj.parameters.costs.scLinAlpha; obj.parameters.costs.scLinAlpha; obj.parameters.costs.scLinTrack;obj.parameters.costs.scLinTire;obj.parameters.costs.scLinTire];
             
             jsh = eye(obj.config.NS); % all constraints are softened
             
             % Coeffs for track onyl 
-            %Z = diag([obj.parameters.costs.scQuadTrack]);
+%             Z = diag([obj.parameters.costs.scQuadTrack]);
             % linear part
-            %z = [obj.parameters.costs.scLinTrack];
+%             z = [obj.parameters.costs.scLinTrack];
 
-            %jsh = eye(1); % all constraints are softened
+%             jsh = eye(1); % all constraints are softened
             
             % Coeffs for slip angles only
-            %Z = diag([obj.parameters.costs.scQuadAlpha, obj.parameters.costs.scQuadAlpha]);
+%             Z = diag([obj.parameters.costs.scQuadAlpha, obj.parameters.costs.scQuadAlpha]);
             % linear part
-            %z = [obj.parameters.costs.scLinAlpha; obj.parameters.costs.scLinAlpha];
+%             z = [obj.parameters.costs.scLinAlpha; obj.parameters.costs.scLinAlpha];
 
-            %jsh = eye(2); % all constraints are softened
+%             jsh = eye(2); % all constraints are softened
             
             obj.ocpModel.set('constr_Jsh',jsh);
             obj.ocpModel.set('cost_Z',Z);
@@ -246,11 +251,12 @@ classdef Acados < handle
             obj.ocpOpts.set('sim_method_num_steps', 3);
             obj.ocpOpts.set('qp_solver', 'partial_condensing_hpipm');
             obj.ocpOpts.set('qp_solver_cond_N', 5);
+            obj.ocpOpts.set('qp_solver_iter_max', 50); %51 for FSI;55 for FSG;
             obj.ocpOpts.set('nlp_solver_tol_stat', 1e-4);
             obj.ocpOpts.set('nlp_solver_tol_eq', 1e-4);
             obj.ocpOpts.set('nlp_solver_tol_ineq', 1e-4);
             obj.ocpOpts.set('nlp_solver_tol_comp', 1e-4);
-            
+
             obj.ocp = acados_ocp(obj.ocpModel, obj.ocpOpts);
         end
 
@@ -313,8 +319,8 @@ classdef Acados < handle
             slacks.upper = zeros(obj.config.NS,obj.config.N);
             slacks.lower = zeros(obj.config.NS,obj.config.N);
             for i = 1:obj.config.N
-                slacks.upper(:,i) = obj.ocp.get('su',i-1);
-                slacks.lower(:,i) = obj.ocp.get('sl',i-1);
+                slacks.upper(:,i) = obj.ocp.get('su',1);
+                slacks.lower(:,i) = obj.ocp.get('sl',1);
             end
         end
 

@@ -110,7 +110,64 @@ function raceAngles(obj)
     title(rearSlipAngle,'rearSlipAngle');
     ylabel(rearSlipAngle,'rearSlipAngle');
 
+    % Track error
+    x = states(1,:);
+    y = states(2,:);
+    xTrack = zeros(1,length(obj.log));
+    yTrack = zeros(1,length(obj.log));
+    for i = 1:length(obj.log)
+        xTrack(i) = obj.log(i).circlesCenters(1,1);
+        yTrack(i) = obj.log(i).circlesCenters(2,1);
+    end
+    trackError = sqrt((x-xTrack).^2 + (y-yTrack).^2);
+    figure;
+    plot(1:length(obj.log),trackError);
+
+    yline(-obj.parameters.mpcModel.maxDistProj,'--red','minDistProj'); % lower bound
+    yline(obj.parameters.mpcModel.maxDistProj,'--red','maxDistProj'); % upper bound
+    yline(-obj.parameters.mpcModel.rOut,'--red','minROut'); % lower bound
+    yline(obj.parameters.mpcModel.rOut,'--red','maxROut'); % upper bound
+    axis ([0 length(obj.log) -obj.parameters.mpcModel.maxDistProj-0.5 obj.parameters.mpcModel.maxDistProj+0.5]);
+
+    % Ellipse
+
+    Frx = zeros(length(obj.log),1);
+    Fry = zeros(length(obj.log),1);
+    Ffx = zeros(length(obj.log),1);
+    Ffy = zeros(length(obj.log),1);
+    for i = 1:length(obj.log)
+        state = states(:,i);
+        [Ffx(i),Ffy(i),Frx(i),Fry(i)] = obj.carModel.initSimpleFrictionEllipseConstraint(state);
+    end
+
+    figure;
+    subplot(1,2,1);
+    hold on;
+    axis equal;
+    equation = @(x, y) (x/obj.parameters.car.muxFz).^2 + (y/obj.parameters.car.muyFz).^2 - 1;
+    ezplot(equation, [-obj.parameters.car.muxFz, obj.parameters.car.muxFz, -obj.parameters.car.muyFz, obj.parameters.car.muyFz]);
+    h = get(gca, 'Children');
+    set(h, 'Color', 'r','LineStyle','--');
+    plot(Ffx,Ffy,'.')
+    title('Tire force of front force');
+    xlabel('Ffx');
+    ylabel('Ffy');
+
+    subplot(1,2,2);
+    hold on;
+    axis equal;
+    equation = @(x, y) (x/obj.parameters.car.muxFz).^2 + (y/obj.parameters.car.muyFz).^2 - 1;
+    ezplot(equation, [-obj.parameters.car.muxFz, obj.parameters.car.muxFz, -obj.parameters.car.muyFz, obj.parameters.car.muyFz]);
+    h = get(gca, 'Children');
+    set(h, 'Color', 'r','LineStyle','--');
+    plot(Frx,Fry,'.')
+
+    title('Tire force of rear force');
+    xlabel('Frx');
+    ylabel('Fry');
 
 
 end
+
+
 
