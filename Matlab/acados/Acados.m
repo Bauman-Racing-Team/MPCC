@@ -295,6 +295,9 @@ classdef Acados < handle
                 obj.initialStateGuess = obj.ocp.get('x');
                 obj.initialControlGuess = obj.ocp.get('u');
     
+                obj.initialStateGuess(:,1) = obj.unwrapState(obj.initialStateGuess(:,1));
+                obj.unwrapInitialGuess();
+
                 sol = MpcReturn;
                 if status ~= 0
                     n_non_solves_sqp_ = n_non_solves_sqp_+1;
@@ -508,7 +511,7 @@ classdef Acados < handle
            
             error = [ec;el];
 
-            cost = error'*Q*error - qVs*vs;
+            cost = error'*Q*error + qVs*(obj.parameters.mpcModel.vRef-vs)^2;
         end
     end
 end
