@@ -1,7 +1,9 @@
+build
 External
 C++/build
 C++/ADCodeGen/build
 Matlab/build
 Matlab/c_generated_code
-Matlab/parameters/Copy_of_cost.json
 acados_ocp_nlp.json
+*.asv
+

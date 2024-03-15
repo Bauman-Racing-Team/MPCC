@@ -251,7 +251,7 @@ classdef Acados < handle
             obj.ocpOpts.set('sim_method_num_steps', 3);
             obj.ocpOpts.set('qp_solver', 'partial_condensing_hpipm');
             obj.ocpOpts.set('qp_solver_cond_N', 5);
-            obj.ocpOpts.set('qp_solver_iter_max', 55); %51 for FSI;55 for FSG;
+            obj.ocpOpts.set('qp_solver_iter_max', 50); %51 for FSI;55 for FSG;
             obj.ocpOpts.set('nlp_solver_tol_stat', 1e-4);
             obj.ocpOpts.set('nlp_solver_tol_eq', 1e-4);
             obj.ocpOpts.set('nlp_solver_tol_ineq', 1e-4);
