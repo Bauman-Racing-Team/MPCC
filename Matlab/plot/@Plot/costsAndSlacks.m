@@ -87,6 +87,9 @@ function costsAndSlacks(obj)
     title(rearSlipAngleLowerSlack,'rearSlipAngleLowerSlack');
     ylabel(rearSlipAngleLowerSlack,'rearSlipAngleLowerSlack');
 
+
+    figure;
+    tiledlayout(obj.config.NS,1); 
     % Track R slack for upper bound
 
     trackRUpperSlack = nexttile;
@@ -117,6 +120,7 @@ function costsAndSlacks(obj)
 
     title(trackRLowerSlack,'trackRLowerSlack');
     ylabel(trackRLowerSlack,'trackRLowerSlack');
+
 
     %Front Friction ellipse slack for lower bound
     
@@ -173,4 +177,5 @@ function costsAndSlacks(obj)
 
     title(rearFrictionLowerSlack,'rearFrictionLowerSlack');
     ylabel(rearFrictionLowerSlack,'rearFrictionLowerSlack');
+
 end

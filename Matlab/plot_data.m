@@ -38,3 +38,4 @@ plotObj.raceAngles();
 %% Plot vx, vy, r
 plotObj = Plot(config,parameters,track,log,carModel);
 plotObj.velocities();
+

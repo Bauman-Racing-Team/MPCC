@@ -14,7 +14,7 @@
     "rSteeringAngle": 1E-9,
     "rBrakes": 1E-6,
     "rVs": 1E-6,
-        
+
     "rdThrottle": 1E2,
     "rdSteeringAngle": 5E2,
     "rdBrakes": 1E2,

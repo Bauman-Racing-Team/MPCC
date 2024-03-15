@@ -110,8 +110,8 @@ function raceAngles(obj)
     title(rearSlipAngle,'rearSlipAngle');
     ylabel(rearSlipAngle,'rearSlipAngle');
 
-    % Ellipse
 
+    % Ellipse
     Frx = zeros(length(obj.log),1);
     Fry = zeros(length(obj.log),1);
     Ffx = zeros(length(obj.log),1);
@@ -148,3 +148,4 @@ function raceAngles(obj)
     ylabel('Fry');
 
 end
+
