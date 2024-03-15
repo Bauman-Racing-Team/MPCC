@@ -467,7 +467,7 @@ classdef Acados < handle
            
             error = [ec;el];
 
-            cost = error'*Q*error + q*(15-vs)^2;
+            cost = error'*Q*error + q*(obj.parameters.mpcModel.vRef-vs)^2;
         end
     end
 end
