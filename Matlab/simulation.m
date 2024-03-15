@@ -81,7 +81,7 @@ for i = 1:parameters.config.nSim
             end
         end
         x00(:,i) = x0;
-        disp("Iteraton:");
+        disp("Iteration:");
         disp(i);
 %         if mpcSol.solverStatus ~= 0
 %             error('solver returned status %d in closed loop iteration %d. Exiting.', mpcSol.solverStatus);
