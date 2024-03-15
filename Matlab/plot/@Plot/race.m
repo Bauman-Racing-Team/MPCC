@@ -4,7 +4,7 @@ function race(obj)
     f.NumberTitle = 'off';
 
     hold on;
-
+    axis equal;
     plot(obj.track.xOuter,obj.track.yOuter,'black');
     plot(obj.track.xInner,obj.track.yInner,'black');
     

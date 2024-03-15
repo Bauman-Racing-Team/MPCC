@@ -12,6 +12,7 @@ classdef Model
         end
 
    function [Ffx,Ffy,Frx,Fry] = initSimpleFrictionEllipseConstraint(obj,states) 
+
                     vx = states(4);
                     vy = states(5);
                     r = states(6);
@@ -157,7 +158,7 @@ classdef Model
                     Fry = 2*Dry*sin(Cry*atan(Bry*sar-Ery*(Bry*sar-atan(Bry*sar))));
 
         end
-        
+
         function rhs = initKinematicModel(obj, states, controls)
             yaw = states(3);
             vx = states(4);
