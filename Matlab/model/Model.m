@@ -504,8 +504,8 @@ classdef Model
                     % slip ratio of the rear wheel
                     kappar0 = (omegar * rDyn - vx) / (max(1.0, vx));
 
-                    [Ffy0,Ffx0] = obj.CombinedSlipTireModel(saf0,kappaf0,Ffz,Dffz,fzNominal);
-                    [Fry0,Frx0] = obj.CombinedSlipTireModel(sar0,kappar0,Frz,Drfz,fzNominal);
+                    [Ffy0,Ffx0] = obj.combinedSlipTireModel(saf0,kappaf0,Ffz,Dffz,fzNominal);
+                    [Fry0,Frx0] = obj.combinedSlipTireModel(sar0,kappar0,Frz,Drfz,fzNominal);
                     Ffy = 2*Ffy0;
                     Ffx = 2*Ffx0;
                     Fry = 2*Fry0;
@@ -532,7 +532,7 @@ classdef Model
                            (Fdrv + Fbr - Frx + Frrr) / 2 * rDyn / iw];
         end
 
-        function [Fy,Fx] = CombinedSlipTireModel(obj,alpha,kappa,Fz,Dfz,fzNominal)
+        function [Fy,Fx] = combinedSlipTireModel(obj,alpha,kappa,Fz,Dfz,fzNominal)
             % latteral tire force Pacejka (Combined slip)
             SHy = (obj.tire.PHY1+obj.tire.PHY2*Dfz)*obj.tire.LHY;
             SVy = Fz*((obj.tire.PVY1 + obj.tire.PVY2 * Dfz) * obj.tire.LVY ) * obj.tire.LMUY;

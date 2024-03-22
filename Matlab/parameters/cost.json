@@ -28,7 +28,6 @@
     "scQuadAlpha": 1E3,
     
     "scLinTrack": 10.0,
-    "scLinTire": 100.0,
-    "scLinAlpha": 100.0
+    "scLinTire": 10.0,
+    "scLinAlpha": 10.0
 }
-

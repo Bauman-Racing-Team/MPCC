@@ -1,8 +1,8 @@
     % Copyright (C) 2018, ETH Zurich, D-ITET, Kenneth Kuchera, Alexander Liniger
 % Licensed under the Apache License, Version 2.0 (the "License");
 % you may not use this file except in compliance with the License.
-% % You may obtain a copy of the License at
-
+% You may obtain a copy of the License at
+% 
 %     http://www.apache.org/licenses/LICENSE-2.0
 % 
 % Unless required by applicable law or agreed to in writing, software
@@ -70,7 +70,6 @@ for i = 1:parameters.config.nSim
     mpcSol = mpc.runMPC(x0(1:11));
     x0 = simulator.simTimeStep(x0,mpcSol.u0,parameters.config.ts);
     log(i) = mpcSol;
-    x00(:,i) = x0;
     disp("Iteration:");
     disp(i);
     if mpcSol.solverStatus ~= 0

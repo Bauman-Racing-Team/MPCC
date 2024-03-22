@@ -26,8 +26,8 @@ classdef Simulator < handle
             steeringAngle = SX.sym('steeringAngle');
             brakes = SX.sym('brakes');
             vs = SX.sym('vs');
-            omegaf = SX.sym('omegaf');
-            omegar = SX.sym('omegar');
+            omegaf = SX.sym('wf');
+            omegar = SX.sym('wr');
 
 
             state = [x;y;yaw;vx;vy;r;s;throttle;steeringAngle;brakes;vs];
