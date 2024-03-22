@@ -24,7 +24,7 @@ classdef Acados < handle
         initialStateGuess
         initialControlGuess
         validInitialGuess
-        n_non_solves_
+
         f
         paramVec
     end
@@ -44,7 +44,7 @@ classdef Acados < handle
             obj.ocpOpts = acados_ocp_opts();
 
             obj.validInitialGuess = false;
-            obj.n_non_solves_ = 0;
+
             obj.track.centerLine = ArcLengthSpline(config,parameters.mpcModel);
             obj.track.outerBorder = ArcLengthSpline(config,parameters.mpcModel);
             obj.track.innerBorder = ArcLengthSpline(config,parameters.mpcModel);
@@ -270,15 +270,20 @@ classdef Acados < handle
         function sol = runMPC(obj,x0)
             x0(obj.config.siIndex.s) = obj.track.centerLine.projectOnSpline(vectorToState(x0));
             x0 = obj.unwrapState(x0);
-            
-            if obj.validInitialGuess
-              obj.updateInitialGuess(x0);
-            else
-              obj.generateNewInitialGuess(x0);
-            end
-            
-            n_non_solves_sqp_ = 0;
-            for i = 1:obj.parameters.config.nSqp
+
+            nNonSolvesSqp = 0;
+            nNonSolvesSqpMax = 0;
+
+            tempStateGuess = obj.initialStateGuess;
+            tempControlGuess = obj.initialControlGuess;
+
+            while nNonSolvesSqpMax < obj.parameters.config.nSqp
+
+                if obj.validInitialGuess
+                  obj.updateInitialGuess(x0);
+                else
+                  obj.generateNewInitialGuess(x0);
+                end
 
                 obj.fillParametersVector();
                 
@@ -291,36 +296,41 @@ classdef Acados < handle
                 obj.ocp.solve();
     
                 status = obj.ocp.get('status');
-    
-                obj.initialStateGuess = obj.ocp.get('x');
-                obj.initialControlGuess = obj.ocp.get('u');
-    
-                obj.initialStateGuess(:,1) = obj.unwrapState(obj.initialStateGuess(:,1));
-                obj.unwrapInitialGuess();
 
-                sol = MpcReturn;
+                if status == 0
+                    tempStateGuess = obj.ocp.get('x');
+                    tempControlGuess = obj.ocp.get('u');
+                    break;
+                elseif status == 2 || status == 3
+                    tempStateGuess = obj.ocp.get('x');
+                    tempControlGuess = obj.ocp.get('u');
+                end
+                
                 if status ~= 0
-                    n_non_solves_sqp_ = n_non_solves_sqp_+1;
+                    nNonSolvesSqp = nNonSolvesSqp+1;
+                    if nNonSolvesSqp >= obj.parameters.config.nReset
+                        obj.validInitialGuess = false;
+                        nNonSolvesSqp = 0;
+                    end
                 end
-                if status == 0||status == 2||status == 3
-                    sol.x0 = obj.initialStateGuess(:,1);
-                    sol.u0 = obj.initialControlGuess(:,1);
-                    sol.mpcHorizon.states = obj.initialStateGuess;
-                    sol.mpcHorizon.inputs = obj.initialControlGuess;
-                    sol.mpcHorizon.slacks = obj.getSlacks();
-                    sol.solverStatus = status;
-                    sol.cost = obj.ocp.get_cost;
-                    sol.circlesCenters = obj.getConstraintsCirclesCenters();
-                end
-                max_error = max(obj.parameters.config.nSqp-1,1);
-                if n_non_solves_sqp_ >= max_error
-                    obj.n_non_solves_ = obj.n_non_solves_+1;
-                else
-                    obj.n_non_solves_ = 0;
-                end
-                if obj.n_non_solves_ >= obj.parameters.config.nReset
-                    obj.validInitialGuess = false;
-                end
+
+                nNonSolvesSqpMax = nNonSolvesSqpMax+1;
+            end
+
+            sol = MpcReturn;
+
+            if nNonSolvesSqpMax < obj.parameters.config.nSqp
+                obj.initialStateGuess = tempStateGuess;
+                obj.initialControlGuess = tempControlGuess;
+
+                sol.x0 = obj.initialStateGuess(:,1);
+                sol.u0 = obj.initialControlGuess(:,1);
+                sol.mpcHorizon.states = obj.initialStateGuess;
+                sol.mpcHorizon.inputs = obj.initialControlGuess;
+                sol.mpcHorizon.slacks = obj.getSlacks();
+                sol.solverStatus = status;
+                sol.cost = obj.ocp.get_cost;
+                sol.circlesCenters = obj.getConstraintsCirclesCenters();
             end
         end
 
