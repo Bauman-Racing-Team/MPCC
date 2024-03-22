@@ -24,7 +24,7 @@ classdef Acados < handle
         initialStateGuess
         initialControlGuess
         validInitialGuess
-        n_non_solves_
+        nNonSolves
         f
         paramVec
     end
@@ -44,7 +44,7 @@ classdef Acados < handle
             obj.ocpOpts = acados_ocp_opts();
 
             obj.validInitialGuess = false;
-            obj.n_non_solves_ = 0;
+            obj.nNonSolves = 0;
             obj.track.centerLine = ArcLengthSpline(config,parameters.mpcModel);
             obj.track.outerBorder = ArcLengthSpline(config,parameters.mpcModel);
             obj.track.innerBorder = ArcLengthSpline(config,parameters.mpcModel);
@@ -277,7 +277,7 @@ classdef Acados < handle
               obj.generateNewInitialGuess(x0);
             end
             
-            n_non_solves_sqp_ = 0;
+            nNonSolvesSqp = 0;
             for i = 1:obj.parameters.config.nSqp
 
                 obj.fillParametersVector();
@@ -297,7 +297,7 @@ classdef Acados < handle
     
                 sol = MpcReturn;
                 if status ~= 0
-                    n_non_solves_sqp_ = n_non_solves_sqp_+1;
+                    nNonSolvesSqp = nNonSolvesSqp+1;
                 end
                 if status == 0||status == 2||status == 3
                     sol.x0 = obj.initialStateGuess(:,1);
@@ -310,12 +310,12 @@ classdef Acados < handle
                     sol.circlesCenters = obj.getConstraintsCirclesCenters();
                 end
                 max_error = max(obj.parameters.config.nSqp-1,1);
-                if n_non_solves_sqp_ >= max_error
-                    obj.n_non_solves_ = obj.n_non_solves_+1;
+                if nNonSolvesSqp >= max_error
+                    obj.nNonSolves = obj.nNonSolves+1;
                 else
-                    obj.n_non_solves_ = 0;
+                    obj.nNonSolves = 0;
                 end
-                if obj.n_non_solves_ >= obj.parameters.config.nReset
+                if obj.nNonSolves >= obj.parameters.config.nReset
                     obj.validInitialGuess = false;
                 end
             end
