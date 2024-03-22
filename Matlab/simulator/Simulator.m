@@ -26,8 +26,8 @@ classdef Simulator < handle
             steeringAngle = SX.sym('steeringAngle');
             brakes = SX.sym('brakes');
             vs = SX.sym('vs');
-            omegaf = SX.sym('omegaf');
-            omegar = SX.sym('omegar');
+            wf = SX.sym('wf');
+            wr = SX.sym('wr');
 
 
             state = [x;y;yaw;vx;vy;r;s;throttle;steeringAngle;brakes;vs];
@@ -46,7 +46,7 @@ classdef Simulator < handle
             elseif strcmp(config.simulator,'simple_dynamic')
                 rhs = obj.model.initSimpleDynamicModel(state,input);
             elseif strcmp(config.simulator,'combined_dynamic')
-                state = [x;y;yaw;vx;vy;r;s;throttle;steeringAngle;brakes;vs;omegaf;omegar];
+                state = [x;y;yaw;vx;vy;r;s;throttle;steeringAngle;brakes;vs;wf;wr];
                 rhs = obj.model.initCombinedSlipDynamicModel(state,input);
             end
 
