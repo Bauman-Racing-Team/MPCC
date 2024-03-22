@@ -79,7 +79,6 @@ function model = getModel(parameters)
     % Coeffs for laf and contouring errors penallization
     Q = diag([qC,qL]);
 
-%     qVs = parameters.costs.qVs;
     vRef = parameters.mpcModel.vRef;
 
     % Coeffs for control inputs penalization
@@ -90,7 +89,7 @@ function model = getModel(parameters)
 
     cost_expr_ext_cost = error'*Q*error+input'*R*input+qVs*(vRef-vs)^2;
     cost_expr_ext_cost_e = error'*Q*error+qVs*(vRef-vs)^2;
-    
+
     % constraints 
     lf = parameters.car.lf;
     lr = parameters.car.lr;
