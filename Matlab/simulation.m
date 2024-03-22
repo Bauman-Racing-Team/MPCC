@@ -75,10 +75,11 @@ for i = 1:parameters.config.nSim
             log(end+1) = mpcSol;
             maxAttempt = 0;
         else
-            maxAttempt = maxAttempt+1;
-            if maxAttempt>10
-                error('The maximum number of attempts has been reached ')
-            end
+            error('The maximum number of attempts has been reached ')
+            %maxAttempt = maxAttempt+1;
+            %if maxAttempt>10
+            %    error('The maximum number of attempts has been reached ')
+            %end
         end
         disp("Iteration:");
         disp(i);
