@@ -88,7 +88,7 @@ classdef Acados < handle
         end
 
         function initMPC(obj)
-            obj.initOcpModel(); 
+            obj.initOcpModel();
             obj.setBounds();
             obj.setOCPOpts();
         end
