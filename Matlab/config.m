@@ -1,6 +1,6 @@
 function config = config()
     config.solver = 'acados'; % ipopt, acados
-    config.simulator = 'dynamic'; % kinematic, simple_dynamic, dynamic
+    config.simulator = 'combined_dynamic'; % kinematic, simple_dynamic, dynamic
     config.NX = 11;
     config.NU  = 4;
     

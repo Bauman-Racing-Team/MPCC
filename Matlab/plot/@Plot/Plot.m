@@ -46,4 +46,3 @@ classdef Plot < handle
     end
 
 end
-

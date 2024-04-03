@@ -168,6 +168,3 @@ function raceAngles(obj)
 
 
 end
-
-
-

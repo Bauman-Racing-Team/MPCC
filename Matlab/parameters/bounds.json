@@ -20,7 +20,7 @@
       "throttleU": 1.0,
       "steeringAngleU": 0.37,
       "brakesU": 1.0,
-      "vsU": 20.0
+      "vsU": 30.0
     },
 
     "lowerInputBounds":{
