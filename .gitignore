@@ -4,7 +4,6 @@ C++/build
 C++/ADCodeGen/build
 Matlab/build
 Matlab/c_generated_code
-Matlab/data
 acados_ocp_nlp.json
 *.asv
-Matlab/simulationRos.m
+

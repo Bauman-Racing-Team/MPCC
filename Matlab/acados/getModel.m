@@ -89,7 +89,7 @@ function model = getModel(parameters)
               rdVs]);
 
     cost_expr_ext_cost = error'*Q*error+input'*R*input+qVs*(vRef-vs)^2;
-    cost_expr_ext_cost_e = error'*Q*error+qVs*(vRef-vs)^2;
+    cost_expr_ext_cost_e = error'*Q*error+qVs*(vRef-vs)^2; 
 
     % constraints 
     lf = parameters.car.lf;

@@ -148,4 +148,3 @@ function raceAngles(obj)
     ylabel('Fry');
 
 end
-
