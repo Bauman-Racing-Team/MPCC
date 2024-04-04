@@ -5,6 +5,6 @@ C++/ADCodeGen/build
 C++/.vscode
 Matlab/build
 Matlab/c_generated_code
-Matlab/data
-**/acados_ocp_nlp.json
+acados_ocp_nlp.json
 *.asv
+
