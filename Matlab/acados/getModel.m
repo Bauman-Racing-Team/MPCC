@@ -43,12 +43,19 @@ function model = getModel(parameters)
     z = [];
 
     % parameters
+    qC = SX.sym('qC');
+    qL = SX.sym('qL');
+    qVs = SX.sym('qVs');
+    rThrottle = SX.sym('rThrottle');
+    rSteeringAngle = SX.sym('rSteeringAngle');
+    rBrakes = SX.sym('rBrakes');
+    rVs = SX.sym('rVs');
     xTrack = SX.sym('xTrack');
     yTrack = SX.sym('yTrack');
     phiTrack = SX.sym('phiTrack');
     s0 = SX.sym('s0');
 
-    p = [xTrack;yTrack;phiTrack;s0];
+    p = [xTrack;yTrack;phiTrack;s0;qC;qL;qVs;rThrottle;rSteeringAngle;rBrakes;rVs];
     
     % dynamics
     carModel = Model(parameters.car,parameters.tire);
@@ -70,16 +77,15 @@ function model = getModel(parameters)
     error = [ec;el];
 
     % Coeffs for laf and contouring errors penallization
-    Q = diag([parameters.costs.qC,parameters.costs.qL]);
+    Q = diag([qC,qL]);
 
-    qVs = parameters.costs.qVs;
     vRef = parameters.mpcModel.vRef;
 
     % Coeffs for control inputs penalization
-    R = diag([parameters.costs.rThrottle, ...
-              parameters.costs.rSteeringAngle, ...
-              parameters.costs.rBrakes, ...
-              parameters.costs.rVs]);
+    R = diag([rThrottle, ...
+              rSteeringAngle, ...
+              rBrakes, ...
+              rVs]);
 
     cost_expr_ext_cost = error'*Q*error+input'*R*input+qVs*(vRef-vs)^2;
     cost_expr_ext_cost_e = error'*Q*error+qVs*(vRef-vs)^2; 
