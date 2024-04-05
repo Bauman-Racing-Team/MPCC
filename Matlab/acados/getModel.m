@@ -46,17 +46,19 @@ function model = getModel(parameters)
     qC = SX.sym('qC');
     qL = SX.sym('qL');
     qVs = SX.sym('qVs');
+
     rdThrottle = SX.sym('rdThrottle');
     rdSteeringAngle = SX.sym('rdSteeringAngle');
     rdBrakes = SX.sym('rdBrakes');
     rdVs = SX.sym('rdVs');
+
     xTrack = SX.sym('xTrack');
     yTrack = SX.sym('yTrack');
     phiTrack = SX.sym('phiTrack');
     s0 = SX.sym('s0');
 
     p = [xTrack;yTrack;phiTrack;s0;qC;qL;qVs;rdThrottle;rdSteeringAngle;rdBrakes;rdVs];
-    
+
     % dynamics
     carModel = Model(parameters.car,parameters.tire);
     f_expl = carModel.initSimpleCombinedModel(state,input);
