@@ -11,8 +11,7 @@ classdef Model
             obj.tire = tire;
         end
 
-    function [Ffx,Ffy,Frx,Fry] = initSimpleFrictionEllipseConstraint(obj,states) 
-
+    function [Ffx,Ffy,Frx,Fry] = initSimpleFrictionEllipseConstraint(obj,states)
                     vx = states(4);
                     vy = states(5);
                     r = states(6);
