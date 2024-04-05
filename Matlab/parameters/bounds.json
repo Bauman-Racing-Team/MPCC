@@ -1,6 +1,5 @@
 {
     "lowerStateBounds":{
-      "yawL": -6.28,
       "vxL": 0.0,
       "vyL": -10.0,
       "rL": -2.5,
@@ -12,7 +11,6 @@
     },
 
     "upperStateBounds":{
-      "yawU": 6.28,
       "vxU": 30.0,
       "vyU": 10.0,
       "rU": 2.5,
