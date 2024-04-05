@@ -71,8 +71,6 @@ for i = 1:parameters.config.nSim
         x0 = simulator.simTimeStep(x0,mpcSol.u0,parameters.config.ts);
         if ~isempty(mpcSol.x0)
             log(end+1) = mpcSol;
-        else
-                error('The maximum number of attempts has been reached ')
         end
         disp("Iteration:");
         disp(i);

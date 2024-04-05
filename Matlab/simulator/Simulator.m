@@ -4,6 +4,7 @@ classdef Simulator < handle
         tire;
         f;
         model;
+        config;
     end
     
     methods (Access = public)
@@ -14,6 +15,7 @@ classdef Simulator < handle
             obj.car = car;
             obj.tire = tire;
             obj.model = Model(car,tire);
+            obj.config = config;
 
             x = SX.sym('x');
             y = SX.sym('y');
@@ -71,6 +73,16 @@ classdef Simulator < handle
             
             for i = 1:integrationSteps
                 xNext = obj.ode4(xNext,u,0.001).full();
+            end
+            xNext = obj.unwrapState(xNext);
+        end
+
+        function x0 = unwrapState(obj,x0)
+            if x0(3) > pi
+              x0(obj.config.siIndex.yaw) = x0(obj.config.siIndex.yaw) - 2.0 * pi;
+            end
+            if x0(obj.config.siIndex.yaw) < -pi
+              x0(obj.config.siIndex.yaw) = x0(obj.config.siIndex.yaw) + 2.0 * pi;
             end
         end
     end

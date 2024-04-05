@@ -439,7 +439,7 @@ classdef Acados < handle
               end
               if (obj.initialStateGuess(obj.config.siIndex.yaw,i) - obj.initialStateGuess(obj.config.siIndex.yaw,i - 1)) > pi
                 obj.initialStateGuess(obj.config.siIndex.yaw,i) = obj.initialStateGuess(obj.config.siIndex.yaw,i) - 2.0 * pi;
-               end
+              end
             end
 
             trackLength = obj.track.centerLine.getLength();
