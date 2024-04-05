@@ -335,29 +335,32 @@ classdef Acados < handle
         end
 
         function centers = getConstraintsCirclesCenters(obj)
-            centers = zeros(2,obj.config.N+1);
+            centers = zeros(4,obj.config.N+1);
             newStateGuess = obj.ocp.get('x');
             for i = 1:obj.config.N+1
                 
                 xTrack = obj.paramVec(1,i);
                 yTrack = obj.paramVec(2,i);
-                %phiTrack = obj.paramVec(3,i);
-                %s0 = obj.paramVec(4,i);
+                phiTrack = obj.paramVec(3,i);
+                s0 = obj.paramVec(4,i);
 
                 %centers(1,i) = xTrack + (newStateGuess(7,i)-s0)*cos(phiTrack);
                 %centers(2,i) = yTrack + (newStateGuess(7,i)-s0)*sin(phiTrack);
 
                 centers(1,i) = xTrack;
                 centers(2,i) = yTrack;
+                centers(3,i) = phiTrack;
+                centers(4,i) = s0;
             end
         end
 
         function slacks = getSlacks(obj)
             slacks.upper = zeros(obj.config.NS,obj.config.N);
             slacks.lower = zeros(obj.config.NS,obj.config.N);
-            for i = 1:obj.config.N
-                slacks.upper(:,i) = obj.ocp.get('su',1);
-                slacks.lower(:,i) = obj.ocp.get('sl',1);
+
+            for i = 1:obj.config.N-1
+                slacks.upper(:,i) = obj.ocp.get('su',i);
+                slacks.lower(:,i) = obj.ocp.get('sl',i);
             end
         end
 

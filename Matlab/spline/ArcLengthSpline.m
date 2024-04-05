@@ -159,7 +159,7 @@ classdef ArcLengthSpline < handle
             resampledPath.y = zeros(NSpline,1);
             
             % extract X-Y points
-            for i = 1:NSpline
+            for i = 1:NSpline                
                 resampledPath.x(i) = initialSplineX.getPoint(resampledPath.s(i));
                 resampledPath.y(i) = initialSplineY.getPoint(resampledPath.s(i));
             end

@@ -76,5 +76,4 @@ for i = 1:parameters.config.nSim
         end
         disp("Iteration:");
         disp(i);
-
 end

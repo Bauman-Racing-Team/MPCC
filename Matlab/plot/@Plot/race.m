@@ -23,7 +23,7 @@ function race(obj)
     circlesCenters = zeros(2,obj.config.N+1,length(obj.log));
 
     for i = 1:length(obj.log)
-        circlesCenters(:,:,i) = obj.log(i).circlesCenters(:,:);
+        circlesCenters(:,:,i) = obj.log(i).circlesCenters(1:2,:);
     end
 
     for i = 1:length(obj.log)
