@@ -129,21 +129,23 @@ classdef Acados < handle
         end
 
         function setBounds(obj)
-            nbx = 8;
+            nbx = 9;
             jbx = zeros(nbx,obj.config.NX);
 
-            jbx(1,4) = 1;
-            jbx(2,5) = 1;
-            jbx(3,6) = 1;
-            jbx(4,7) = 1;
-            jbx(5,8) = 1;
-            jbx(6,9) = 1;
-            jbx(7,10) = 1;
-            jbx(8,11) = 1;
+            jbx(1,3) = 1;
+            jbx(2,4) = 1;
+            jbx(3,5) = 1;
+            jbx(4,6) = 1;
+            jbx(5,7) = 1;
+            jbx(6,8) = 1;
+            jbx(7,9) = 1;
+            jbx(8,10) = 1;
+            jbx(9,11) = 1;
 
             obj.ocpModel.set('constr_Jbx',jbx);
 
             obj.ocpModel.set('constr_lbx',[ ...
+                                            obj.parameters.bounds.lowerStateBounds.yawL, ...
                                             obj.parameters.bounds.lowerStateBounds.vxL, ...
                                             obj.parameters.bounds.lowerStateBounds.vyL, ...
                                             obj.parameters.bounds.lowerStateBounds.rL, ...
@@ -154,6 +156,7 @@ classdef Acados < handle
                                             obj.parameters.bounds.lowerStateBounds.vsL]);
 
             obj.ocpModel.set('constr_ubx',[ ...
+                                            obj.parameters.bounds.upperStateBounds.yawU, ...
                                             obj.parameters.bounds.upperStateBounds.vxU, ...
                                             obj.parameters.bounds.upperStateBounds.vyU, ...
                                             obj.parameters.bounds.upperStateBounds.rU, ...
@@ -386,12 +389,6 @@ classdef Acados < handle
 
         function x0 = unwrapState(obj,x0)
             lapLength = obj.track.centerLine.getLength()/2;
-            if x0(obj.config.siIndex.yaw) > pi
-              x0(obj.config.siIndex.yaw) = x0(obj.config.siIndex.yaw) - 2.0 * pi;
-            end
-            if x0(obj.config.siIndex.yaw) < -pi
-              x0(obj.config.siIndex.yaw) = x0(obj.config.siIndex.yaw) + 2.0 * pi;
-            end
             x0(obj.config.siIndex.s) = rem(x0(obj.config.siIndex.s),lapLength);
         end
 
