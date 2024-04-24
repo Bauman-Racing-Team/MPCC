@@ -1,4 +1,4 @@
- classdef Acados < handle
+classdef Acados < handle
     %ACADOS Summary of this class goes here
     %   Detailed explanation goes here
     
