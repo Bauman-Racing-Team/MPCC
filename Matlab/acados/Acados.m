@@ -1,4 +1,4 @@
-classdef Acados < handle
+ classdef Acados < handle
     %ACADOS Summary of this class goes here
     %   Detailed explanation goes here
     
@@ -269,7 +269,6 @@ classdef Acados < handle
 
         function sol = runMPC(obj,x0)
             x0(obj.config.siIndex.s) = obj.track.centerLine.projectOnSpline(vectorToState(x0));
-            x0 = obj.unwrapState(x0);
 
             nNonSolvesSqp = 0;
             nNonSolvesSqpMax = 0;
@@ -388,6 +387,12 @@ classdef Acados < handle
         end
 
         function x0 = unwrapState(obj,x0)
+            if x0(obj.config.siIndex.yaw) > pi
+              x0(obj.config.siIndex.yaw) = x0(obj.config.siIndex.yaw) - 2.0 * pi;
+            end
+            if x0(obj.config.siIndex.yaw) < -pi
+              x0(obj.config.siIndex.yaw) = x0(obj.config.siIndex.yaw) + 2.0 * pi;
+            end
             lapLength = obj.track.centerLine.getLength()/2;
             x0(obj.config.siIndex.s) = rem(x0(obj.config.siIndex.s),lapLength);
         end

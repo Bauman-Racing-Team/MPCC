@@ -65,13 +65,15 @@ x0 = [trackPath.x(point0);trackPath.y(point0);phi0;0;0;0;0;0;0;0;0;0;0];
 
 mpc.initMPC();
 log = MpcReturn.empty(1, 0);
+x00 = zeros(13,0);
 
 for i = 1:parameters.config.nSim
         mpcSol = mpc.runMPC(x0(1:11));
-        x0 = simulator.simTimeStep(x0,mpcSol.u0,parameters.config.ts);
+        x0 = simulator.simTimeStep(x0,mpcSol.u0,parameters.config.ts,trackLength);
         if ~isempty(mpcSol.x0)
             log(end+1) = mpcSol;
         end
+        x00(:,end+1) = x0;
         disp("Iteration:");
         disp(i);
 end
