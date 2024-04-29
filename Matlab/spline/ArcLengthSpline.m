@@ -50,7 +50,7 @@ classdef ArcLengthSpline < handle
           length = obj.d_pathData.s(obj.d_pathData.nPoints);
       end
 
-      function sGuess = projectOnSpline(obj,x)
+      function sGuess= projectOnSpline(obj,x)
           pos = zeros(2,1);
           pos(1) = x.x;
           pos(2) = x.y;
@@ -65,7 +65,7 @@ classdef ArcLengthSpline < handle
             diffXAll = obj.d_pathData.x - pos(1);
             diffYAll = obj.d_pathData.y - pos(2);
             distSquare = diffXAll.^2 + diffYAll.^2;
-            [~, minIndex] = min(distSquare);
+            [~, minIndex] = min(distSquare(1:obj.d_config.NSpline/2));
             sOpt = obj.d_pathData.s(minIndex);
           end
           sOld = sOpt;

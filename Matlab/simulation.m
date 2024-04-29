@@ -41,7 +41,7 @@ else
     return
 end
 
-trackNameFile = 'FSG.mat'; %track name
+trackNameFile = 'thin.mat'; %track name
 load(trackNameFile);
 
 track = Track(cones_blue, cones_yellow);
