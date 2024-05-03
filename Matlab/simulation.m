@@ -41,15 +41,10 @@ else
     return
 end
 
-trackNameFile = 'FSG.mat'; %track name
+trackNameFile = 'thin.mat'; %track name
 load(trackNameFile);
 
 track = Track(cones_blue, cones_yellow);
-
-centerLine = ArcLengthSpline(config,parameters.mpcModel);
-centerLine.gen2DSpline([track.x;track.x],[track.y;track.y]);
-
-simulator = Simulator(config,parameters.car,parameters.tire,centerLine);
 
 carModel = Model(parameters.car,parameters.tire);
 
@@ -59,6 +54,8 @@ trackCenter = mpc.getTrack().getPath();
 
 trackPath = mpc.getTrack().getPath();
 trackLength = mpc.getTrack().getLength();
+
+simulator = Simulator(config,parameters.car,parameters.tire,mpc.getTrack());
 
 % initial point
 point0 = 1;

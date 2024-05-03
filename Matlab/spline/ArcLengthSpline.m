@@ -50,7 +50,7 @@ classdef ArcLengthSpline < handle
           length = obj.d_pathData.s(obj.d_pathData.nPoints);
       end
 
-      function sGuess= projectOnSpline(obj,x)
+      function sGuess = projectOnSpline(obj,x)
           pos = zeros(2,1);
           pos(1) = x.x;
           pos(2) = x.y;
