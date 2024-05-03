@@ -41,12 +41,15 @@ else
     return
 end
 
-trackNameFile = 'thin.mat'; %track name
+trackNameFile = 'FSG.mat'; %track name
 load(trackNameFile);
 
 track = Track(cones_blue, cones_yellow);
 
-simulator = Simulator(config,parameters.car,parameters.tire);
+centerLine = ArcLengthSpline(config,parameters.mpcModel);
+centerLine.gen2DSpline([track.x;track.x],[track.y;track.y]);
+
+simulator = Simulator(config,parameters.car,parameters.tire,centerLine);
 
 carModel = Model(parameters.car,parameters.tire);
 

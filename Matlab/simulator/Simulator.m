@@ -5,17 +5,19 @@ classdef Simulator < handle
         f;
         model;
         config;
+        centerLine;
     end
     
     methods (Access = public)
 
-        function obj = Simulator(config,car,tire)
+        function obj = Simulator(config,car,tire,centerLine)
             import casadi.*;
 
             obj.car = car;
             obj.tire = tire;
             obj.model = Model(car,tire);
             obj.config = config;
+            obj.centerLine = centerLine;
 
             x = SX.sym('x');
             y = SX.sym('y');
@@ -85,6 +87,7 @@ classdef Simulator < handle
               x0(obj.config.siIndex.yaw) = x0(obj.config.siIndex.yaw) + 2.0 * pi;
             end
             lapLength = trackLength/2;
+            x0(obj.config.siIndex.s) = obj.centerLine.projectOnSpline(vectorToState(x0));
             x0(obj.config.siIndex.s) = rem(x0(obj.config.siIndex.s),lapLength);
         end
     end
