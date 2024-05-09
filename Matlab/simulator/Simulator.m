@@ -69,23 +69,24 @@ classdef Simulator < handle
             xNext = state + ts * (k1 / 6.0 + k2 / 3.0 + k3 / 3.0 + k4 / 6.0);
         end
 
-        function xNext = simTimeStep(obj,x,u,ts,trackLength)
+        function xNext = simTimeStep(obj,x,u,ts)
             xNext = x;
             integrationSteps = cast(ts/0.001,'int64');
             
             for i = 1:integrationSteps
                 xNext = obj.ode4(xNext,u,0.001).full();
             end
-            xNext = obj.unwrapState(xNext,trackLength);
+            xNext = obj.unwrapState(xNext);
         end
 
-        function x0 = unwrapState(obj,x0,trackLength)
+        function x0 = unwrapState(obj,x0)
             if x0(obj.config.siIndex.yaw) > pi
               x0(obj.config.siIndex.yaw) = x0(obj.config.siIndex.yaw) - 2.0 * pi;
             end
             if x0(obj.config.siIndex.yaw) < -pi
               x0(obj.config.siIndex.yaw) = x0(obj.config.siIndex.yaw) + 2.0 * pi;
             end
+            trackLength = obj.centerLine.getLength();
             lapLength = trackLength/2;
             x0(obj.config.siIndex.s) = obj.centerLine.projectOnSpline(vectorToState(x0));
             x0(obj.config.siIndex.s) = rem(x0(obj.config.siIndex.s),lapLength);
