@@ -19,20 +19,22 @@
 
 #include "config.h"
 #include "types.h"
-
-
+// #include "MPC/mpc.h"
 
 #include <array>
-namespace mpcc{
+namespace mpcc
+{
 struct OptVariables;
-struct Stage;
-class SolverInterface {
-public:
-    virtual std::array<OptVariables,N+1> solveMPC(std::array<Stage,N+1> &stages,const State &x0,int *status) = 0;
-    virtual ~SolverInterface(){
-        std::cout << "Deleting Solver Interface" << std::endl;
-    }
-};
-}
+struct solverReturn;
 
-#endif //MPCC_SOLVER_INTERFACE_H
+class SolverInterface
+{
+public:
+  virtual solverReturn solveMPC(
+    std::array<OptVariables, N + 1> &initial_guess_, std::array<Parameter, N + 1> parameter_,
+    const double *bounds) = 0;
+  virtual ~SolverInterface() { std::cout << "Deleting Solver Interface" << std::endl; }
+};
+}  // namespace mpcc
+
+#endif  // MPCC_SOLVER_INTERFACE_H

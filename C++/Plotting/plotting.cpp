@@ -18,9 +18,11 @@
 namespace mpcc{
 
 Plotting::Plotting(double Ts,PathToJson path)
-:model_(Model(Ts,path)),
-param_(Param(path.param_path)),
-constraints_(Constraints(Ts,path))
+:
+// model_(Model(Ts,path)),
+// constraints_(Constraints(Ts,path)),
+param_(Param(path.param_path))
+
 {
 }
 void Plotting::plotRun(const std::list<MPCReturn> &log, const TrackPos &track_xy) const
@@ -76,11 +78,11 @@ void Plotting::plotRun(const std::list<MPCReturn> &log, const TrackPos &track_xy
         const StateVector x_vec = stateToVector(log_i.mpc_horizon[2].xk);
         const std::vector<double> x_std_vec(x_vec.data(),x_vec.data() + x_vec.size());
         double alpha_f = 0.0;//model_.getSlipAngleFront(log_i.mpc_horizon[0].xk);
-        double tire_con_front = (constraints_.tire_con_front_model_)->ForwardZero(x_std_vec)[0];
-        double tire_con_rear = (constraints_.tire_con_rear_model_)->ForwardZero(x_std_vec)[0];
+        // double tire_con_front = (constraints_.tire_con_front_model_)->ForwardZero(x_std_vec)[0];
+        // double tire_con_rear = (constraints_.tire_con_rear_model_)->ForwardZero(x_std_vec)[0];
         plot_alpha_f.push_back(alpha_f);
-        plot_tire_rear.push_back(tire_con_rear);
-        plot_tire_front.push_back(tire_con_front);
+        // plot_tire_rear.push_back(tire_con_rear);
+        // plot_tire_front.push_back(tire_con_front);
     }
 
     std::vector<double> plot_eps_x;

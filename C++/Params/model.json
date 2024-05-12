@@ -45,5 +45,5 @@
   "initial_velocity" : 15.0,
   "s_trust_region" : 30.0,
 
-  "vx_zero": 0.3
+  "vx_zero": 1.0
 }
