@@ -55,12 +55,20 @@ int main()
   for (int i = 0; i < jsonConfig["n_sim"]; i++) {
     MPCReturn mpc_sol = mpc.runMPC(x0);
     // Use the MPC prediction as sim step
-    // x0 = mpc_sol.mpc_horizon[1].xk;
+    x0 = mpc_sol.mpc_horizon[1].xk;
     // Use ODE integrator
-    x0 = integrator.simTimeStep(x0, mpc_sol.u0, jsonConfig["Ts"]);
+    // x0 = integrator.simTimeStep(x0, mpc_sol.u0, jsonConfig["Ts"]);
+
     log.push_back(mpc_sol);
-    std::cout << "MPC iter =  " << i << std::endl;
+    std::cout << "MPC iter =  " << i + 1 << std::endl;
+    // std::cout << "Solver status=" << mpc_sol.solverStatus << std::endl;
+    if (mpc_sol.solverStatus == 4) {
+      std::cout << "Solver error 4: QP solver failed." << std::endl;
+      break;
+    }
   }
+
+  // Plot data
   plotter.plotRun(log, track_xy);
   plotter.plotSim(log, track_xy);
 
@@ -69,9 +77,9 @@ int main()
   for (MPCReturn log_i : log) {
     mean_time += log_i.time_total;
     if (log_i.time_total > max_time) max_time = log_i.time_total;
-    std::cout << "mean nmpc time " << std::endl;
   }
   std::cout << "mean nmpc time " << mean_time / double(jsonConfig["n_sim"]) << std::endl;
   std::cout << "max nmpc time " << max_time << std::endl;
+
   return 0;
 }

@@ -63,7 +63,7 @@ void MPC::fillParametersVector()
     Eigen::Map<Eigen::Matrix<double, NX, 1>>(bounds_x + NX, NX) = bounds_.getBoundsUX();
   }
 }
-
+/*
 void MPC::setStage(const State &xk, const Input &uk, const State &xk1, const int time_step)
 {
   stages_[time_step].nx = NX;
@@ -98,7 +98,7 @@ void MPC::setStage(const State &xk, const Input &uk, const State &xk1, const int
     normalization_param_.T_x_inv(si_index.s, si_index.s) *
     (param_.s_trust_region);  //*initial_guess_[time_step].xk.vs;
 }
-
+*/
 CostMatrix MPC::normalizeCost(const CostMatrix &cost_mat)
 {
   const Q_MPC Q = normalization_param_.T_x * cost_mat.Q * normalization_param_.T_x;
@@ -137,7 +137,7 @@ void MPC::updateInitialGuess(const State &x0)
   initial_guess_[N].xk = integrator_.RK4(initial_guess_[N - 1].xk, initial_guess_[N - 1].uk, Ts_);
   initial_guess_[N].uk.setZero();
 
-  for (int i = 0; i < N + 1; i++) initial_guess_[N].xk.vxVsNonZero(param_.vx_zero);
+  for (int i = 0; i < N + 1; i++) initial_guess_[i].xk.vxVsNonZero(param_.vx_zero);
   unwrapInitialGuess();
 }
 
@@ -221,8 +221,10 @@ MPCReturn MPC::runMPC(State &x0)
       generateNewInitialGuess(x0);
 
     fillParametersVector();
+
     solverReturn mpcSol = solver_interface_->solveMPC(initial_guess_, parameter_, bounds_x);
     solver_status = mpcSol.status;
+
     if (solver_status == 0) {
       temp_guess_ = mpcSol.mpcHorizon;
       break;
@@ -247,7 +249,7 @@ MPCReturn MPC::runMPC(State &x0)
     std::chrono::duration_cast<std::chrono::duration<double>>(t2 - t1);
   double time_nmpc = time_span.count();
 
-  return {initial_guess_[0].uk, initial_guess_, time_nmpc};
+  return {initial_guess_[0].uk, initial_guess_, time_nmpc, solver_status};
 }
 
 void MPC::setTrack(const Eigen::VectorXd &X, const Eigen::VectorXd &Y)

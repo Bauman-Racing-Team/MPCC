@@ -25,7 +25,7 @@ Integrator::Integrator()
 Integrator::Integrator(double Ts, const PathToJson &path) {}
 
 State Integrator::RK4(const State &x, const Input &u, double ts)
-{ 
+{
   State xNext = Simulate(x, u, ts);
   return xNext;
 }
@@ -39,6 +39,19 @@ State Integrator::simTimeStep(const State &x, const Input &u, const double ts)
     std::cout << "Warning" << std::endl;
   }
   for (int i = 0; i < integration_steps; i++) x_next = RK4(x_next, u, fine_time_step_);
+
+  // std::cout << x_next.X << " ";
+  // std::cout << x_next.Y << " ";
+  // std::cout << x_next.phi << " ";
+  // std::cout << x_next.vx << " ";
+  // std::cout << x_next.vy << " ";
+  // std::cout << x_next.r << " ";
+  // std::cout << x_next.s << " ";
+  // std::cout << x_next.D << " ";
+  // std::cout << x_next.delta << " ";
+  // std::cout << x_next.B << " ";
+  // std::cout << x_next.vs << " ";
+  // std::cout << std::endl;
 
   return x_next;
 }

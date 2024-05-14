@@ -129,6 +129,9 @@ State AcadosSimInterface::AcadosSim()
   x_next.B = x_current[8];
   x_next.delta = x_current[9];
   x_next.vs = x_current[10];
+
+  // printSim();
+  freeSim();
   return x_next;
 }
 

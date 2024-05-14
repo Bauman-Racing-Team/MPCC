@@ -78,13 +78,8 @@ void AcadosInterface::setInit(const double *bounds, std::array<OptVariables, N +
   idxbx0[9] = 9;
   idxbx0[10] = 10;
 
-  for (int i = 0; i < 11; ++i) {
-    lbx0[i] = bounds[i];
-  }
-
-  for (int i = 0; i < 11; ++i) {
-    lbx0[i] = bounds[i + 11];
-  }
+  Eigen::Map<Eigen::Matrix<double, NBX0, 1>>(lbx0, NBX0) = stateToVector(initial_guess_[0].xk);
+  Eigen::Map<Eigen::Matrix<double, NBX0, 1>>(ubx0, NBX0) = stateToVector(initial_guess_[0].xk);
 
   ocp_nlp_constraints_model_set(nlp_config, nlp_dims, nlp_in, 0, "idxbx", idxbx0);
   ocp_nlp_constraints_model_set(nlp_config, nlp_dims, nlp_in, 0, "lbx", lbx0);
@@ -96,13 +91,14 @@ void AcadosInterface::setInit(const double *bounds, std::array<OptVariables, N +
     ocp_nlp_out_set(nlp_config, nlp_dims, nlp_out, i, "x", x_init);
     ocp_nlp_out_set(nlp_config, nlp_dims, nlp_out, i, "u", u0);
   }
+  Eigen::Map<Eigen::Matrix<double, NX, 1>>(x_init, NX) = stateToVector(initial_guess_[N].xk);
   ocp_nlp_out_set(nlp_config, nlp_dims, nlp_out, N, "x", x_init);
 }
 
 void AcadosInterface::setParam(std::array<Parameter, N + 1> parameter_)
 {
   // set parameters
-  for (int i = 0; i < N; ++i) {
+  for (int i = 0; i <= N; ++i) {
     p[0] = parameter_[i].xTrack;
     p[1] = parameter_[i].yTrack;
     p[2] = parameter_[i].phiTrack;
@@ -125,47 +121,37 @@ solverReturn AcadosInterface::solveMPC(
   initMPC();
   setInit(bounds, initial_guess_);
   setParam(parameter_);
-  return Solve(bounds, initial_guess_);
+  return Solve();
 };
 
-solverReturn AcadosInterface::Solve(
-  const double *bounds, std::array<OptVariables, N + 1> &initial_guess_)
+solverReturn AcadosInterface::Solve()
 {
-  // prepare evaluation
-  int NTIMINGS = 1;
-  double min_time = 1e12;
-  double kkt_norm_inf;
-  double elapsed_time;
-  int sqp_iter;
-
-  double xtraj[NX * (N + 1)];
-  double utraj[NU * N];
-
   // solve ocp in loop
   int rti_phase = 0;
   solverReturn mpcSol;
 
-  for (int ii = 0; ii < NTIMINGS; ii++) {
-    // initialize solution
-    ocp_nlp_solver_opts_set(nlp_config, nlp_opts, "rti_phase", &rti_phase);
-    status = acados_mpcc_acados_solve(acados_ocp_capsule);
-    ocp_nlp_get(nlp_config, nlp_solver, "time_tot", &elapsed_time);
-    min_time = MIN(elapsed_time, min_time);
-    getSol();
+  // initialize solution
+  ocp_nlp_solver_opts_set(nlp_config, nlp_opts, "rti_phase", &rti_phase);
+  status = acados_mpcc_acados_solve(acados_ocp_capsule);
+  ocp_nlp_get(nlp_config, nlp_solver, "time_tot", &elapsed_time);
+  min_time = MIN(elapsed_time, min_time);
+  getSol();
 
-    std::array<OptVariables, N + 1> optimal_solution;
-    for (int i = 0; i <= N; i++) {
-      optimal_solution[i].xk = arrayToState(&xtraj[i * NX]);
-    }
+  std::array<OptVariables, N + 1> optimal_solution;
+  for (int i = 0; i <= N; i++) {
+    optimal_solution[i].xk = arrayToState(&xtraj[i * NX]);
+  }
 
-    for (int i = 0; i < N; i++) {
-      optimal_solution[i].uk = arrayToInput(&utraj[i * NU]);
-    }
-    optimal_solution[N].uk.setZero();
+  for (int i = 0; i < N; i++) {
+    optimal_solution[i].uk = arrayToInput(&utraj[i * NU]);
+  }
+  optimal_solution[N].uk.setZero();
 
-    mpcSol.mpcHorizon = optimal_solution;
-    mpcSol.status = status;
-  };
+  mpcSol.mpcHorizon = optimal_solution;
+  mpcSol.status = status;
+
+  // printSol();
+  freeSolver();
   return mpcSol;
 }
 
@@ -180,13 +166,11 @@ void AcadosInterface::getSol()
   // get solution
   ocp_nlp_out_get(nlp_config, nlp_dims, nlp_out, 0, "kkt_norm_inf", &kkt_norm_inf);
   ocp_nlp_get(nlp_config, nlp_solver, "sqp_iter", &sqp_iter);
-
-  acados_mpcc_acados_print_stats(acados_ocp_capsule);
 }
 
 void AcadosInterface::printSol()
 {
-  getSol();
+  // acados_mpcc_acados_print_stats(acados_ocp_capsule);
   printf("\n--- xtraj ---\n");
   d_print_exp_tran_mat(NX, N + 1, xtraj, NX);
   printf("\n--- utraj ---\n");

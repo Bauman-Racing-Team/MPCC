@@ -39,7 +39,7 @@ namespace mpcc
 
 static constexpr int N = 100;
 static constexpr double INF = 1E5;
-static constexpr int N_SPLINE = 5000;
+static constexpr int N_SPLINE = 2500;
 
 struct StateInputIndex {
   int X = 0;

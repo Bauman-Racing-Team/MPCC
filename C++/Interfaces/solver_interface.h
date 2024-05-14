@@ -19,7 +19,6 @@
 
 #include "config.h"
 #include "types.h"
-// #include "MPC/mpc.h"
 
 #include <array>
 namespace mpcc

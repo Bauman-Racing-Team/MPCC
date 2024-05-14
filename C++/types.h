@@ -31,8 +31,8 @@ struct State {
   double r;
   double s;
   double D;
-  double B;
   double delta;
+  double B;
   double vs;
 
   void setZero()
@@ -45,8 +45,8 @@ struct State {
     r = 0.0;
     s = 0.0;
     D = 0.0;
-    B = 0.0;
     delta = 0.0;
+    B = 0.0;
     vs = 0.0;
   }
 
@@ -64,26 +64,19 @@ struct State {
     if (vx < vx_zero) vx = vx_zero;
     if (vs < vx_zero) vs = vx_zero;
   }
-
-  void vxNonZero1(double vx_zero)
-  {
-    if (vx < vx_zero) {
-    };  // FIX: this was added only to avoid unused var error
-    vx = std::max(vx, 5.0);
-  }
 };
 
 struct Input {
   double dD;
-  double dB;
   double dDelta;
+  double dB;
   double dVs;
 
   void setZero()
   {
     dD = 0.0;
-    dB = 0.0;
     dDelta = 0.0;
+    dB = 0.0;
     dVs = 0.0;
   }
 };

@@ -107,8 +107,8 @@ private:
   // initial condition
   int idxbx0[NBX0];
 
-  double lbx0[NBX];
-  double ubx0[NBX];
+  double lbx0[NBX0];
+  double ubx0[NBX0];
 
   // initialization for state values
   double x_init[NX];
@@ -134,7 +134,7 @@ private:
 
   void setInit(const double *bounds, std::array<OptVariables, N + 1> &initial_guess_);
   void setParam(std::array<Parameter, N + 1> parameter_);
-  solverReturn Solve(const double *bounds, std::array<OptVariables, N + 1> &initial_guess_);
+  solverReturn Solve();
   void printSol();
   void getSol();
   void freeSolver();

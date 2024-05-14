@@ -31,8 +31,8 @@ Bounds::Bounds(BoundsParam bounds_param)
     l_bounds_x_(si_index.r) = bounds_param.lower_state_bounds.r_l;
     l_bounds_x_(si_index.s) = bounds_param.lower_state_bounds.s_l;
     l_bounds_x_(si_index.D) = bounds_param.lower_state_bounds.D_l;
-    l_bounds_x_(si_index.B) = bounds_param.lower_state_bounds.B_l;
     l_bounds_x_(si_index.delta) = bounds_param.lower_state_bounds.delta_l;
+    l_bounds_x_(si_index.B) = bounds_param.lower_state_bounds.B_l;
     l_bounds_x_(si_index.vs) = bounds_param.lower_state_bounds.vs_l;
 
     u_bounds_x_(si_index.X) = bounds_param.upper_state_bounds.X_u;
@@ -43,18 +43,18 @@ Bounds::Bounds(BoundsParam bounds_param)
     u_bounds_x_(si_index.r) = bounds_param.upper_state_bounds.r_u;
     u_bounds_x_(si_index.s) = bounds_param.upper_state_bounds.s_u;
     u_bounds_x_(si_index.D) = bounds_param.upper_state_bounds.D_u;
-    u_bounds_x_(si_index.B) = bounds_param.upper_state_bounds.B_u;
     u_bounds_x_(si_index.delta) = bounds_param.upper_state_bounds.delta_u;
+    u_bounds_x_(si_index.B) = bounds_param.upper_state_bounds.B_u;
     u_bounds_x_(si_index.vs) = bounds_param.upper_state_bounds.vs_u;
 
     l_bounds_u_(si_index.dD) = bounds_param.lower_input_bounds.dD_l;
-    l_bounds_u_(si_index.dB) = bounds_param.lower_input_bounds.dB_l;
     l_bounds_u_(si_index.dDelta) = bounds_param.lower_input_bounds.dDelta_l;
+    l_bounds_u_(si_index.dB) = bounds_param.lower_input_bounds.dB_l;
     l_bounds_u_(si_index.dVs) = bounds_param.lower_input_bounds.dVs_l;
 
     u_bounds_u_(si_index.dD) = bounds_param.upper_input_bounds.dD_u;
-    u_bounds_u_(si_index.dB) = bounds_param.upper_input_bounds.dB_u;
     u_bounds_u_(si_index.dDelta) = bounds_param.upper_input_bounds.dDelta_u;
+    u_bounds_u_(si_index.dB) = bounds_param.upper_input_bounds.dB_u;
     u_bounds_u_(si_index.dVs) = bounds_param.upper_input_bounds.dVs_u;
 
     l_bounds_s_ = Bounds_s::Zero();

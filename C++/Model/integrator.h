@@ -33,7 +33,7 @@ public:
   Integrator(double Ts, const PathToJson &path);
 
 private:
-  const double fine_time_step_ = 0.001;
+  const double fine_time_step_ = 0.05;
 };
 }  // namespace mpcc
 #endif  // MPCC_INTEGRATOR_H

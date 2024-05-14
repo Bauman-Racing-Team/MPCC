@@ -25,7 +25,7 @@
 #include "Cost/cost.h"
 #include "Constraints/bounds.h"
 
-#include "Interfaces/solver_interface.h"
+// #include "Interfaces/solver_interface.h"
 #include "Interfaces/acados_interface.h"
 
 #include <array>
@@ -88,7 +88,7 @@ private:
 
   void setMPCProblem();
 
-  void setStage(const State &xk, const Input &uk, const State &xk1, int time_step);
+  // void setStage(const State &xk, const Input &uk, const State &xk1, int time_step);
 
   CostMatrix normalizeCost(const CostMatrix &cost_mat);
   std::array<OptVariables, N + 1> deNormalizeSolution(
