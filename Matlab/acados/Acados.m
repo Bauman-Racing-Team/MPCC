@@ -269,7 +269,6 @@ classdef Acados < handle
 
         function sol = runMPC(obj,x0)
             x0(obj.config.siIndex.s) = obj.track.centerLine.projectOnSpline(vectorToState(x0));
-            x0 = obj.unwrapState(x0);
 
             nNonSolvesSqp = 0;
             nNonSolvesSqpMax = 0;
@@ -388,13 +387,13 @@ classdef Acados < handle
         end
 
         function x0 = unwrapState(obj,x0)
-            lapLength = obj.track.centerLine.getLength()/2;
             if x0(obj.config.siIndex.yaw) > pi
               x0(obj.config.siIndex.yaw) = x0(obj.config.siIndex.yaw) - 2.0 * pi;
             end
             if x0(obj.config.siIndex.yaw) < -pi
               x0(obj.config.siIndex.yaw) = x0(obj.config.siIndex.yaw) + 2.0 * pi;
             end
+            lapLength = obj.track.centerLine.getLength()/2;
             x0(obj.config.siIndex.s) = rem(x0(obj.config.siIndex.s),lapLength);
         end
 
@@ -436,25 +435,18 @@ classdef Acados < handle
         end
 
         function unwrapInitialGuess(obj)
+            trackLength = obj.track.centerLine.getLength();
+            lapLength = trackLength/2;
             for i = 2:obj.config.N+1
               if (obj.initialStateGuess(obj.config.siIndex.yaw,i) - obj.initialStateGuess(obj.config.siIndex.yaw,i - 1)) < -pi
                 obj.initialStateGuess(obj.config.siIndex.yaw,i) = obj.initialStateGuess(obj.config.siIndex.yaw,i) + 2.0 * pi;
               end
               if (obj.initialStateGuess(obj.config.siIndex.yaw,i) - obj.initialStateGuess(obj.config.siIndex.yaw,i - 1)) > pi
                 obj.initialStateGuess(obj.config.siIndex.yaw,i) = obj.initialStateGuess(obj.config.siIndex.yaw,i) - 2.0 * pi;
-               end
-            end
-
-            trackLength = obj.track.centerLine.getLength();
-            lapLength = trackLength/2;
-            if obj.initialStateGuess(obj.config.siIndex.s,1) > lapLength/2
-                for i = 2:obj.config.N+1
-                    obj.initialStateGuess(obj.config.siIndex.s,i) = rem(obj.initialStateGuess(obj.config.siIndex.s,i),trackLength);
-                end
-            else
-                for i = 2:obj.config.N+1
-                    obj.initialStateGuess(obj.config.siIndex.s,i) = rem(obj.initialStateGuess(obj.config.siIndex.s,i),lapLength);
-                end
+              end
+              if (obj.initialStateGuess(obj.config.siIndex.s,i) - obj.initialStateGuess(obj.config.siIndex.s,i - 1)) > lapLength/2
+                obj.initialStateGuess(obj.config.siIndex.s,i) = rem(obj.initialStateGuess(obj.config.siIndex.s,i),lapLength);
+              end
             end
         end
 

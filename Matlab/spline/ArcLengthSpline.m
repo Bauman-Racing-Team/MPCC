@@ -65,7 +65,7 @@ classdef ArcLengthSpline < handle
             diffXAll = obj.d_pathData.x - pos(1);
             diffYAll = obj.d_pathData.y - pos(2);
             distSquare = diffXAll.^2 + diffYAll.^2;
-            [~, minIndex] = min(distSquare);
+            [~, minIndex] = min(distSquare(1:obj.d_config.NSpline/2));
             sOpt = obj.d_pathData.s(minIndex);
           end
           sOld = sOpt;
