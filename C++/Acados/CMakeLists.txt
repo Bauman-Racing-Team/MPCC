@@ -32,13 +32,13 @@
 
 cmake_minimum_required(VERSION 3.13)
 
-project(MPCC)
+project(acados_mpcc)
 
 # build options.
 option(BUILD_ACADOS_SOLVER_LIB "Should the solver library acados_solver_acados_mpcc be build?" ON)
 option(BUILD_ACADOS_OCP_SOLVER_LIB "Should the OCP solver library acados_ocp_solver_acados_mpcc be build?" ON)
-option(BUILD_EXAMPLE "Should the example main_acados_mpcc be build?" ON)
-option(BUILD_SIM_EXAMPLE "Should the simulation example main_sim_acados_mpcc be build?" ON)
+option(BUILD_EXAMPLE "Should the example main_acados_mpcc be build?" OFF)
+option(BUILD_SIM_EXAMPLE "Should the simulation example main_sim_acados_mpcc be build?" OFF)
 option(BUILD_ACADOS_SIM_SOLVER_LIB "Should the simulation solver library acados_sim_solver_acados_mpcc be build?" ON)
 
 
@@ -97,8 +97,8 @@ set(EXTERNAL_DIR)
 set(EXTERNAL_LIB)
 
 # set some search paths for preprocessor and linker
-set(ACADOS_INCLUDE_PATH ../../External/acados/include CACHE PATH "Define the path which contains the include directory for acados.")
-set(ACADOS_LIB_PATH ../../External/acados/lib CACHE PATH "Define the path which contains the lib directory for acados.")
+set(ACADOS_INCLUDE_PATH /home/jinlong/baumanracing/MPCC/Matlab/../External/acados/include CACHE PATH "Define the path which contains the include directory for acados.")
+set(ACADOS_LIB_PATH /home/jinlong/baumanracing/MPCC/Matlab/../External/acados/lib CACHE PATH "Define the path which contains the lib directory for acados.")
 
 # c-compiler flags for debugging
 set(CMAKE_C_FLAGS_DEBUG "-O0 -ggdb")

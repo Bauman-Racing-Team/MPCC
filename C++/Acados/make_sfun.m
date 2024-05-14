@@ -108,11 +108,11 @@ input_note = strcat(input_note, num2str(i_in), ') parameters - concatenated for 
                     ' size [1111]\n ');
 sfun_input_names = [sfun_input_names; 'parameter_traj [1111]'];
 i_in = i_in + 1;
-input_note = strcat(input_note, num2str(i_in), ') lbx for shooting nodes 1 to N-1, size [891]\n ');
-sfun_input_names = [sfun_input_names; 'lbx [891]'];
+input_note = strcat(input_note, num2str(i_in), ') lbx for shooting nodes 1 to N-1, size [1089]\n ');
+sfun_input_names = [sfun_input_names; 'lbx [1089]'];
 i_in = i_in + 1;
-input_note = strcat(input_note, num2str(i_in), ') ubx for shooting nodes 1 to N-1, size [891]\n ');
-sfun_input_names = [sfun_input_names; 'ubx [891]'];
+input_note = strcat(input_note, num2str(i_in), ') ubx for shooting nodes 1 to N-1, size [1089]\n ');
+sfun_input_names = [sfun_input_names; 'ubx [1089]'];
 i_in = i_in + 1;
 input_note = strcat(input_note, num2str(i_in), ') lbu for shooting nodes 0 to N-1, size [400]\n ');
 sfun_input_names = [sfun_input_names; 'lbu [400]'];

@@ -28,19 +28,21 @@
  * POSSIBILITY OF SUCH DAMAGE.;
  */
 
+
 // standard
 #include <stdio.h>
 #include <stdlib.h>
 // acados
-// #include "acados/utils/print.h"
-// #include "acados/utils/math.h"
-// #include "acados_c/sim_interface.h"
+#include "acados/utils/print.h"
+#include "acados/utils/math.h"
+#include "acados_c/sim_interface.h"
 #include "acados_sim_solver_acados_mpcc.h"
 
-#define NX ACADOS_MPCC_NX
-#define NZ ACADOS_MPCC_NZ
-#define NU ACADOS_MPCC_NU
-#define NP ACADOS_MPCC_NP
+#define NX     ACADOS_MPCC_NX
+#define NZ     ACADOS_MPCC_NZ
+#define NU     ACADOS_MPCC_NU
+#define NP     ACADOS_MPCC_NP
+
 
 int main()
 {
@@ -73,24 +75,28 @@ int main()
     x_current[9] = 0.0;
     x_current[10] = 0.0;
 
-    x_current[0] = -5;
-    x_current[1] = -3;
-    x_current[2] = 0.7;
-    x_current[3] = 1;
-    x_current[4] = 0.1;
-    x_current[5] = 0.1;
-    x_current[6] = 0.1;
-    x_current[7] = 0.1;
-    x_current[8] = 0.1;
-    x_current[9] = 0.1;
-    x_current[10] = 1;
+  
+    x_current[0] = 0;
+    x_current[1] = 0;
+    x_current[2] = 0;
+    x_current[3] = 0;
+    x_current[4] = 0;
+    x_current[5] = 0;
+    x_current[6] = 0;
+    x_current[7] = 0;
+    x_current[8] = 0;
+    x_current[9] = 0;
+    x_current[10] = 0;
+    
+  
+
 
     // initial value for control input
     double u0[NU];
-    u0[0] = 0.1;
-    u0[1] = 0.1;
-    u0[2] = 0;
-    u0[3] = 0.1;
+    u0[0] = 0.0;
+    u0[1] = 0.0;
+    u0[2] = 0.0;
+    u0[3] = 0.0;
     // set parameters
     double p[NP];
     p[0] = 0;
@@ -103,19 +109,23 @@ int main()
     p[7] = 0;
     p[8] = 0;
     p[9] = 0;
-    p[10] =0;
+    p[10] = 0;
 
     acados_mpcc_acados_sim_update_params(capsule, p, NP);
+  
 
-    int n_sim_steps = 1;
+  
+
+
+    int n_sim_steps = 3;
     // solve ocp in loop
     for (int ii = 0; ii < n_sim_steps; ii++)
     {
         // set inputs
         sim_in_set(acados_sim_config, acados_sim_dims,
-                   acados_sim_in, "x", x_current);
+            acados_sim_in, "x", x_current);
         sim_in_set(acados_sim_config, acados_sim_dims,
-                   acados_sim_in, "u", u0);
+            acados_sim_in, "u", u0);
 
         // solve
         status = acados_mpcc_acados_sim_solve(capsule);
@@ -126,7 +136,9 @@ int main()
 
         // get outputs
         sim_out_get(acados_sim_config, acados_sim_dims,
-                    acados_sim_out, "x", x_current);
+               acados_sim_out, "x", x_current);
+
+    
 
         // print solution
         printf("\nx_current, %d\n", ii);
@@ -140,8 +152,7 @@ int main()
 
     // free solver
     status = acados_mpcc_acados_sim_free(capsule);
-    if (status)
-    {
+    if (status) {
         printf("acados_mpcc_acados_sim_free() returned status %d. \n", status);
     }
 

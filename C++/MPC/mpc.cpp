@@ -58,9 +58,12 @@ void MPC::fillParametersVector()
     parameter_[time_step].rdSteeringAngle = cost_param_.r_dDelta;
     parameter_[time_step].rdBrakes = cost_param_.r_dB;
     parameter_[time_step].rdVs = cost_param_.r_dVs;
-
-    Eigen::Map<Eigen::Matrix<double, NX, 1>>(bounds_x, NX) = bounds_.getBoundsLX();
-    Eigen::Map<Eigen::Matrix<double, NX, 1>>(bounds_x + NX, NX) = bounds_.getBoundsUX();
+    parameter_[time_step].sc_quad_track = cost_param_.sc_quad_track;
+    parameter_[time_step].sc_quad_tire = cost_param_.sc_quad_tire;
+    parameter_[time_step].sc_quad_alpha = cost_param_.sc_quad_alpha;
+    parameter_[time_step].sc_lin_track = cost_param_.sc_lin_track;
+    parameter_[time_step].sc_lin_tire = cost_param_.sc_lin_tire;
+    parameter_[time_step].sc_lin_alpha = cost_param_.sc_lin_alpha;
   }
 }
 /*
@@ -222,7 +225,7 @@ MPCReturn MPC::runMPC(State &x0)
 
     fillParametersVector();
 
-    solverReturn mpcSol = solver_interface_->solveMPC(initial_guess_, parameter_, bounds_x);
+    solverReturn mpcSol = solver_interface_->solveMPC(initial_guess_, parameter_, bounds_);
     solver_status = mpcSol.status;
 
     if (solver_status == 0) {

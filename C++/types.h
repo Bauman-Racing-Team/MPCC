@@ -104,6 +104,13 @@ struct Parameter {
   double rdBrakes;
   double rdVs;
 
+  double sc_quad_track;
+  double sc_quad_tire;
+  double sc_quad_alpha;
+  double sc_lin_track;
+  double sc_lin_tire;
+  double sc_lin_alpha;
+
   void setZero()
   {
     xTrack = 0;

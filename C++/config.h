@@ -35,7 +35,7 @@ namespace mpcc
 
 #define NB 15  // max number of bounds
 #define NPC 3  // number of polytopic constraints
-#define NS 3
+#define NS 5
 
 static constexpr int N = 100;
 static constexpr double INF = 1E5;
@@ -59,9 +59,11 @@ struct StateInputIndex {
   int dB = 2;
   int dVs = 3;
 
-  int con_track = 0;
-  int con_tire_f = 1;
-  int con_tire_r = 2;
+  int con_tire_f = 0;
+  int con_tire_r = 1;
+  int con_track = 2;
+  int con_elip_f = 3;
+  int con_elip_r = 4;
 };
 
 static const StateInputIndex si_index;

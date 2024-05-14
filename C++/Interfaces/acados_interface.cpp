@@ -63,9 +63,9 @@ void AcadosInterface::initMPC()
 // void AcadosInterface::getSol();
 // void AcadosInterface::freeSolver();
 
-void AcadosInterface::setInit(const double *bounds, std::array<OptVariables, N + 1> &initial_guess_)
+void AcadosInterface::setInit(const Bounds &bounds, std::array<OptVariables, N + 1> &initial_guess_)
 {
-  // initial condition
+  // initial state x0
   idxbx0[0] = 0;
   idxbx0[1] = 1;
   idxbx0[2] = 2;
@@ -85,7 +85,65 @@ void AcadosInterface::setInit(const double *bounds, std::array<OptVariables, N +
   ocp_nlp_constraints_model_set(nlp_config, nlp_dims, nlp_in, 0, "lbx", lbx0);
   ocp_nlp_constraints_model_set(nlp_config, nlp_dims, nlp_in, 0, "ubx", ubx0);
 
+  // x
+  int *idxbx = new int[NBX];
+
+  idxbx[0] = 0;
+  idxbx[1] = 1;
+  idxbx[2] = 2;
+  idxbx[3] = 3;
+  idxbx[4] = 4;
+  idxbx[5] = 5;
+  idxbx[6] = 6;
+  idxbx[7] = 7;
+  idxbx[8] = 8;
+  idxbx[9] = 9;
+  idxbx[10] = 10;
+
+  double *lubx = new double[2 * NBX];
+  double *lbx = lubx;
+  double *ubx = lubx + NBX;
+
+  Eigen::Map<Eigen::Matrix<double, NX, 1>>(lbx, NX) = bounds.getBoundsLX();
+  Eigen::Map<Eigen::Matrix<double, NX, 1>>(ubx, NX) = bounds.getBoundsUX();
+
+  double *luh = new double[2 * NH];
+  double *lh = luh;
+  double *uh = luh + NH;
+
+  Eigen::Map<Eigen::Matrix<double, NS, 1>>(lh, NS) = bounds.getBoundsLS();
+  Eigen::Map<Eigen::Matrix<double, NS, 1>>(uh, NS) = bounds.getBoundsUS();
+
+  for (int i = 1; i < N; i++) {
+    ocp_nlp_constraints_model_set(nlp_config, nlp_dims, nlp_in, i, "idxbx", idxbx);
+    ocp_nlp_constraints_model_set(nlp_config, nlp_dims, nlp_in, i, "lbx", lbx);
+    ocp_nlp_constraints_model_set(nlp_config, nlp_dims, nlp_in, i, "ubx", ubx);
+    ocp_nlp_constraints_model_set(nlp_config, nlp_dims, nlp_in, i, "lh", lh);
+    ocp_nlp_constraints_model_set(nlp_config, nlp_dims, nlp_in, i, "uh", uh);
+  }
+  delete[] lubx;
+  delete[] luh;
+  delete[] idxbx;
+
+  // u
+  int *idxbu = new int[NBU];
+
+  idxbu[0] = 0;
+  idxbu[1] = 1;
+  idxbu[2] = 2;
+  idxbu[3] = 3;
+
+  double *lubu = new double[2 * NBU];
+  double *lbu = lubu;
+  double *ubu = lubu + NBU;
+
+  Eigen::Map<Eigen::Matrix<double, NU, 1>>(lbu, NU) = bounds.getBoundsLU();
+  Eigen::Map<Eigen::Matrix<double, NU, 1>>(ubu, NU) = bounds.getBoundsUU();
+
   for (int i = 0; i < N; i++) {
+    ocp_nlp_constraints_model_set(nlp_config, nlp_dims, nlp_in, i, "idxbu", idxbu);
+    ocp_nlp_constraints_model_set(nlp_config, nlp_dims, nlp_in, i, "lbu", lbu);
+    ocp_nlp_constraints_model_set(nlp_config, nlp_dims, nlp_in, i, "ubu", ubu);
     Eigen::Map<Eigen::Matrix<double, NX, 1>>(x_init, NX) = stateToVector(initial_guess_[i].xk);
     Eigen::Map<Eigen::Matrix<double, NU, 1>>(u0, NU) = inputToVector(initial_guess_[i].uk);
     ocp_nlp_out_set(nlp_config, nlp_dims, nlp_out, i, "x", x_init);
@@ -93,6 +151,8 @@ void AcadosInterface::setInit(const double *bounds, std::array<OptVariables, N +
   }
   Eigen::Map<Eigen::Matrix<double, NX, 1>>(x_init, NX) = stateToVector(initial_guess_[N].xk);
   ocp_nlp_out_set(nlp_config, nlp_dims, nlp_out, N, "x", x_init);
+  delete[] lubu;
+  delete[] idxbu;
 }
 
 void AcadosInterface::setParam(std::array<Parameter, N + 1> parameter_)
@@ -112,11 +172,47 @@ void AcadosInterface::setParam(std::array<Parameter, N + 1> parameter_)
     p[10] = parameter_[i].rdVs;
     acados_mpcc_acados_update_params(acados_ocp_capsule, i, p, NP);
   }
+
+  // slacks
+  double *zlumem = new double[4 * NS];
+  double *Zl = zlumem + NS * 0;
+  double *Zu = zlumem + NS * 1;
+  double *zl = zlumem + NS * 2;
+  double *zu = zlumem + NS * 3;
+
+  for (int i = 1; i < N; i++) {
+    Zl[0] = parameter_[i].sc_quad_alpha;
+    Zl[1] = parameter_[i].sc_quad_alpha;
+    Zl[2] = parameter_[i].sc_quad_track;
+    Zl[3] = parameter_[i].sc_quad_tire;
+    Zl[4] = parameter_[i].sc_quad_tire;
+    Zu[0] = parameter_[i].sc_quad_alpha;
+    Zu[1] = parameter_[i].sc_quad_alpha;
+    Zu[2] = parameter_[i].sc_quad_track;
+    Zu[3] = parameter_[i].sc_quad_tire;
+    Zu[4] = parameter_[i].sc_quad_tire;
+    zl[0] = parameter_[i].sc_lin_alpha;
+    zl[1] = parameter_[i].sc_lin_alpha;
+    zl[2] = parameter_[i].sc_lin_track;
+    zl[3] = parameter_[i].sc_lin_tire;
+    zl[4] = parameter_[i].sc_lin_tire;
+    zu[0] = parameter_[i].sc_lin_alpha;
+    zu[1] = parameter_[i].sc_lin_alpha;
+    zu[2] = parameter_[i].sc_lin_track;
+    zu[3] = parameter_[i].sc_lin_tire;
+    zu[4] = parameter_[i].sc_lin_tire;
+
+    ocp_nlp_cost_model_set(nlp_config, nlp_dims, nlp_in, i, "Zl", Zl);
+    ocp_nlp_cost_model_set(nlp_config, nlp_dims, nlp_in, i, "Zu", Zu);
+    ocp_nlp_cost_model_set(nlp_config, nlp_dims, nlp_in, i, "zl", zl);
+    ocp_nlp_cost_model_set(nlp_config, nlp_dims, nlp_in, i, "zu", zu);
+  }
+  free(zlumem);
 }
 
 solverReturn AcadosInterface::solveMPC(
   std::array<OptVariables, N + 1> &initial_guess_, std::array<Parameter, N + 1> parameter_,
-  const double *bounds)
+  const Bounds &bounds)
 {
   initMPC();
   setInit(bounds, initial_guess_);

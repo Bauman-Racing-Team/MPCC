@@ -454,41 +454,41 @@ void acados_mpcc_acados_create_5_set_nlp_in(acados_mpcc_solver_capsule* capsule,
 
 
     // slacks
-    double* zlumem = calloc(4*NS, sizeof(double));
-    double* Zl = zlumem+NS*0;
-    double* Zu = zlumem+NS*1;
-    double* zl = zlumem+NS*2;
-    double* zu = zlumem+NS*3;
-    // change only the non-zero elements:
-    Zl[0] = 10000;
-    Zl[1] = 10000;
-    Zl[2] = 1000;
-    Zl[3] = 100;
-    Zl[4] = 100;
-    Zu[0] = 10000;
-    Zu[1] = 10000;
-    Zu[2] = 1000;
-    Zu[3] = 100;
-    Zu[4] = 100;
-    zl[0] = 100;
-    zl[1] = 100;
-    zl[2] = 100;
-    zl[3] = 100;
-    zl[4] = 100;
-    zu[0] = 100;
-    zu[1] = 100;
-    zu[2] = 100;
-    zu[3] = 100;
-    zu[4] = 100;
+    // double* zlumem = calloc(4*NS, sizeof(double));
+    // double* Zl = zlumem+NS*0;
+    // double* Zu = zlumem+NS*1;
+    // double* zl = zlumem+NS*2;
+    // double* zu = zlumem+NS*3;
+    // // change only the non-zero elements:
+    // Zl[0] = 10000;
+    // Zl[1] = 10000;
+    // Zl[2] = 1000;
+    // Zl[3] = 100;
+    // Zl[4] = 100;
+    // Zu[0] = 10000;
+    // Zu[1] = 10000;
+    // Zu[2] = 1000;
+    // Zu[3] = 100;
+    // Zu[4] = 100;
+    // zl[0] = 100;
+    // zl[1] = 100;
+    // zl[2] = 100;
+    // zl[3] = 100;
+    // zl[4] = 100;
+    // zu[0] = 100;
+    // zu[1] = 100;
+    // zu[2] = 100;
+    // zu[3] = 100;
+    // zu[4] = 100;
 
-    for (int i = 1; i < N; i++)
-    {
-        ocp_nlp_cost_model_set(nlp_config, nlp_dims, nlp_in, i, "Zl", Zl);
-        ocp_nlp_cost_model_set(nlp_config, nlp_dims, nlp_in, i, "Zu", Zu);
-        ocp_nlp_cost_model_set(nlp_config, nlp_dims, nlp_in, i, "zl", zl);
-        ocp_nlp_cost_model_set(nlp_config, nlp_dims, nlp_in, i, "zu", zu);
-    }
-    free(zlumem);
+    // for (int i = 1; i < N; i++)
+    // {
+    //     ocp_nlp_cost_model_set(nlp_config, nlp_dims, nlp_in, i, "Zl", Zl);
+    //     ocp_nlp_cost_model_set(nlp_config, nlp_dims, nlp_in, i, "Zu", Zu);
+    //     ocp_nlp_cost_model_set(nlp_config, nlp_dims, nlp_in, i, "zl", zl);
+    //     ocp_nlp_cost_model_set(nlp_config, nlp_dims, nlp_in, i, "zu", zu);
+    // }
+    // free(zlumem);
 
 
 
@@ -536,46 +536,6 @@ void acados_mpcc_acados_create_5_set_nlp_in(acados_mpcc_solver_capsule* capsule,
     ocp_nlp_constraints_model_set(nlp_config, nlp_dims, nlp_in, 0, "idxbxe", idxbxe_0);
     free(idxbxe_0);
 
-
-
-
-
-
-
-
-    /* constraints that are the same for initial and intermediate */
-    // u
-    int* idxbu = malloc(NBU * sizeof(int));
-    
-    idxbu[0] = 0;
-    idxbu[1] = 1;
-    idxbu[2] = 2;
-    idxbu[3] = 3;
-    double* lubu = calloc(2*NBU, sizeof(double));
-    double* lbu = lubu;
-    double* ubu = lubu + NBU;
-    
-    lbu[0] = -1;
-    ubu[0] = 1;
-    lbu[1] = -1;
-    ubu[1] = 1;
-    lbu[2] = -1;
-    ubu[2] = 1;
-    lbu[3] = -5;
-    ubu[3] = 5;
-
-    for (int i = 0; i < N; i++)
-    {
-        ocp_nlp_constraints_model_set(nlp_config, nlp_dims, nlp_in, i, "idxbu", idxbu);
-        ocp_nlp_constraints_model_set(nlp_config, nlp_dims, nlp_in, i, "lbu", lbu);
-        ocp_nlp_constraints_model_set(nlp_config, nlp_dims, nlp_in, i, "ubu", ubu);
-    }
-    free(idxbu);
-    free(lubu);
-
-
-
-
     // set up soft bounds for nonlinear constraints
     int* idxsh = malloc(NSH * sizeof(int));
     
@@ -598,67 +558,6 @@ void acados_mpcc_acados_create_5_set_nlp_in(acados_mpcc_solver_capsule* capsule,
     free(idxsh);
     free(lush);
 
-
-
-
-    // x
-    int* idxbx = malloc(NBX * sizeof(int));
-    
-    idxbx[0] = 2;
-    idxbx[1] = 3;
-    idxbx[2] = 4;
-    idxbx[3] = 5;
-    idxbx[4] = 6;
-    idxbx[5] = 7;
-    idxbx[6] = 8;
-    idxbx[7] = 9;
-    idxbx[8] = 10;
-    double* lubx = calloc(2*NBX, sizeof(double));
-    double* lbx = lubx;
-    double* ubx = lubx + NBX;
-    
-    lbx[0] = -10;
-    ubx[0] = 10;
-    ubx[1] = 30;
-    lbx[2] = -10;
-    ubx[2] = 10;
-    lbx[3] = -2.5;
-    ubx[3] = 2.5;
-    ubx[4] = 2500;
-    ubx[5] = 1;
-    lbx[6] = -0.37;
-    ubx[6] = 0.37;
-    ubx[7] = 1;
-    ubx[8] = 30;
-
-    for (int i = 1; i < N; i++)
-    {
-        ocp_nlp_constraints_model_set(nlp_config, nlp_dims, nlp_in, i, "idxbx", idxbx);
-        ocp_nlp_constraints_model_set(nlp_config, nlp_dims, nlp_in, i, "lbx", lbx);
-        ocp_nlp_constraints_model_set(nlp_config, nlp_dims, nlp_in, i, "ubx", ubx);
-    }
-    free(idxbx);
-    free(lubx);
-
-
-
-
-    // set up nonlinear constraints for stage 1 to N-1
-    double* luh = calloc(2*NH, sizeof(double));
-    double* lh = luh;
-    double* uh = luh + NH;
-
-    
-    lh[0] = -0.06;
-    lh[1] = -0.06;
-
-    
-    uh[0] = 0.06;
-    uh[1] = 0.06;
-    uh[2] = 1;
-    uh[3] = 1;
-    uh[4] = 1;
-
     for (int i = 1; i < N; i++)
     {
         ocp_nlp_constraints_model_set(nlp_config, nlp_dims, nlp_in, i, "nl_constr_h_fun_jac",
@@ -666,10 +565,10 @@ void acados_mpcc_acados_create_5_set_nlp_in(acados_mpcc_solver_capsule* capsule,
         ocp_nlp_constraints_model_set(nlp_config, nlp_dims, nlp_in, i, "nl_constr_h_fun",
                                       &capsule->nl_constr_h_fun[i-1]);
         
-        ocp_nlp_constraints_model_set(nlp_config, nlp_dims, nlp_in, i, "lh", lh);
-        ocp_nlp_constraints_model_set(nlp_config, nlp_dims, nlp_in, i, "uh", uh);
+        // ocp_nlp_constraints_model_set(nlp_config, nlp_dims, nlp_in, i, "lh", lh);
+        // ocp_nlp_constraints_model_set(nlp_config, nlp_dims, nlp_in, i, "uh", uh);
     }
-    free(luh);
+    // free(luh);
 
 
 

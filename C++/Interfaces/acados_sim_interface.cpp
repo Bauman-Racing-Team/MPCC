@@ -81,17 +81,28 @@ void AcadosSimInterface::setSimInit(const State &state_, const Input &input_, do
 void AcadosSimInterface::setSimParam(Parameter parameter_)
 {
   // set parameters
-  p[0] = parameter_.xTrack;
-  p[1] = parameter_.yTrack;
-  p[2] = parameter_.phiTrack;
-  p[3] = parameter_.s0;
-  p[4] = parameter_.qC;
-  p[5] = parameter_.qL;
-  p[6] = parameter_.qVs;
-  p[7] = parameter_.rdThrottle;
-  p[8] = parameter_.rdSteeringAngle;
-  p[9] = parameter_.rdBrakes;
-  p[10] = parameter_.rdVs;
+  // p[0] = parameter_.xTrack;
+  // p[1] = parameter_.yTrack;
+  // p[2] = parameter_.phiTrack;
+  // p[3] = parameter_.s0;
+  // p[4] = parameter_.qC;
+  // p[5] = parameter_.qL;
+  // p[6] = parameter_.qVs;
+  // p[7] = parameter_.rdThrottle;
+  // p[8] = parameter_.rdSteeringAngle;
+  // p[9] = parameter_.rdBrakes;
+  // p[10] = parameter_.rdVs;
+  p[0] = 0;
+  p[1] = 0;
+  p[2] = 0;
+  p[3] = 0;
+  p[4] = 0;
+  p[5] = 0;
+  p[6] = 0;
+  p[7] = 0;
+  p[8] = 0;
+  p[9] = 0;
+  p[10] = 0;
   acados_mpcc_acados_sim_update_params(capsule, p, NP);
 }
 

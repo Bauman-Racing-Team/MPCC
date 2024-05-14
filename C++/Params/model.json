@@ -40,7 +40,7 @@
   "E_long" : 1.25,
   "E_eps" : 1.05,
 
-  "maxAlpha" : 0.15,
+  "maxAlpha" : 0.06,
 
   "initial_velocity" : 15.0,
   "s_trust_region" : 30.0,

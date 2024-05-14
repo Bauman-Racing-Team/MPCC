@@ -32,5 +32,13 @@
   "dDu": 1.0,
   "dBu": 1.0,
   "dDeltau": 1.0,
-  "dVsu": 5.0
+  "dVsu": 5.0,
+
+  "maxAlphal":-0.05,
+  "maxAlphau":0.05,
+  "rOutl":0,
+  "rOutu":1,
+  "ellipsel":0,
+  "ellipseu":1
+
 } 

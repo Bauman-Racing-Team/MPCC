@@ -56,8 +56,9 @@ int main()
     MPCReturn mpc_sol = mpc.runMPC(x0);
     // Use the MPC prediction as sim step
     x0 = mpc_sol.mpc_horizon[1].xk;
+
     // Use ODE integrator
-    // x0 = integrator.simTimeStep(x0, mpc_sol.u0, jsonConfig["Ts"]);
+    // x0 = integrator.RK4(x0, mpc_sol.u0, jsonConfig["Ts"]);
 
     log.push_back(mpc_sol);
     std::cout << "MPC iter =  " << i + 1 << std::endl;
@@ -69,7 +70,7 @@ int main()
   }
 
   // Plot data
-  plotter.plotRun(log, track_xy);
+  // plotter.plotRun(log, track_xy);
   plotter.plotSim(log, track_xy);
 
   double mean_time = 0.0;

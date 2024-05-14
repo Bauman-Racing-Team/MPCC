@@ -106,12 +106,12 @@ public:
     double q_r_N_mult;
 
     double sc_quad_track;
-    double sc_quad_tire_r;
-    double sc_quad_tire_f;
+    double sc_quad_tire;
+    double sc_quad_alpha;
 
     double sc_lin_track;
-    double sc_lin_tire_r;
-    double sc_lin_tire_f;
+    double sc_lin_tire;
+    double sc_lin_alpha;
 
     CostParam();
     CostParam(std::string file);
@@ -158,12 +158,25 @@ public:
         double dDelta_u;
         double dVs_u;
     };
+    struct LowerConstBounds{
+        double max_alpha_l;
+        double rOut_l;
+        double ellip_l;
+    };
+    struct UpperConstBounds{
+        double max_alpha_u;
+        double rOut_u;
+        double ellip_u;
+    };
 
     LowerStateBounds lower_state_bounds;
     UpperStateBounds upper_state_bounds;
 
     LowerInputBounds lower_input_bounds;
     UpperInputBounds upper_input_bounds;
+
+    LowerConstBounds lower_const_bounds;
+    UpperConstBounds upper_const_bounds;
 
     BoundsParam();
     BoundsParam(std::string file);

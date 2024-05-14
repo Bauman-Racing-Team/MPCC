@@ -19,6 +19,7 @@
 
 #include "config.h"
 #include "types.h"
+#include "Constraints/bounds.h"
 
 #include <array>
 namespace mpcc
@@ -31,7 +32,7 @@ class SolverInterface
 public:
   virtual solverReturn solveMPC(
     std::array<OptVariables, N + 1> &initial_guess_, std::array<Parameter, N + 1> parameter_,
-    const double *bounds) = 0;
+    const Bounds &bounds) = 0;
   virtual ~SolverInterface() { std::cout << "Deleting Solver Interface" << std::endl; }
 };
 }  // namespace mpcc

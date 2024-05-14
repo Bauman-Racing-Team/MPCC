@@ -57,8 +57,17 @@ Bounds::Bounds(BoundsParam bounds_param)
     u_bounds_u_(si_index.dB) = bounds_param.upper_input_bounds.dB_u;
     u_bounds_u_(si_index.dVs) = bounds_param.upper_input_bounds.dVs_u;
 
-    l_bounds_s_ = Bounds_s::Zero();
-    u_bounds_s_ = Bounds_s::Zero();
+    l_bounds_s_(si_index.con_tire_f) = bounds_param.lower_const_bounds.max_alpha_l;
+    l_bounds_s_(si_index.con_tire_r) = bounds_param.lower_const_bounds.max_alpha_l;
+    l_bounds_s_(si_index.con_track) = bounds_param.lower_const_bounds.rOut_l;
+    l_bounds_s_(si_index.con_elip_f) = bounds_param.lower_const_bounds.ellip_l;
+    l_bounds_s_(si_index.con_elip_r) = bounds_param.lower_const_bounds.ellip_l;
+
+    u_bounds_s_(si_index.con_tire_f) = bounds_param.upper_const_bounds.max_alpha_u;
+    u_bounds_s_(si_index.con_tire_r) = bounds_param.upper_const_bounds.max_alpha_u;
+    u_bounds_s_(si_index.con_track)  = bounds_param.upper_const_bounds.rOut_u;
+    u_bounds_s_(si_index.con_elip_f) = bounds_param.upper_const_bounds.ellip_u;
+    u_bounds_s_(si_index.con_elip_r) = bounds_param.upper_const_bounds.ellip_u;
 
     std::cout << "bounds initialized" << std::endl;
 }

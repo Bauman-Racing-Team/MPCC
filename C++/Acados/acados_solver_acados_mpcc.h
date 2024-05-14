@@ -40,7 +40,7 @@
 #define ACADOS_MPCC_NZ     0
 #define ACADOS_MPCC_NU     4
 #define ACADOS_MPCC_NP     11
-#define ACADOS_MPCC_NBX    9
+#define ACADOS_MPCC_NBX    11
 #define ACADOS_MPCC_NBX0   11
 #define ACADOS_MPCC_NBU    4
 #define ACADOS_MPCC_NSBX   0

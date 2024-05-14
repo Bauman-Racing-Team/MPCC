@@ -25,10 +25,10 @@
   "qRNmult": 10.0,
 
   "sc_quad_track": 1E3,
-  "sc_quad_tire_f": 1E2,
-  "sc_quad_tire_r": 1E4,
+  "sc_quad_tire": 1E2,
+  "sc_quad_alpha": 1E4,
 
   "sc_lin_track": 1E2,
-  "sc_lin_tire_f": 1E2,
-  "sc_lin_tire_r": 1E2
+  "sc_lin_tire": 1E2,
+  "sc_lin_alpha": 1E2
 }
