@@ -66,42 +66,7 @@ void MPC::fillParametersVector()
     parameter_[time_step].sc_lin_alpha = cost_param_.sc_lin_alpha;
   }
 }
-/*
-void MPC::setStage(const State &xk, const Input &uk, const State &xk1, const int time_step)
-{
-  stages_[time_step].nx = NX;
-  stages_[time_step].nu = NU;
 
-  if (time_step == 0) {
-    stages_[time_step].ng = 0;
-    stages_[time_step].ns = 0;
-  } else {
-    stages_[time_step].ng = NPC;
-    stages_[time_step].ns = NS;
-  }
-
-  State xk_nz = xk;
-  xk_nz.vxVsNonZero(param_.vx_zero);
-  State xk1_nz = xk1;
-  xk1_nz.vxVsNonZero(param_.vx_zero);
-
-  stages_[time_step].cost_mat = normalizeCost(cost_.getCost(track_, xk_nz, uk, time_step));
-
-  stages_[time_step].l_bounds_x = normalization_param_.T_x_inv * bounds_.getBoundsLX();
-  stages_[time_step].u_bounds_x = normalization_param_.T_x_inv * bounds_.getBoundsUX();
-  stages_[time_step].l_bounds_u = normalization_param_.T_u_inv * bounds_.getBoundsLU();
-  stages_[time_step].u_bounds_u = normalization_param_.T_u_inv * bounds_.getBoundsUU();
-  stages_[time_step].l_bounds_s = normalization_param_.T_s_inv * bounds_.getBoundsLS();
-  stages_[time_step].u_bounds_s = normalization_param_.T_s_inv * bounds_.getBoundsUS();
-
-  stages_[time_step].l_bounds_x(si_index.s) =
-    normalization_param_.T_x_inv(si_index.s, si_index.s) *
-    (-param_.s_trust_region);  //*initial_guess_[time_step].xk.vs;
-  stages_[time_step].u_bounds_x(si_index.s) =
-    normalization_param_.T_x_inv(si_index.s, si_index.s) *
-    (param_.s_trust_region);  //*initial_guess_[time_step].xk.vs;
-}
-*/
 CostMatrix MPC::normalizeCost(const CostMatrix &cost_mat)
 {
   const Q_MPC Q = normalization_param_.T_x * cost_mat.Q * normalization_param_.T_x;
