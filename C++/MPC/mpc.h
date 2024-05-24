@@ -108,7 +108,6 @@ private:
   ArcLengthSpline track_;
 
   Bounds bounds_;
-  NormalizationParam normalization_param_;
   Param param_;
   CostParam cost_param_;
 

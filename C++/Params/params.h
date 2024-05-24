@@ -182,20 +182,5 @@ public:
     BoundsParam(std::string file);
 
 };
-
-class NormalizationParam{
-public:
-    TX_MPC T_x;
-    TX_MPC T_x_inv;
-
-    TU_MPC T_u;
-    TU_MPC T_u_inv;
-
-    TS_MPC T_s;
-    TS_MPC T_s_inv;
-
-    NormalizationParam();
-    NormalizationParam(std::string file);
-};
 }
 #endif //MPCC_PARAMS_H
