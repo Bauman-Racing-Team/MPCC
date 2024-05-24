@@ -88,21 +88,11 @@ private:
 
   void setMPCProblem();
 
-  // void setStage(const State &xk, const Input &uk, const State &xk1, int time_step);
-
-  CostMatrix normalizeCost(const CostMatrix &cost_mat);
-  std::array<OptVariables, N + 1> deNormalizeSolution(
-    const std::array<OptVariables, N + 1> &solution);
-
   void updateInitialGuess(const State &x0);
 
   void generateNewInitialGuess(const State &x0);
 
   void unwrapInitialGuess();
-
-  std::array<OptVariables, N + 1> sqpSolutionUpdate(
-    const std::array<OptVariables, N + 1> &last_solution,
-    const std::array<OptVariables, N + 1> &current_solution);
 
   int n_sqp_;
   double sqp_mixing_;

@@ -29,7 +29,6 @@ MPC::MPC(int n_sqp, int n_reset, double sqp_mixing, double Ts, const PathToJson 
   solver_interface_(new AcadosInterface()),
   param_(Param(path.param_path)),
   cost_param_(CostParam(path.cost_path)),
-  normalization_param_(NormalizationParam(path.normalization_path)),
   bounds_(BoundsParam(path.bounds_path)),
   cost_(Cost(path)),
   integrator_(Integrator(Ts, path)),
@@ -65,33 +64,6 @@ void MPC::fillParametersVector()
     parameter_[time_step].sc_lin_tire = cost_param_.sc_lin_tire;
     parameter_[time_step].sc_lin_alpha = cost_param_.sc_lin_alpha;
   }
-}
-
-CostMatrix MPC::normalizeCost(const CostMatrix &cost_mat)
-{
-  const Q_MPC Q = normalization_param_.T_x * cost_mat.Q * normalization_param_.T_x;
-  const R_MPC R = normalization_param_.T_u * cost_mat.R * normalization_param_.T_u;
-  const q_MPC q = normalization_param_.T_x * cost_mat.q;
-  const r_MPC r = normalization_param_.T_u * cost_mat.r;
-  const Z_MPC Z = normalization_param_.T_s * cost_mat.Z * normalization_param_.T_s;
-  const z_MPC z = normalization_param_.T_s * cost_mat.z;
-  return {Q, R, S_MPC::Zero(), q, r, Z, z};
-}
-
-std::array<OptVariables, N + 1> MPC::deNormalizeSolution(
-  const std::array<OptVariables, N + 1> &solution)
-{
-  std::array<OptVariables, N + 1> denormalized_solution;
-  StateVector updated_x_vec;
-  InputVector updated_u_vec;
-  for (int i = 0; i <= N; i++) {
-    updated_x_vec = normalization_param_.T_x * stateToVector(solution[i].xk);
-    updated_u_vec = normalization_param_.T_u * inputToVector(solution[i].uk);
-
-    denormalized_solution[i].xk = vectorToState(updated_x_vec);
-    denormalized_solution[i].uk = vectorToInput(updated_u_vec);
-  }
-  return denormalized_solution;
 }
 
 void MPC::updateInitialGuess(const State &x0)
@@ -147,29 +119,6 @@ void MPC::generateNewInitialGuess(const State &x0)
   }
   unwrapInitialGuess();
   valid_initial_guess_ = true;
-}
-
-std::array<OptVariables, N + 1> MPC::sqpSolutionUpdate(
-  const std::array<OptVariables, N + 1> &last_solution,
-  const std::array<OptVariables, N + 1> &current_solution)
-{
-  // TODO use line search and merit function
-  std::array<OptVariables, N + 1> updated_solution;
-  StateVector updated_x_vec;
-  InputVector updated_u_vec;
-  for (int i = 0; i <= N; i++) {
-    updated_x_vec =
-      sqp_mixing_ * (stateToVector(current_solution[i].xk) + stateToVector(last_solution[i].xk)) +
-      (1.0 - sqp_mixing_) * stateToVector(last_solution[i].xk);
-    updated_u_vec =
-      sqp_mixing_ * (inputToVector(current_solution[i].uk) + inputToVector(last_solution[i].uk)) +
-      (1.0 - sqp_mixing_) * inputToVector(last_solution[i].uk);
-
-    updated_solution[i].xk = vectorToState(updated_x_vec);
-    updated_solution[i].uk = vectorToInput(updated_u_vec);
-  }
-
-  return updated_solution;
 }
 
 MPCReturn MPC::runMPC(State &x0)
