@@ -49,14 +49,14 @@ struct StateInputIndex {
   int vy = 4;
   int r = 5;
   int s = 6;
-  int D = 7;
-  int delta = 8;
-  int B = 9;
+  int throttle = 7;
+  int steeringAngle = 8;
+  int brakes = 9;
   int vs = 10;
 
-  int dD = 0;
-  int dDelta = 1;
-  int dB = 2;
+  int dThrottle = 0;
+  int dSteeringAngle = 1;
+  int dBrakes = 2;
   int dVs = 3;
 
   int con_tire_f = 0;

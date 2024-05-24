@@ -17,8 +17,6 @@
 #ifndef MPCC_PARAMS_H
 #define MPCC_PARAMS_H
 
-// #include <iostream>
-// #include <fstream>
 #include <vector>
 #include <nlohmann/json.hpp>
 #include "config.h"
@@ -81,37 +79,37 @@ public:
 
 class CostParam{
 public:
-    double q_c;
-    double q_l;
-    double q_vs;
+    double qC;
+    double qL;
+    double qVs;
 
-    double q_mu;
+    double qMu;
 
-    double q_r;
+    double qR;
 
-    double q_beta;
-    int beta_kin_cost;
+    double qBeta;
+    int betaKinCost;
 
-    double r_D;
-    double r_B;
-    double r_delta;
-    double r_vs;
+    double rThrottle;
+    double rSteeringAngle;
+    double rBrakes;
+    double rVs;
 
-    double r_dD;
-    double r_dB;
-    double r_dDelta;
-    double r_dVs;
+    double rdThrottle;
+    double rdSteeringAngle;
+    double rdBrakes;
+    double rdVs;
 
-    double q_c_N_mult;
-    double q_r_N_mult;
+    double qCNmult;
+    double qRNmult;
 
-    double sc_quad_track;
-    double sc_quad_tire;
-    double sc_quad_alpha;
+    double scQuadTrack;
+    double scQuadTire;
+    double scQuadAlpha;
 
-    double sc_lin_track;
-    double sc_lin_tire;
-    double sc_lin_alpha;
+    double scLinTrack;
+    double scLinTire;
+    double scLinAlpha;
 
     CostParam();
     CostParam(std::string file);
@@ -121,52 +119,52 @@ public:
 class BoundsParam{
 public:
     struct LowerStateBounds{
-        double X_l;
-        double Y_l;
-        double phi_l;
-        double vx_l;
-        double vy_l;
-        double r_l;
-        double s_l;
-        double D_l;
-        double B_l;
-        double delta_l;
-        double vs_l;
+        double xL;
+        double yL;
+        double phiL;
+        double vxL;
+        double vyL;
+        double rL;
+        double sL;
+        double throttleL;
+        double steeringAngleL;
+        double brakesL;
+        double vsL;
     };
     struct UpperStateBounds{
-        double X_u;
-        double Y_u;
-        double phi_u;
-        double vx_u;
-        double vy_u;
-        double r_u;
-        double s_u;
-        double D_u;
-        double B_u;
-        double delta_u;
-        double vs_u;
+        double xU;
+        double yU;
+        double phiU;
+        double vxU;
+        double vyU;
+        double rU;
+        double sU;
+        double throttleU;
+        double steeringAngleU;
+        double brakesU;
+        double vsU;
     };
     struct LowerInputBounds{
-        double dD_l;
-        double dB_l;
-        double dDelta_l;
-        double dVs_l;
+        double dThrottleL;
+        double dBrakesL;
+        double dSteeringAngleL;
+        double dVsL;
     };
     struct UpperInputBounds{
-        double dD_u;
-        double dB_u;
-        double dDelta_u;
-        double dVs_u;
+        double dThrottleU;
+        double dSteeringAngleU;
+        double dBrakesU;
+        double dVsU;
     };
     struct LowerConstBounds{
-        double max_alpha_l;
-        double rOut_l;
-        double ellip_l;
+        double maxAlphaL;
+        double rOutL;
+        double ellipseL;
     };
     struct UpperConstBounds{
-        double max_alpha_u;
-        double rOut_u;
-        double ellip_u;
+        double maxAlphaU;
+        double rOutU;
+        double ellipseU;
     };
 
     LowerStateBounds lower_state_bounds;

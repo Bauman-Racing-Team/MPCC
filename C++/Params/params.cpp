@@ -97,37 +97,37 @@ CostParam::CostParam(std::string file)
   json jsonCost;
   iCost >> jsonCost;
 
-  q_c = jsonCost["qC"];
-  q_l = jsonCost["qL"];
-  q_vs = jsonCost["qVs"];
+  qC = jsonCost["qC"];
+  qL = jsonCost["qL"];
+  qVs = jsonCost["qVs"];
 
-  q_mu = jsonCost["qMu"];
+  qMu = jsonCost["qMu"];
 
-  q_r = jsonCost["qR"];
+  qR = jsonCost["qR"];
 
-  q_beta = jsonCost["qBeta"];
-  beta_kin_cost = jsonCost["betaKin"];
+  qBeta = jsonCost["qBeta"];
+  betaKinCost = jsonCost["betaKin"];
 
-  r_D = jsonCost["rD"];
-  r_B = jsonCost["rB"];
-  r_delta = jsonCost["rDelta"];
-  r_vs = jsonCost["rVs"];
+  rThrottle = jsonCost["rThrottle"];
+  rSteeringAngle = jsonCost["rSteeringAngle"];
+  rBrakes = jsonCost["rBrakes"];
+  rVs = jsonCost["rVs"];
 
-  r_dD = jsonCost["rdD"];
-  r_dB = jsonCost["rdB"];
-  r_dDelta = jsonCost["rdDelta"];
-  r_dVs = jsonCost["rdVs"];
+  rdThrottle = jsonCost["rdThrottle"];
+  rdSteeringAngle = jsonCost["rdSteeringAngle"];
+  rdBrakes = jsonCost["rdBrakes"];
+  rdVs = jsonCost["rdVs"];
 
-  q_c_N_mult = jsonCost["qCNmult"];
-  q_r_N_mult = jsonCost["qRNmult"];
+  qCNmult = jsonCost["qCNmult"];
+  qRNmult = jsonCost["qRNmult"];
 
-  sc_quad_track = jsonCost["sc_quad_track"];
-  sc_quad_tire = jsonCost["sc_quad_tire"];
-  sc_quad_alpha = jsonCost["sc_quad_alpha"];
+  scQuadTrack = jsonCost["sc_quad_track"];
+  scQuadTire = jsonCost["sc_quad_tire"];
+  scQuadAlpha = jsonCost["sc_quad_alpha"];
 
-  sc_lin_track = jsonCost["sc_lin_track"];
-  sc_lin_tire = jsonCost["sc_lin_tire"];
-  sc_lin_alpha = jsonCost["sc_lin_alpha"];
+  scLinTrack = jsonCost["sc_lin_track"];
+  scLinTire = jsonCost["sc_lin_tire"];
+  scLinAlpha = jsonCost["sc_lin_alpha"];
 }
 
 BoundsParam::BoundsParam()
@@ -146,46 +146,46 @@ BoundsParam::BoundsParam(std::string file)
   json jsonBounds;
   iBounds >> jsonBounds;
 
-  lower_state_bounds.X_l = jsonBounds["Xl"];
-  lower_state_bounds.Y_l = jsonBounds["Yl"];
-  lower_state_bounds.phi_l = jsonBounds["phil"];
-  lower_state_bounds.vx_l = jsonBounds["vxl"];
-  lower_state_bounds.vy_l = jsonBounds["vyl"];
-  lower_state_bounds.r_l = jsonBounds["rl"];
-  lower_state_bounds.s_l = jsonBounds["sl"];
-  lower_state_bounds.D_l = jsonBounds["Dl"];
-  lower_state_bounds.B_l = jsonBounds["Bl"];
-  lower_state_bounds.delta_l = jsonBounds["deltal"];
-  lower_state_bounds.vs_l = jsonBounds["vsl"];
+  lower_state_bounds.xL = jsonBounds["xL"];
+  lower_state_bounds.yL = jsonBounds["yL"];
+  lower_state_bounds.phiL = jsonBounds["phiL"];
+  lower_state_bounds.vxL = jsonBounds["vxL"];
+  lower_state_bounds.vyL = jsonBounds["vyL"];
+  lower_state_bounds.rL = jsonBounds["vyL"];
+  lower_state_bounds.sL = jsonBounds["sL"];
+  lower_state_bounds.throttleL = jsonBounds["throttleL"];
+  lower_state_bounds.steeringAngleL = jsonBounds["steeringAngleL"];
+  lower_state_bounds.brakesL = jsonBounds["brakesL"];
+  lower_state_bounds.vsL = jsonBounds["vsL"];
 
-  upper_state_bounds.X_u = jsonBounds["Xu"];
-  upper_state_bounds.Y_u = jsonBounds["Yu"];
-  upper_state_bounds.phi_u = jsonBounds["phiu"];
-  upper_state_bounds.vx_u = jsonBounds["vxu"];
-  upper_state_bounds.vy_u = jsonBounds["vyu"];
-  upper_state_bounds.r_u = jsonBounds["ru"];
-  upper_state_bounds.s_u = jsonBounds["su"];
-  upper_state_bounds.D_u = jsonBounds["Du"];
-  upper_state_bounds.B_u = jsonBounds["Bu"];
-  upper_state_bounds.delta_u = jsonBounds["deltau"];
-  upper_state_bounds.vs_u = jsonBounds["vsu"];
+  upper_state_bounds.xU = jsonBounds["xU"];
+  upper_state_bounds.yU = jsonBounds["yU"];
+  upper_state_bounds.phiU = jsonBounds["phiU"];
+  upper_state_bounds.vxU = jsonBounds["vxU"];
+  upper_state_bounds.vyU = jsonBounds["vyU"];
+  upper_state_bounds.rU = jsonBounds["rU"];
+  upper_state_bounds.sU = jsonBounds["sU"];
+  upper_state_bounds.throttleU = jsonBounds["throttleU"];
+  upper_state_bounds.steeringAngleU = jsonBounds["steeringAngleU"];
+  upper_state_bounds.brakesU = jsonBounds["brakesU"];
+  upper_state_bounds.vsU = jsonBounds["vsU"];
 
-  lower_input_bounds.dD_l = jsonBounds["dDl"];
-  lower_input_bounds.dB_l = jsonBounds["dBl"];
-  lower_input_bounds.dDelta_l = jsonBounds["dDeltal"];
-  lower_input_bounds.dVs_l = jsonBounds["dVsl"];
+  lower_input_bounds.dThrottleL= jsonBounds["dThrottleL"];
+  lower_input_bounds.dBrakesL= jsonBounds["dBrakesL"];
+  lower_input_bounds.dSteeringAngleL = jsonBounds["dSteeringAngleL"];
+  lower_input_bounds.dVsL = jsonBounds["dVsL"];
 
-  upper_input_bounds.dD_u = jsonBounds["dDu"];
-  upper_input_bounds.dB_u = jsonBounds["dBu"];
-  upper_input_bounds.dDelta_u = jsonBounds["dDeltau"];
-  upper_input_bounds.dVs_u = jsonBounds["dVsu"];
+  upper_input_bounds.dThrottleU= jsonBounds["dThrottleU"];
+  upper_input_bounds.dSteeringAngleU= jsonBounds["dSteeringAngleU"];
+  upper_input_bounds.dBrakesU = jsonBounds["dBrakesU"];
+  upper_input_bounds.dVsU = jsonBounds["dVsU"];
 
-  lower_const_bounds.max_alpha_l = jsonBounds["maxAlphal"];
-  lower_const_bounds.rOut_l = jsonBounds["rOutl"];
-  lower_const_bounds.ellip_l = jsonBounds["ellipsel"];
+  lower_const_bounds.maxAlphaL = jsonBounds["maxAlphaL"];
+  lower_const_bounds.rOutL = jsonBounds["rOutL"];
+  lower_const_bounds.ellipseL = jsonBounds["ellipseL"];
 
-  upper_const_bounds.max_alpha_u = jsonBounds["maxAlphau"];
-  upper_const_bounds.rOut_u = jsonBounds["rOutu"];
-  upper_const_bounds.ellip_u = jsonBounds["ellipseu"];
+  upper_const_bounds.maxAlphaU = jsonBounds["maxAlphaU"];
+  upper_const_bounds.rOutU = jsonBounds["rOutU"];
+  upper_const_bounds.ellipseU = jsonBounds["ellipseU"];
 }
 }  // namespace mpcc

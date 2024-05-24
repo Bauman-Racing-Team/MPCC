@@ -59,10 +59,6 @@ void AcadosInterface::initMPC()
   nlp_opts = acados_mpcc_acados_get_nlp_opts(acados_ocp_capsule);
 }
 
-// void AcadosInterface::printSol();
-// void AcadosInterface::getSol();
-// void AcadosInterface::freeSolver();
-
 void AcadosInterface::setInit(const Bounds &bounds, std::array<OptVariables, N + 1> &initial_guess_)
 {
   // initial state x0
@@ -181,26 +177,26 @@ void AcadosInterface::setParam(std::array<Parameter, N + 1> parameter_)
   double *zu = zlumem + NS * 3;
 
   for (int i = 1; i < N; i++) {
-    Zl[0] = parameter_[i].sc_quad_alpha;
-    Zl[1] = parameter_[i].sc_quad_alpha;
-    Zl[2] = parameter_[i].sc_quad_track;
-    Zl[3] = parameter_[i].sc_quad_tire;
-    Zl[4] = parameter_[i].sc_quad_tire;
-    Zu[0] = parameter_[i].sc_quad_alpha;
-    Zu[1] = parameter_[i].sc_quad_alpha;
-    Zu[2] = parameter_[i].sc_quad_track;
-    Zu[3] = parameter_[i].sc_quad_tire;
-    Zu[4] = parameter_[i].sc_quad_tire;
-    zl[0] = parameter_[i].sc_lin_alpha;
-    zl[1] = parameter_[i].sc_lin_alpha;
-    zl[2] = parameter_[i].sc_lin_track;
-    zl[3] = parameter_[i].sc_lin_tire;
-    zl[4] = parameter_[i].sc_lin_tire;
-    zu[0] = parameter_[i].sc_lin_alpha;
-    zu[1] = parameter_[i].sc_lin_alpha;
-    zu[2] = parameter_[i].sc_lin_track;
-    zu[3] = parameter_[i].sc_lin_tire;
-    zu[4] = parameter_[i].sc_lin_tire;
+    Zl[0] = parameter_[i].scQuadAlpha;
+    Zl[1] = parameter_[i].scQuadAlpha;
+    Zl[2] = parameter_[i].scQuadTrack;
+    Zl[3] = parameter_[i].scQuadTire;
+    Zl[4] = parameter_[i].scQuadTire;
+    Zu[0] = parameter_[i].scQuadAlpha;
+    Zu[1] = parameter_[i].scQuadAlpha;
+    Zu[2] = parameter_[i].scQuadTrack;
+    Zu[3] = parameter_[i].scQuadTire;
+    Zu[4] = parameter_[i].scQuadTire;
+    zl[0] = parameter_[i].scLinAlpha;
+    zl[1] = parameter_[i].scLinAlpha;
+    zl[2] = parameter_[i].scLinTrack;
+    zl[3] = parameter_[i].scLinTire;
+    zl[4] = parameter_[i].scLinTire;
+    zu[0] = parameter_[i].scLinAlpha;
+    zu[1] = parameter_[i].scLinAlpha;
+    zu[2] = parameter_[i].scLinTrack;
+    zu[3] = parameter_[i].scLinTire;
+    zu[4] = parameter_[i].scLinTire;
 
     ocp_nlp_cost_model_set(nlp_config, nlp_dims, nlp_in, i, "Zl", Zl);
     ocp_nlp_cost_model_set(nlp_config, nlp_dims, nlp_in, i, "Zu", Zu);

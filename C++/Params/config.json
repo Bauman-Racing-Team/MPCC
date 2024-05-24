@@ -10,7 +10,5 @@
   "model_path": "Params/model.json",
   "cost_path": "Params/cost.json",
   "bounds_path": "Params/bounds.json",
-  "track_path": "Params/tracks/FSG_matlab.json",
-  "normalization_path": "Params/normalization.json",
-  "adcodegen_path": "ADCodeGen/build"
+  "track_path": "Params/tracks/FSG_matlab.json"
 }

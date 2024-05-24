@@ -27,16 +27,16 @@ StateVector stateToVector(const State &x)
     xk(si_index.vy) = x.vy;
     xk(si_index.r) = x.r;
     xk(si_index.s) = x.s;
-    xk(si_index.D) = x.D;
-    xk(si_index.B) = x.B;
-    xk(si_index.delta) = x.delta;
+    xk(si_index.throttle) = x.throttle;
+    xk(si_index.steeringAngle) = x.steeringAngle;
+    xk(si_index.brakes) = x.brakes;
     xk(si_index.vs) = x.vs;
     return xk;
 }
 
 InputVector inputToVector(const Input &u)
 {
-    InputVector uk = {u.dD,u.dB,u.dDelta,u.dVs};
+    InputVector uk = {u.dThrottle,u.dBrakes,u.dSteeringAngle,u.dVs};
     return uk;
 }
 
@@ -50,9 +50,9 @@ State vectorToState(const StateVector &xk)
     x.vy    = xk(si_index.vy);
     x.r     = xk(si_index.r);
     x.s     = xk(si_index.s);
-    x.D     = xk(si_index.D);
-    x.B     = xk(si_index.B);
-    x.delta = xk(si_index.delta);
+    x.throttle     = xk(si_index.throttle);
+    x.steeringAngle = xk(si_index.steeringAngle);
+    x.brakes     = xk(si_index.brakes);
     x.vs    = xk(si_index.vs);
 
     return x;
@@ -61,9 +61,9 @@ State vectorToState(const StateVector &xk)
 Input vectorToInput(const InputVector &uk)
 {
     Input u;
-    u.dD     = uk(si_index.dD);
-    u.dB     = uk(si_index.dB);
-    u.dDelta = uk(si_index.dDelta);
+    u.dThrottle     = uk(si_index.dThrottle);
+    u.dSteeringAngle = uk(si_index.dSteeringAngle);
+    u.dBrakes     = uk(si_index.dBrakes);
     u.dVs    = uk(si_index.dVs);
 
     return u;
@@ -79,9 +79,9 @@ State arrayToState(double *xk)
     x.vy    = xk[si_index.vy];
     x.r     = xk[si_index.r];
     x.s     = xk[si_index.s];
-    x.D     = xk[si_index.D];
-    x.B     = xk[si_index.B];
-    x.delta = xk[si_index.delta];
+    x.throttle     = xk[si_index.throttle];
+    x.steeringAngle = xk[si_index.steeringAngle];
+    x.brakes     = xk[si_index.brakes];
     x.vs    = xk[si_index.vs];
 
     return x;
@@ -90,9 +90,9 @@ State arrayToState(double *xk)
 Input arrayToInput(double *uk)
 {
     Input u;
-    u.dD     = uk[si_index.dD];
-    u.dB     = uk[si_index.dB];
-    u.dDelta = uk[si_index.dDelta];
+    u.dThrottle     = uk[si_index.dThrottle];
+    u.dSteeringAngle = uk[si_index.dSteeringAngle];
+    u.dBrakes     = uk[si_index.dBrakes];
     u.dVs    = uk[si_index.dVs];
 
     return u;

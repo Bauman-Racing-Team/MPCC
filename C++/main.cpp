@@ -34,9 +34,7 @@ int main()
     go_to_path + std::string(jsonConfig["model_path"]),
     go_to_path + std::string(jsonConfig["cost_path"]),
     go_to_path + std::string(jsonConfig["bounds_path"]),
-    go_to_path + std::string(jsonConfig["track_path"]),
-    go_to_path + std::string(jsonConfig["normalization_path"]),
-    go_to_path + std::string(jsonConfig["adcodegen_path"])};
+    go_to_path + std::string(jsonConfig["track_path"])};
 
   Integrator integrator = Integrator(jsonConfig["Ts"], json_paths);
   Plotting plotter = Plotting(jsonConfig["Ts"], json_paths);

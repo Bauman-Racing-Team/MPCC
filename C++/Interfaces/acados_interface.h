@@ -47,7 +47,6 @@
 
 #include "config.h"
 #include "types.h"
-#include "Cost/cost.h"
 #include "Constraints/bounds.h"
 #include "solver_interface.h"
 

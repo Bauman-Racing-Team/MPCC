@@ -30,7 +30,6 @@ MPC::MPC(int n_sqp, int n_reset, double sqp_mixing, double Ts, const PathToJson 
   param_(Param(path.param_path)),
   cost_param_(CostParam(path.cost_path)),
   bounds_(BoundsParam(path.bounds_path)),
-  cost_(Cost(path)),
   integrator_(Integrator(Ts, path)),
   track_(ArcLengthSpline(path))
 {
@@ -50,19 +49,19 @@ void MPC::fillParametersVector()
     parameter_[time_step].yTrack = track_pos_i(1);
     parameter_[time_step].phiTrack = atan2(track_dpos_i(1), track_dpos_i(0));
     parameter_[time_step].s0 = initial_guess_[time_step].xk.s;
-    parameter_[time_step].qC = cost_param_.q_c;
-    parameter_[time_step].qL = cost_param_.q_l;
-    parameter_[time_step].qVs = cost_param_.q_vs;
-    parameter_[time_step].rdThrottle = cost_param_.r_dD;
-    parameter_[time_step].rdSteeringAngle = cost_param_.r_dDelta;
-    parameter_[time_step].rdBrakes = cost_param_.r_dB;
-    parameter_[time_step].rdVs = cost_param_.r_dVs;
-    parameter_[time_step].sc_quad_track = cost_param_.sc_quad_track;
-    parameter_[time_step].sc_quad_tire = cost_param_.sc_quad_tire;
-    parameter_[time_step].sc_quad_alpha = cost_param_.sc_quad_alpha;
-    parameter_[time_step].sc_lin_track = cost_param_.sc_lin_track;
-    parameter_[time_step].sc_lin_tire = cost_param_.sc_lin_tire;
-    parameter_[time_step].sc_lin_alpha = cost_param_.sc_lin_alpha;
+    parameter_[time_step].qC = cost_param_.qC;
+    parameter_[time_step].qL = cost_param_.qL;
+    parameter_[time_step].qVs = cost_param_.qVs;
+    parameter_[time_step].rdThrottle = cost_param_.rdThrottle;
+    parameter_[time_step].rdSteeringAngle = cost_param_.rdSteeringAngle;
+    parameter_[time_step].rdBrakes = cost_param_.rdBrakes;
+    parameter_[time_step].rdVs = cost_param_.rdVs;
+    parameter_[time_step].scQuadTrack = cost_param_.scQuadTrack;
+    parameter_[time_step].scQuadTire = cost_param_.scQuadTire;
+    parameter_[time_step].scQuadAlpha = cost_param_.scQuadAlpha;
+    parameter_[time_step].scLinTrack = cost_param_.scLinTrack;
+    parameter_[time_step].scLinTire = cost_param_.scLinTire;
+    parameter_[time_step].scLinAlpha = cost_param_.scLinAlpha;
   }
 }
 
@@ -81,7 +80,6 @@ void MPC::updateInitialGuess(const State &x0)
   unwrapInitialGuess();
 }
 
-// alternatively OptVariables MPC::unwrapInitialGuess(const OptVariables &initial_guess)
 void MPC::unwrapInitialGuess()
 {
   double L = track_.getLength();

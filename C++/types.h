@@ -30,9 +30,9 @@ struct State {
   double vy;
   double r;
   double s;
-  double D;
-  double delta;
-  double B;
+  double throttle;
+  double steeringAngle;
+  double brakes;
   double vs;
 
   void setZero()
@@ -44,9 +44,9 @@ struct State {
     vy = 0.0;
     r = 0.0;
     s = 0.0;
-    D = 0.0;
-    delta = 0.0;
-    B = 0.0;
+    throttle = 0.0;
+    steeringAngle = 0.0;
+    brakes = 0.0;
     vs = 0.0;
   }
 
@@ -67,16 +67,16 @@ struct State {
 };
 
 struct Input {
-  double dD;
-  double dDelta;
-  double dB;
+  double dThrottle;
+  double dSteeringAngle;
+  double dBrakes;
   double dVs;
 
   void setZero()
   {
-    dD = 0.0;
-    dDelta = 0.0;
-    dB = 0.0;
+    dThrottle = 0.0;
+    dSteeringAngle = 0.0;
+    dBrakes = 0.0;
     dVs = 0.0;
   }
 };
@@ -104,12 +104,13 @@ struct Parameter {
   double rdBrakes;
   double rdVs;
 
-  double sc_quad_track;
-  double sc_quad_tire;
-  double sc_quad_alpha;
-  double sc_lin_track;
-  double sc_lin_tire;
-  double sc_lin_alpha;
+  double scQuadTrack;
+  double scQuadTire;
+  double scQuadAlpha;
+
+  double scLinTrack;
+  double scLinTire;
+  double scLinAlpha;
 
   void setZero()
   {

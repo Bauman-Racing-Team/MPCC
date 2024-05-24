@@ -29,7 +29,6 @@ add_executable(MPCC
         Interfaces/acados_sim_interface.cpp
         Interfaces/solver_interface.cpp
         Constraints/bounds.cpp
-        Cost/cost.cpp
         Model/integrator.cpp
         # Tests/spline_test.cpp
         # Tests/cost_test.cpp

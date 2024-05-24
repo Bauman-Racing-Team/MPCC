@@ -68,14 +68,14 @@ void Plotting::plotRun(const std::list<MPCReturn> &log, const TrackPos &track_xy
     plot_vy.push_back(log_i.mpc_horizon[0].xk.vy);
     plot_r.push_back(log_i.mpc_horizon[0].xk.r);
     plot_s.push_back(log_i.mpc_horizon[0].xk.s);
-    plot_d.push_back(log_i.mpc_horizon[0].xk.D);
-    plot_b.push_back(log_i.mpc_horizon[0].xk.B);
-    plot_delta.push_back(log_i.mpc_horizon[0].xk.delta);
+    plot_d.push_back(log_i.mpc_horizon[0].xk.throttle);
+    plot_delta.push_back(log_i.mpc_horizon[0].xk.steeringAngle);
+    plot_b.push_back(log_i.mpc_horizon[0].xk.brakes);
     plot_vs.push_back(log_i.mpc_horizon[0].xk.vs);
 
-    plot_dd.push_back(log_i.mpc_horizon[0].uk.dD);
-    plot_db.push_back(log_i.mpc_horizon[0].uk.dB);
-    plot_ddelta.push_back(log_i.mpc_horizon[0].uk.dDelta);
+    plot_dd.push_back(log_i.mpc_horizon[0].uk.dThrottle);
+    plot_ddelta.push_back(log_i.mpc_horizon[0].uk.dSteeringAngle);
+    plot_db.push_back(log_i.mpc_horizon[0].uk.dBrakes);
     plot_dvs.push_back(log_i.mpc_horizon[0].uk.dVs);
 
     const StateVector x_vec = stateToVector(log_i.mpc_horizon[2].xk);

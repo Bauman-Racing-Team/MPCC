@@ -22,7 +22,6 @@
 #include "Params/params.h"
 #include "Spline/arc_length_spline.h"
 #include "Model/integrator.h"
-#include "Cost/cost.h"
 #include "Constraints/bounds.h"
 
 // #include "Interfaces/solver_interface.h"
@@ -37,8 +36,6 @@
 namespace mpcc
 {
 struct Stage {
-  CostMatrix cost_mat;
-
   Bounds_x u_bounds_x;
   Bounds_x l_bounds_x;
 
@@ -100,11 +97,10 @@ private:
   int n_no_solves_sqp_max_;
   int n_reset_;
 
-  double bounds_x[2*NX];
+  double bounds_x[2 * NX];
   const double Ts_;
 
   Integrator integrator_;
-  Cost cost_;
   ArcLengthSpline track_;
 
   Bounds bounds_;

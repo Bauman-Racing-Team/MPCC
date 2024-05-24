@@ -40,7 +40,6 @@
 
 #include "config.h"
 #include "types.h"
-#include "Cost/cost.h"
 
 #define NZ ACADOS_MPCC_NZ
 
