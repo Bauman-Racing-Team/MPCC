@@ -70,7 +70,7 @@ int main()
   }
 
   // Plot data
-  // plotter.plotRun(log, track_xy);
+  plotter.plotRun(log, track_xy);
   plotter.plotSim(log, track_xy);
 
   double mean_time = 0.0;
