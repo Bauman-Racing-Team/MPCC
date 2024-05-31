@@ -31,7 +31,7 @@ class SolverInterface
 {
 public:
   virtual solverReturn solveMPC(
-    std::array<OptVariables, N + 1> &initial_guess_, std::array<Parameter, N + 1> parameter_,
+    std::array<OptVariables, N + 1> &initialGuess, std::array<Parameter, N + 1> parameter_,
     const Bounds &bounds) = 0;
   virtual ~SolverInterface() { std::cout << "Deleting Solver Interface" << std::endl; }
 };

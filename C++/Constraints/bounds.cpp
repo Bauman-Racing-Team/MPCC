@@ -23,51 +23,51 @@ Bounds::Bounds()
 
 Bounds::Bounds(BoundsParam bounds_param) 
 {
-    l_bounds_x_(si_index.X) = bounds_param.lower_state_bounds.xL;
-    l_bounds_x_(si_index.Y) = bounds_param.lower_state_bounds.yL;
-    l_bounds_x_(si_index.phi) = bounds_param.lower_state_bounds.phiL;
-    l_bounds_x_(si_index.vx) = bounds_param.lower_state_bounds.vxL;
-    l_bounds_x_(si_index.vy) = bounds_param.lower_state_bounds.vyL;
-    l_bounds_x_(si_index.r) = bounds_param.lower_state_bounds.rL;
-    l_bounds_x_(si_index.s) = bounds_param.lower_state_bounds.sL;
-    l_bounds_x_(si_index.throttle) = bounds_param.lower_state_bounds.throttleL;
-    l_bounds_x_(si_index.steeringAngle) = bounds_param.lower_state_bounds.steeringAngleL;
-    l_bounds_x_(si_index.brakes) = bounds_param.lower_state_bounds.brakesL;
-    l_bounds_x_(si_index.vs) = bounds_param.lower_state_bounds.vsL;
+    l_bounds_x_(siIndex.X) = bounds_param.lower_state_bounds.xL;
+    l_bounds_x_(siIndex.Y) = bounds_param.lower_state_bounds.yL;
+    l_bounds_x_(siIndex.phi) = bounds_param.lower_state_bounds.phiL;
+    l_bounds_x_(siIndex.vx) = bounds_param.lower_state_bounds.vxL;
+    l_bounds_x_(siIndex.vy) = bounds_param.lower_state_bounds.vyL;
+    l_bounds_x_(siIndex.r) = bounds_param.lower_state_bounds.rL;
+    l_bounds_x_(siIndex.s) = bounds_param.lower_state_bounds.sL;
+    l_bounds_x_(siIndex.throttle) = bounds_param.lower_state_bounds.throttleL;
+    l_bounds_x_(siIndex.steeringAngle) = bounds_param.lower_state_bounds.steeringAngleL;
+    l_bounds_x_(siIndex.brakes) = bounds_param.lower_state_bounds.brakesL;
+    l_bounds_x_(siIndex.vs) = bounds_param.lower_state_bounds.vsL;
 
-    u_bounds_x_(si_index.X) = bounds_param.upper_state_bounds.xU;
-    u_bounds_x_(si_index.Y) = bounds_param.upper_state_bounds.yU;
-    u_bounds_x_(si_index.phi) = bounds_param.upper_state_bounds.phiU;
-    u_bounds_x_(si_index.vx) = bounds_param.upper_state_bounds.vxU;
-    u_bounds_x_(si_index.vy) = bounds_param.upper_state_bounds.vyU;
-    u_bounds_x_(si_index.r) = bounds_param.upper_state_bounds.rU;
-    u_bounds_x_(si_index.s) = bounds_param.upper_state_bounds.sU;
-    u_bounds_x_(si_index.throttle) = bounds_param.upper_state_bounds.throttleU;
-    u_bounds_x_(si_index.steeringAngle) = bounds_param.upper_state_bounds.steeringAngleU;
-    u_bounds_x_(si_index.brakes) = bounds_param.upper_state_bounds.brakesU;
-    u_bounds_x_(si_index.vs) = bounds_param.upper_state_bounds.vsU;
+    u_bounds_x_(siIndex.X) = bounds_param.upper_state_bounds.xU;
+    u_bounds_x_(siIndex.Y) = bounds_param.upper_state_bounds.yU;
+    u_bounds_x_(siIndex.phi) = bounds_param.upper_state_bounds.phiU;
+    u_bounds_x_(siIndex.vx) = bounds_param.upper_state_bounds.vxU;
+    u_bounds_x_(siIndex.vy) = bounds_param.upper_state_bounds.vyU;
+    u_bounds_x_(siIndex.r) = bounds_param.upper_state_bounds.rU;
+    u_bounds_x_(siIndex.s) = bounds_param.upper_state_bounds.sU;
+    u_bounds_x_(siIndex.throttle) = bounds_param.upper_state_bounds.throttleU;
+    u_bounds_x_(siIndex.steeringAngle) = bounds_param.upper_state_bounds.steeringAngleU;
+    u_bounds_x_(siIndex.brakes) = bounds_param.upper_state_bounds.brakesU;
+    u_bounds_x_(siIndex.vs) = bounds_param.upper_state_bounds.vsU;
 
-    l_bounds_u_(si_index.dThrottle) = bounds_param.lower_input_bounds.dThrottleL;
-    l_bounds_u_(si_index.dSteeringAngle) = bounds_param.lower_input_bounds.dSteeringAngleL;
-    l_bounds_u_(si_index.dBrakes) = bounds_param.lower_input_bounds.dBrakesL;
-    l_bounds_u_(si_index.dVs) = bounds_param.lower_input_bounds.dVsL;
+    l_bounds_u_(siIndex.dThrottle) = bounds_param.lower_input_bounds.dThrottleL;
+    l_bounds_u_(siIndex.dSteeringAngle) = bounds_param.lower_input_bounds.dSteeringAngleL;
+    l_bounds_u_(siIndex.dBrakes) = bounds_param.lower_input_bounds.dBrakesL;
+    l_bounds_u_(siIndex.dVs) = bounds_param.lower_input_bounds.dVsL;
 
-    u_bounds_u_(si_index.dThrottle) = bounds_param.upper_input_bounds.dThrottleU;
-    u_bounds_u_(si_index.dSteeringAngle) = bounds_param.upper_input_bounds.dSteeringAngleU;
-    u_bounds_u_(si_index.dBrakes) = bounds_param.upper_input_bounds.dBrakesU;
-    u_bounds_u_(si_index.dVs) = bounds_param.upper_input_bounds.dVsU;
+    u_bounds_u_(siIndex.dThrottle) = bounds_param.upper_input_bounds.dThrottleU;
+    u_bounds_u_(siIndex.dSteeringAngle) = bounds_param.upper_input_bounds.dSteeringAngleU;
+    u_bounds_u_(siIndex.dBrakes) = bounds_param.upper_input_bounds.dBrakesU;
+    u_bounds_u_(siIndex.dVs) = bounds_param.upper_input_bounds.dVsU;
 
-    l_bounds_s_(si_index.con_tire_f) = bounds_param.lower_const_bounds.maxAlphaL;
-    l_bounds_s_(si_index.con_tire_r) = bounds_param.lower_const_bounds.maxAlphaL;
-    l_bounds_s_(si_index.con_track) = bounds_param.lower_const_bounds.rOutL;
-    l_bounds_s_(si_index.con_elip_f) = bounds_param.lower_const_bounds.ellipseL;
-    l_bounds_s_(si_index.con_elip_r) = bounds_param.lower_const_bounds.ellipseL;
+    l_bounds_s_(siIndex.conTireF) = bounds_param.lower_const_bounds.maxAlphaL;
+    l_bounds_s_(siIndex.conTireR) = bounds_param.lower_const_bounds.maxAlphaL;
+    l_bounds_s_(siIndex.conTrack) = bounds_param.lower_const_bounds.rOutL;
+    l_bounds_s_(siIndex.conElipF) = bounds_param.lower_const_bounds.ellipseL;
+    l_bounds_s_(siIndex.conElipR) = bounds_param.lower_const_bounds.ellipseL;
 
-    u_bounds_s_(si_index.con_tire_f) = bounds_param.upper_const_bounds.maxAlphaU;
-    u_bounds_s_(si_index.con_tire_r) = bounds_param.upper_const_bounds.maxAlphaU;
-    u_bounds_s_(si_index.con_track)  = bounds_param.upper_const_bounds.rOutU;
-    u_bounds_s_(si_index.con_elip_f) = bounds_param.upper_const_bounds.ellipseU;
-    u_bounds_s_(si_index.con_elip_r) = bounds_param.upper_const_bounds.ellipseU;
+    u_bounds_s_(siIndex.conTireF) = bounds_param.upper_const_bounds.maxAlphaU;
+    u_bounds_s_(siIndex.conTireR) = bounds_param.upper_const_bounds.maxAlphaU;
+    u_bounds_s_(siIndex.conTrack)  = bounds_param.upper_const_bounds.rOutU;
+    u_bounds_s_(siIndex.conElipF) = bounds_param.upper_const_bounds.ellipseU;
+    u_bounds_s_(siIndex.conElipR) = bounds_param.upper_const_bounds.ellipseU;
 
     std::cout << "bounds initialized" << std::endl;
 }

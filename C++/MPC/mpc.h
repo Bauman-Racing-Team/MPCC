@@ -24,7 +24,6 @@
 #include "Model/integrator.h"
 #include "Constraints/bounds.h"
 
-// #include "Interfaces/solver_interface.h"
 #include "Interfaces/acados_interface.h"
 
 #include <array>
@@ -72,14 +71,14 @@ public:
   MPC(int n_sqp, int n_reset, double sqp_mixing, double Ts, const PathToJson &path);
 
 private:
-  bool valid_initial_guess_;
+  bool validInitialGuess;
 
   std::array<Stage, N + 1> stages_;
   std::array<Parameter, N + 1> parameter_;
 
-  std::array<OptVariables, N + 1> initial_guess_;
-  std::array<OptVariables, N + 1> temp_guess_;
-  std::array<OptVariables, N + 1> optimal_solution_;
+  std::array<OptVariables, N + 1> initialGuess;
+  std::array<OptVariables, N + 1> tempGuess;
+  std::array<OptVariables, N + 1> optimalSolution;
 
   void fillParametersVector();
 
@@ -91,11 +90,11 @@ private:
 
   void unwrapInitialGuess();
 
-  int n_sqp_;
-  double sqp_mixing_;
-  int n_no_solves_sqp_;
-  int n_no_solves_sqp_max_;
-  int n_reset_;
+  int nSqp;
+  double sqpMixing;
+  int nNoSolvesSqp;
+  int nNoSolvesSqpMax;
+  int nReset;
 
   double bounds_x[2 * NX];
   const double Ts_;
@@ -105,9 +104,9 @@ private:
 
   Bounds bounds_;
   Param param_;
-  CostParam cost_param_;
+  CostParam costParam;
 
-  std::unique_ptr<SolverInterface> solver_interface_;
+  std::unique_ptr<SolverInterface> solverInterface;
 };
 
 }  // namespace mpcc

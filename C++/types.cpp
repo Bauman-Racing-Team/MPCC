@@ -20,17 +20,17 @@ namespace mpcc{
 StateVector stateToVector(const State &x)
 {
     StateVector xk;
-    xk(si_index.X) = x.X;
-    xk(si_index.Y) = x.Y;
-    xk(si_index.phi) = x.phi;
-    xk(si_index.vx) = x.vx;
-    xk(si_index.vy) = x.vy;
-    xk(si_index.r) = x.r;
-    xk(si_index.s) = x.s;
-    xk(si_index.throttle) = x.throttle;
-    xk(si_index.steeringAngle) = x.steeringAngle;
-    xk(si_index.brakes) = x.brakes;
-    xk(si_index.vs) = x.vs;
+    xk(siIndex.X) = x.X;
+    xk(siIndex.Y) = x.Y;
+    xk(siIndex.phi) = x.phi;
+    xk(siIndex.vx) = x.vx;
+    xk(siIndex.vy) = x.vy;
+    xk(siIndex.r) = x.r;
+    xk(siIndex.s) = x.s;
+    xk(siIndex.throttle) = x.throttle;
+    xk(siIndex.steeringAngle) = x.steeringAngle;
+    xk(siIndex.brakes) = x.brakes;
+    xk(siIndex.vs) = x.vs;
     return xk;
 }
 
@@ -43,17 +43,17 @@ InputVector inputToVector(const Input &u)
 State vectorToState(const StateVector &xk)
 {
     State x;
-    x.X     = xk(si_index.X);
-    x.Y     = xk(si_index.Y);
-    x.phi   = xk(si_index.phi);
-    x.vx    = xk(si_index.vx);
-    x.vy    = xk(si_index.vy);
-    x.r     = xk(si_index.r);
-    x.s     = xk(si_index.s);
-    x.throttle     = xk(si_index.throttle);
-    x.steeringAngle = xk(si_index.steeringAngle);
-    x.brakes     = xk(si_index.brakes);
-    x.vs    = xk(si_index.vs);
+    x.X     = xk(siIndex.X);
+    x.Y     = xk(siIndex.Y);
+    x.phi   = xk(siIndex.phi);
+    x.vx    = xk(siIndex.vx);
+    x.vy    = xk(siIndex.vy);
+    x.r     = xk(siIndex.r);
+    x.s     = xk(siIndex.s);
+    x.throttle     = xk(siIndex.throttle);
+    x.steeringAngle = xk(siIndex.steeringAngle);
+    x.brakes     = xk(siIndex.brakes);
+    x.vs    = xk(siIndex.vs);
 
     return x;
 }
@@ -61,10 +61,10 @@ State vectorToState(const StateVector &xk)
 Input vectorToInput(const InputVector &uk)
 {
     Input u;
-    u.dThrottle     = uk(si_index.dThrottle);
-    u.dSteeringAngle = uk(si_index.dSteeringAngle);
-    u.dBrakes     = uk(si_index.dBrakes);
-    u.dVs    = uk(si_index.dVs);
+    u.dThrottle     = uk(siIndex.dThrottle);
+    u.dSteeringAngle = uk(siIndex.dSteeringAngle);
+    u.dBrakes     = uk(siIndex.dBrakes);
+    u.dVs    = uk(siIndex.dVs);
 
     return u;
 }
@@ -72,17 +72,17 @@ Input vectorToInput(const InputVector &uk)
 State arrayToState(double *xk)
 {
     State x;
-    x.X     = xk[si_index.X];
-    x.Y     = xk[si_index.Y];
-    x.phi   = xk[si_index.phi];
-    x.vx    = xk[si_index.vx];
-    x.vy    = xk[si_index.vy];
-    x.r     = xk[si_index.r];
-    x.s     = xk[si_index.s];
-    x.throttle     = xk[si_index.throttle];
-    x.steeringAngle = xk[si_index.steeringAngle];
-    x.brakes     = xk[si_index.brakes];
-    x.vs    = xk[si_index.vs];
+    x.X     = xk[siIndex.X];
+    x.Y     = xk[siIndex.Y];
+    x.phi   = xk[siIndex.phi];
+    x.vx    = xk[siIndex.vx];
+    x.vy    = xk[siIndex.vy];
+    x.r     = xk[siIndex.r];
+    x.s     = xk[siIndex.s];
+    x.throttle     = xk[siIndex.throttle];
+    x.steeringAngle = xk[siIndex.steeringAngle];
+    x.brakes     = xk[siIndex.brakes];
+    x.vs    = xk[siIndex.vs];
 
     return x;
 }
@@ -90,10 +90,10 @@ State arrayToState(double *xk)
 Input arrayToInput(double *uk)
 {
     Input u;
-    u.dThrottle     = uk[si_index.dThrottle];
-    u.dSteeringAngle = uk[si_index.dSteeringAngle];
-    u.dBrakes     = uk[si_index.dBrakes];
-    u.dVs    = uk[si_index.dVs];
+    u.dThrottle     = uk[siIndex.dThrottle];
+    u.dSteeringAngle = uk[siIndex.dSteeringAngle];
+    u.dBrakes     = uk[siIndex.dBrakes];
+    u.dVs    = uk[siIndex.dVs];
 
     return u;
 }

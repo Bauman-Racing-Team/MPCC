@@ -59,7 +59,7 @@ void AcadosInterface::initMPC()
   nlp_opts = acados_mpcc_acados_get_nlp_opts(acados_ocp_capsule);
 }
 
-void AcadosInterface::setInit(const Bounds &bounds, std::array<OptVariables, N + 1> &initial_guess_)
+void AcadosInterface::setInit(const Bounds &bounds, std::array<OptVariables, N + 1> &initialGuess)
 {
   // initial state x0
   idxbx0[0] = 0;
@@ -74,8 +74,8 @@ void AcadosInterface::setInit(const Bounds &bounds, std::array<OptVariables, N +
   idxbx0[9] = 9;
   idxbx0[10] = 10;
 
-  Eigen::Map<Eigen::Matrix<double, NBX0, 1>>(lbx0, NBX0) = stateToVector(initial_guess_[0].xk);
-  Eigen::Map<Eigen::Matrix<double, NBX0, 1>>(ubx0, NBX0) = stateToVector(initial_guess_[0].xk);
+  Eigen::Map<Eigen::Matrix<double, NBX0, 1>>(lbx0, NBX0) = stateToVector(initialGuess[0].xk);
+  Eigen::Map<Eigen::Matrix<double, NBX0, 1>>(ubx0, NBX0) = stateToVector(initialGuess[0].xk);
 
   ocp_nlp_constraints_model_set(nlp_config, nlp_dims, nlp_in, 0, "idxbx", idxbx0);
   ocp_nlp_constraints_model_set(nlp_config, nlp_dims, nlp_in, 0, "lbx", lbx0);
@@ -140,12 +140,12 @@ void AcadosInterface::setInit(const Bounds &bounds, std::array<OptVariables, N +
     ocp_nlp_constraints_model_set(nlp_config, nlp_dims, nlp_in, i, "idxbu", idxbu);
     ocp_nlp_constraints_model_set(nlp_config, nlp_dims, nlp_in, i, "lbu", lbu);
     ocp_nlp_constraints_model_set(nlp_config, nlp_dims, nlp_in, i, "ubu", ubu);
-    Eigen::Map<Eigen::Matrix<double, NX, 1>>(x_init, NX) = stateToVector(initial_guess_[i].xk);
-    Eigen::Map<Eigen::Matrix<double, NU, 1>>(u0, NU) = inputToVector(initial_guess_[i].uk);
+    Eigen::Map<Eigen::Matrix<double, NX, 1>>(x_init, NX) = stateToVector(initialGuess[i].xk);
+    Eigen::Map<Eigen::Matrix<double, NU, 1>>(u0, NU) = inputToVector(initialGuess[i].uk);
     ocp_nlp_out_set(nlp_config, nlp_dims, nlp_out, i, "x", x_init);
     ocp_nlp_out_set(nlp_config, nlp_dims, nlp_out, i, "u", u0);
   }
-  Eigen::Map<Eigen::Matrix<double, NX, 1>>(x_init, NX) = stateToVector(initial_guess_[N].xk);
+  Eigen::Map<Eigen::Matrix<double, NX, 1>>(x_init, NX) = stateToVector(initialGuess[N].xk);
   ocp_nlp_out_set(nlp_config, nlp_dims, nlp_out, N, "x", x_init);
   delete[] lubu;
   delete[] idxbu;
@@ -207,11 +207,11 @@ void AcadosInterface::setParam(std::array<Parameter, N + 1> parameter_)
 }
 
 solverReturn AcadosInterface::solveMPC(
-  std::array<OptVariables, N + 1> &initial_guess_, std::array<Parameter, N + 1> parameter_,
+  std::array<OptVariables, N + 1> &initialGuess, std::array<Parameter, N + 1> parameter_,
   const Bounds &bounds)
 {
   initMPC();
-  setInit(bounds, initial_guess_);
+  setInit(bounds, initialGuess);
   setParam(parameter_);
   return Solve();
 };
@@ -229,17 +229,17 @@ solverReturn AcadosInterface::Solve()
   min_time = MIN(elapsed_time, min_time);
   getSol();
 
-  std::array<OptVariables, N + 1> optimal_solution;
+  std::array<OptVariables, N + 1> optimalSolution;
   for (int i = 0; i <= N; i++) {
-    optimal_solution[i].xk = arrayToState(&xtraj[i * NX]);
+    optimalSolution[i].xk = arrayToState(&xtraj[i * NX]);
   }
 
   for (int i = 0; i < N; i++) {
-    optimal_solution[i].uk = arrayToInput(&utraj[i * NU]);
+    optimalSolution[i].uk = arrayToInput(&utraj[i * NU]);
   }
-  optimal_solution[N].uk.setZero();
+  optimalSolution[N].uk.setZero();
 
-  mpcSol.mpcHorizon = optimal_solution;
+  mpcSol.mpcHorizon = optimalSolution;
   mpcSol.status = status;
 
   // printSol();

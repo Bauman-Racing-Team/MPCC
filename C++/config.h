@@ -59,14 +59,14 @@ struct StateInputIndex {
   int dBrakes = 2;
   int dVs = 3;
 
-  int con_tire_f = 0;
-  int con_tire_r = 1;
-  int con_track = 2;
-  int con_elip_f = 3;
-  int con_elip_r = 4;
+  int conTireF = 0;
+  int conTireR = 1;
+  int conTrack = 2;
+  int conElipF = 3;
+  int conElipR = 4;
 };
 
-static const StateInputIndex si_index;
+static const StateInputIndex siIndex;
 
 }  // namespace mpcc
 #endif  // MPCC_CONFIG_H

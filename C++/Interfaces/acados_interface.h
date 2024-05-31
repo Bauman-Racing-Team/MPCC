@@ -86,7 +86,7 @@ class AcadosInterface : public SolverInterface
 {
 public:
   solverReturn solveMPC(
-    std::array<OptVariables, N + 1> &initial_guess_, std::array<Parameter, N + 1> parameter_,
+    std::array<OptVariables, N + 1> &initialGuess, std::array<Parameter, N + 1> parameter_,
     const Bounds &bounds);
 
   ~AcadosInterface() { std::cout << "Deleting Acados Interface" << std::endl; }
@@ -131,7 +131,7 @@ private:
 
   void initMPC();
 
-  void setInit(const Bounds &bounds, std::array<OptVariables, N + 1> &initial_guess_);
+  void setInit(const Bounds &bounds, std::array<OptVariables, N + 1> &initialGuess);
   void setParam(std::array<Parameter, N + 1> parameter_);
   solverReturn Solve();
   void printSol();

@@ -33,12 +33,12 @@ State Integrator::RK4(const State &x, const Input &u, double ts)
 State Integrator::simTimeStep(const State &x, const Input &u, const double ts)
 {
   // integrate time step
-  State x_next = x;
-  const int integration_steps = (int)(ts / fine_time_step_);
-  if (ts / fine_time_step_ != integration_steps) {
+  State xNext = x;
+  const int integrationSteps = (int)(ts / FineTimeStep);
+  if (ts / FineTimeStep != integrationSteps) {
     std::cout << "Warning" << std::endl;
   }
-  for (int i = 0; i < integration_steps; i++) x_next = RK4(x_next, u, fine_time_step_);
-  return x_next;
+  for (int i = 0; i < integrationSteps; i++) xNext = RK4(xNext, u, FineTimeStep);
+  return xNext;
 }
 }  // namespace mpcc
