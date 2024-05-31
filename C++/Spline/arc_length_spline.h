@@ -59,10 +59,10 @@ private:
     void fitSpline(const Eigen::VectorXd &X,const Eigen::VectorXd &Y);
     double unwrapInput(double x) const;
 
-    PathData path_data_;      // initial data and data used for successive fitting
+    PathData pathData;      // initial data and data used for successive fitting
 //    PathData pathDataFinal; // final data
-    CubicSpline spline_x_;
-    CubicSpline spline_y_;
+    CubicSpline splineX;
+    CubicSpline splineY;
     Param param_;
 };
 }

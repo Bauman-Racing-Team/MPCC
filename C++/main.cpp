@@ -25,27 +25,27 @@ using json = nlohmann::json;
 int main()
 {
   using namespace mpcc;
-  std::string go_to_path = "../";
-  std::ifstream iConfig(go_to_path + "Params/config.json");
+  std::string goToPath = "../";
+  std::ifstream iConfig(goToPath + "Params/config.json");
   json jsonConfig;
   iConfig >> jsonConfig;
 
-  PathToJson json_paths{
-    go_to_path + std::string(jsonConfig["model_path"]),
-    go_to_path + std::string(jsonConfig["cost_path"]),
-    go_to_path + std::string(jsonConfig["bounds_path"]),
-    go_to_path + std::string(jsonConfig["track_path"])};
+  PathToJson jsonPaths{
+    goToPath + std::string(jsonConfig["model_path"]),
+    goToPath + std::string(jsonConfig["cost_path"]),
+    goToPath + std::string(jsonConfig["bounds_path"]),
+    goToPath + std::string(jsonConfig["track_path"])};
 
-  Integrator integrator = Integrator(jsonConfig["Ts"], json_paths);
-  Plotting plotter = Plotting(jsonConfig["Ts"], json_paths);
+  Integrator integrator = Integrator(jsonConfig["Ts"], jsonPaths);
+  Plotting plotter = Plotting(jsonConfig["Ts"], jsonPaths);
 
-  Track track = Track(json_paths.track_path);
+  Track track = Track(jsonPaths.track_path);
   TrackPos track_xy = track.getTrack();
 
   std::list<MPCReturn> log;
   MPC mpc(
     jsonConfig["n_sqp"], jsonConfig["n_reset"], jsonConfig["sqp_mixing"], jsonConfig["Ts"],
-    json_paths);
+    jsonPaths);
   mpc.setTrack(track_xy.X, track_xy.Y);
   const double phi_0 = std::atan2(track_xy.Y(1) - track_xy.Y(0), track_xy.X(1) - track_xy.X(0));
   State x0 = {track_xy.X(0),   track_xy.Y(0), phi_0, jsonConfig["v0"], 0, 0, 0, 0.0, 0, 0,
