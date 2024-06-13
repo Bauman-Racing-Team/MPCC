@@ -38,4 +38,4 @@ target_include_directories(MPCC PRIVATE
 target_link_libraries(MPCC ${Python3_LIBRARIES}
                            ${CMAKE_SOURCE_DIR}/Acados/libacados_sim_solver_acados_mpcc.so 
                            ${CMAKE_SOURCE_DIR}/Acados/libacados_ocp_solver_acados_mpcc.so
-                           acados                           )
+                           acados)

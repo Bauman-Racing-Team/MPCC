@@ -20,3 +20,6 @@ tar -xf casadi-linux-matlabR2014b-v3.5.0.tar.gz -C casadi-matlab
 cd ../../
 
 
+ACADOS_LIB_PATH=${ACADOS_LIB_PATH:-"$(pwd)/acados/lib"}
+echo "$ACADOS_LIB_PATH" | sudo tee /etc/ld.so.conf.d/acados.conf
+sudo ldconfig
