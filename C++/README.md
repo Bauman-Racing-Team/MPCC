@@ -40,11 +40,11 @@ Currently, only one track and car model is implemented. However, adapting the pa
 
 ## Installation 
 
-To install additional dependencies for running **C++** version run **install.sh** from the `MPCC/C++` folder
+To install additional dependencies for running **C++** version run **install.sh** from the `MPCC` folder
 ```bash
 ./install.sh
 ```
-this clones, `matplotlip-cpp`, `nlohmann/json`, `eigen`, `cppad`, and `cppad-codegen` from their git repo, and safes them in a folder External. Additionally, it installs `cppad`, and `cppad-codegen` in the same External folder, thus no admin rights are necessary. You may need to install `llvm` and `clang` with admin rights in order for `cppad-codegen` to build properly.
+this clones,`acados`,  `matplotlip-cpp`, `nlohmann/json`,  and `eigen` from their git repo, and safes them in a folder External. 
 
 Note that `matplotlib-cpp` does also require `Python-2.7` or `Python-3` and `matplotlib`, for more details see (https://github.com/lava/matplotlib-cpp).
 
@@ -52,17 +52,7 @@ Note that `matplotlib-cpp` does also require `Python-2.7` or `Python-3` and `mat
 
 Once all dependencies are installed `cmake` can be used to build the project
 
-First of all you need to build and run ADCodeGen by running commands from the `MPCC/C++` folder:
-
-```bash
-cd ADCodeGen
-mkdir build && cd build
-cmake ..
-make -j$(nproc)
-./ADCodeGen
-```
-
-Then you need to build MPCC by running commands from the `MPCC/C++` folder:
+You need to build MPCC by running commands from the `MPCC/C++` folder:
 ```bash
 mkdir build && cd build
 cmake ..

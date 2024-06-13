@@ -29,25 +29,3 @@ localFolder_eigen="../External/Eigen"
 repository_json="https://github.com/nlohmann/json.git"
 localFolder_json="../External/Json"
 #git clone "$repository_json" "$localFolder_json"
-## clone cppad
-repository_cppad="https://github.com/coin-or/CppAD.git"
-localFolder_cppad="../External/CppAD"
-#git clone "$repository_cppad" "$localFolder_cppad"
-## clone cppad codegen
-repository_cppadcg="https://github.com/joaoleal/CppADCodeGen.git"
-localFolder_cppadcg="../External/CppADCodeGen"
-#git clone "$repository_cppadcg" "$localFolder_cppadcg"
-
-cd ../External/CppAD
-mkdir -p build
-cd build
-cmake .. -DCMAKE_INSTALL_PREFIX=$(realpath ../)
-make -j$(nproc)
-make install
-
-cd ../../CppADCodeGen
-mkdir -p build
-cd build
-cmake .. -DCMAKE_INSTALL_PREFIX=$(realpath ../) -DCMAKE_PREFIX_PATH=$(realpath ../../CppAD)
-make -j$(nproc)
-make install
