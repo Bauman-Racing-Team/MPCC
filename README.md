@@ -30,8 +30,10 @@ git clone https://github.com/Bauman-Racing-Team/MPCC.git
 ### Requirements to run C++ version of MPCC
 
 1. Ubuntu (Tested on Ubuntu 22.04);
-2. [**HPIPM**](https://github.com/giaf/hpipm/tree/master) for solving OCP QP and [**BLASFEO**](https://github.com/giaf/blasfeo) (HPIPM dependency);
-3. Other dependencies from <C++/README.md>.
+2. [**acados**](https://github.com/acados/acados) for solving OCP in a real time, which contains **HPIPM** for solving OCP QP and **BLASFEO** (HPIPM dependency);
+3. [**nlohmann/json**](https://github.com/nlohmann/json) for reading parameters from the json file .
+4. [**matplotlib-cpp**](https://github.com/lava/matplotlib-cpp) for plotting the result of the program.
+5. [**eigen**](https://gitlab.com/libeigen/eigen) for linear algebra operations.
 
 ### Requirements installation with a script, which will install all requirenments for both versions Matlab and C++
 
@@ -39,11 +41,10 @@ git clone https://github.com/Bauman-Racing-Team/MPCC.git
 ```bash
 cd MPCC
 ```
-2. run **install.sh** script to install **acados** and **CasADi** with **ipopt** for the **Matlab** version and **HPIPM** and **BLASFEO** for the **C++** version:
+2. run **install.sh** script to install **acados** and **CasADi** with **ipopt** for the **Matlab** version and **acados**,**matplotlib-cpp**,**eigen** and **nlohmann/json** for the **C++** version:
 ```bash
 ./install.sh
 ```
-
 ## Running (Tested on **Ubuntu 22.04** only!)
 
 All necessary instrictions for running **C++** and **Matlab** versions could be found in their respective directories.
