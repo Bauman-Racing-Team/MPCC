@@ -30,7 +30,6 @@ public:
   State simTimeStep(const State &x, const Input &u, double ts);
 
   Integrator();
-  Integrator(double Ts, const PathToJson &path);
 
 private:
   const double FineTimeStep = 0.05;

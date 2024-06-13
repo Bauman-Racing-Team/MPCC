@@ -106,7 +106,7 @@ private:
   Param param_;
   CostParam costParam;
 
-  std::unique_ptr<SolverInterface> solverInterface;
+  std::unique_ptr<AcadosInterface> solverInterface;
 };
 
 }  // namespace mpcc

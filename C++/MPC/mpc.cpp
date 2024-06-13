@@ -30,7 +30,6 @@ MPC::MPC(int n_sqp, int n_reset, double sqp_mixing, double Ts, const PathToJson 
   param_(Param(path.param_path)),
   costParam(CostParam(path.cost_path)),
   bounds_(BoundsParam(path.bounds_path)),
-  integrator_(Integrator(Ts, path)),
   track_(ArcLengthSpline(path))
 {
   nSqp = n_sqp;

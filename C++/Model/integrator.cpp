@@ -22,8 +22,6 @@ Integrator::Integrator()
   std::cout << "default constructor, not everything is initialized properly" << std::endl;
 }
 
-Integrator::Integrator(double Ts, const PathToJson &path) {}
-
 State Integrator::RK4(const State &x, const Input &u, double ts)
 {
   State xNext = Simulate(x, u, ts);

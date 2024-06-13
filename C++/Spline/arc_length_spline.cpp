@@ -102,7 +102,7 @@ PathData ArcLengthSpline::resamplePath(const CubicSpline &initial_spline_x,const
     return resampledPath;
 }
 
-RawPath ArcLengthSpline::outlierRemoval(const Eigen::VectorXd &X_original,const Eigen::VectorXd &Y_original) const
+RawPath ArcLengthSpline::outlierRemoval(const Eigen::VectorXd &xOriginal,const Eigen::VectorXd &yOriginal) const
 {
 
     // remove points which are not at all equally spaced, to avoid fitting problems
@@ -118,12 +118,12 @@ RawPath ArcLengthSpline::outlierRemoval(const Eigen::VectorXd &X_original,const 
     int k = 0;          // indecies
     int j = 0;
 
-    if (X_original.size() != Y_original.size()){
+    if (xOriginal.size() != yOriginal.size()){
         //error
     }
-//    std::cout << X_original << std::endl;
+//    std::cout << xOriginal << std::endl;
 
-    int n_points = X_original.size();
+    int n_points = xOriginal.size();
 
     // initialize with zero
     resampledPath.X.setZero(n_points);
@@ -134,8 +134,8 @@ RawPath ArcLengthSpline::outlierRemoval(const Eigen::VectorXd &X_original,const 
     // compute distance between points in X-Y data
     distVec.setZero(n_points-1);
     for(int i=0;i<n_points-1;i++){
-        dx = X_original(i+1)-X_original(i);
-        dy = Y_original(i+1)-Y_original(i);
+        dx = xOriginal(i+1)-xOriginal(i);
+        dy = yOriginal(i+1)-yOriginal(i);
         distVec(i) = std::sqrt(dx*dx + dy*dy);
     }
     // compute mean distance between points
@@ -143,26 +143,26 @@ RawPath ArcLengthSpline::outlierRemoval(const Eigen::VectorXd &X_original,const 
 
     // compute the new points
     // start point is the original start point
-    resampledPath.X(k) = X_original(k);
-    resampledPath.Y(k) = Y_original(k);
+    resampledPath.X(k) = xOriginal(k);
+    resampledPath.Y(k) = yOriginal(k);
     k++;
     for(int i=1;i<n_points-1;i++){
         // compute distance between currently checked point and the one last added to the new X-Y path
-        dx = X_original(i)-X_original(j);
-        dy = Y_original(i)-Y_original(j);
+        dx = xOriginal(i)-xOriginal(j);
+        dy = yOriginal(i)-yOriginal(j);
         dist = std::sqrt(dx*dx + dy*dy);
         // if this distance is smaller than 0.7 the mean distance add this point to the new X-Y path
         if(dist >= 0.7*meanDist)
         {
-            resampledPath.X(k) = X_original(i);
-            resampledPath.Y(k) = Y_original(i);
+            resampledPath.X(k) = xOriginal(i);
+            resampledPath.Y(k) = yOriginal(i);
             k++;
             j = i;
         }
     }
     // always add the last point
-    resampledPath.X(k) = X_original(n_points-1);
-    resampledPath.Y(k) = Y_original(n_points-1);
+    resampledPath.X(k) = xOriginal(n_points-1);
+    resampledPath.Y(k) = yOriginal(n_points-1);
     k++;
 
 //    std::cout << "not resiszed " << X_new.transpose() << std::endl;

@@ -36,7 +36,7 @@ int main()
     goToPath + std::string(jsonConfig["bounds_path"]),
     goToPath + std::string(jsonConfig["track_path"])};
 
-  Integrator integrator = Integrator(jsonConfig["Ts"], jsonPaths);
+  Integrator integrator;
   Plotting plotter = Plotting(jsonConfig["Ts"], jsonPaths);
 
   Track track = Track(jsonPaths.track_path);
