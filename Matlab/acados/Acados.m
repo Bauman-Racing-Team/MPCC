@@ -129,22 +129,26 @@ classdef Acados < handle
         end
 
         function setBounds(obj)
-            nbx = 9;
+            nbx = 11;
             jbx = zeros(nbx,obj.config.NX);
 
-            jbx(1,3) = 1;
-            jbx(2,4) = 1;
-            jbx(3,5) = 1;
-            jbx(4,6) = 1;
-            jbx(5,7) = 1;
-            jbx(6,8) = 1;
-            jbx(7,9) = 1;
-            jbx(8,10) = 1;
-            jbx(9,11) = 1;
+            jbx(1,1) = 1;
+            jbx(2,2) = 1;
+            jbx(3,3) = 1;
+            jbx(4,4) = 1;
+            jbx(5,5) = 1;
+            jbx(6,6) = 1;
+            jbx(7,7) = 1;
+            jbx(8,8) = 1;
+            jbx(9,9) = 1;
+            jbx(10,10) = 1;
+            jbx(11,11) = 1;
 
             obj.ocpModel.set('constr_Jbx',jbx);
 
             obj.ocpModel.set('constr_lbx',[ ...
+                                            obj.parameters.bounds.lowerStateBounds.xL, ...
+                                            obj.parameters.bounds.lowerStateBounds.yL, ...
                                             obj.parameters.bounds.lowerStateBounds.yawL, ...
                                             obj.parameters.bounds.lowerStateBounds.vxL, ...
                                             obj.parameters.bounds.lowerStateBounds.vyL, ...
@@ -156,6 +160,8 @@ classdef Acados < handle
                                             obj.parameters.bounds.lowerStateBounds.vsL]);
 
             obj.ocpModel.set('constr_ubx',[ ...
+                                            obj.parameters.bounds.upperStateBounds.xU, ...
+                                            obj.parameters.bounds.upperStateBounds.yU, ...
                                             obj.parameters.bounds.upperStateBounds.yawU, ...
                                             obj.parameters.bounds.upperStateBounds.vxU, ...
                                             obj.parameters.bounds.upperStateBounds.vyU, ...

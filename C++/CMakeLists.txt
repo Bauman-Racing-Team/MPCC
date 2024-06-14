@@ -28,7 +28,7 @@ target_include_directories(MPCC PRIVATE
         ./
         ./Acados
         ../External/matplotlib-cpp
-        ../External/Json/include/
+        ../External/json/include/
         ../External/eigen/
         ${Python3_INCLUDE_DIRS}
         ${Python3_NumPy_INCLUDE_DIRS}
