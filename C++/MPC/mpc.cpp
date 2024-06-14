@@ -20,7 +20,7 @@ namespace mpcc
 {
 MPC::MPC() : Ts_(0.05)
 {
-  std::cout << "default constructor, not everything is initialized properly" << std::endl;
+  // std::cout << "default constructor, not everything is initialized properly" << std::endl;
 }
 
 MPC::MPC(int n_sqp, int n_reset, double sqp_mixing, double Ts, const PathToJson &path)

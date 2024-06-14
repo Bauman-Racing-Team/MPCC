@@ -19,7 +19,7 @@ namespace mpcc
 {
 Integrator::Integrator()
 {
-  std::cout << "default constructor, not everything is initialized properly" << std::endl;
+  // std::cout << "default constructor, not everything is initialized properly" << std::endl;
 }
 
 State Integrator::RK4(const State &x, const Input &u, double ts)

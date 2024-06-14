@@ -24,9 +24,11 @@ add_executable(MPCC
 find_package(Python3 REQUIRED COMPONENTS Interpreter NumPy Development)
 find_package(acados REQUIRED)
 
+add_subdirectory(Acados_mpcc)
+
 target_include_directories(MPCC PRIVATE 
         ./
-        ./Acados
+        ./Acados_mpcc
         ../External/matplotlib-cpp
         ../External/json/include/
         ../External/eigen/
@@ -34,8 +36,7 @@ target_include_directories(MPCC PRIVATE
         ${Python3_NumPy_INCLUDE_DIRS}
         )
 
-
 target_link_libraries(MPCC ${Python3_LIBRARIES}
-                           ${CMAKE_SOURCE_DIR}/Acados/libacados_sim_solver_acados_mpcc.so 
-                           ${CMAKE_SOURCE_DIR}/Acados/libacados_ocp_solver_acados_mpcc.so
+                           acados_sim_solver_acados_mpcc
+                           acados_ocp_solver_acados_mpcc
                            acados)
