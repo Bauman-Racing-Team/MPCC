@@ -53,10 +53,10 @@ int main()
   for (int i = 0; i < jsonConfig["n_sim"]; i++) {
     MPCReturn mpc_sol = mpc.runMPC(x0);
     // Use the MPC prediction as sim step
-    x0 = mpc_sol.mpc_horizon[1].xk;
+    // x0 = mpc_sol.mpc_horizon[1].xk;
 
     // Use ODE integrator
-    // x0 = integrator.RK4(x0, mpc_sol.u0, jsonConfig["Ts"]);
+    x0 = integrator.RK4(mpc_sol.mpc_horizon[0].xk, mpc_sol.u0, jsonConfig["Ts"]);
 
     log.push_back(mpc_sol);
     std::cout << "MPC iter =  " << i + 1 << std::endl;
