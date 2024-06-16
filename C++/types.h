@@ -52,11 +52,11 @@ struct State {
 
   void unwrap(double track_length)
   {
-    if (phi > M_PI) phi -= 2.0 * M_PI;
-    if (phi < -M_PI) phi += 2.0 * M_PI;
+    while (phi > M_PI) phi -= 2.0 * M_PI;
+    while (phi < -M_PI) phi += 2.0 * M_PI;
 
-    if (s > track_length) s -= track_length;
-    if (s < 0) s += track_length;
+    while (s > track_length) s -= track_length;
+    while (s < 0) s += track_length;
   }
 
   void vxVsNonZero(double vx_zero)
