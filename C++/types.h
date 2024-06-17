@@ -107,10 +107,12 @@ struct Parameter {
   double scQuadTrack;
   double scQuadTire;
   double scQuadAlpha;
+  double scQuadControl;
 
   double scLinTrack;
   double scLinTire;
   double scLinAlpha;
+  double scLinControl;
 
   void setZero()
   {

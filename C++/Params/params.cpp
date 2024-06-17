@@ -124,10 +124,12 @@ CostParam::CostParam(std::string file)
   scQuadTrack = jsonCost["sc_quad_track"];
   scQuadTire = jsonCost["sc_quad_tire"];
   scQuadAlpha = jsonCost["sc_quad_alpha"];
+  scQuadControl = jsonCost["sc_quad_control"];
 
   scLinTrack = jsonCost["sc_lin_track"];
   scLinTire = jsonCost["sc_lin_tire"];
   scLinAlpha = jsonCost["sc_lin_alpha"];
+  scLinControl = jsonCost["sc_lin_control"];
 }
 
 BoundsParam::BoundsParam()

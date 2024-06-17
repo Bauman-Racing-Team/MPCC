@@ -119,15 +119,12 @@ void Plotting::plotRun(const std::list<MPCReturn> &log, const TrackPos &track_xy
 
   plt::figure();
   plt::plot(plot_d);
-  plt::ylabel("D [-]");
+  plt::plot(plot_b);
+  plt::ylabel("throttle/brake [-]");
 
   plt::figure();
   plt::plot(plot_delta);
   plt::ylabel("delta [rad]");
-
-  plt::figure();
-  plt::plot(plot_b);
-  plt::ylabel("brake [-]");
 
   plt::figure();
   plt::plot(plot_vs);

@@ -58,9 +58,11 @@ void MPC::fillParametersVector()
     parameter_[timeStep].scQuadTrack = costParam.scQuadTrack;
     parameter_[timeStep].scQuadTire = costParam.scQuadTire;
     parameter_[timeStep].scQuadAlpha = costParam.scQuadAlpha;
+    parameter_[timeStep].scQuadControl= costParam.scQuadControl;
     parameter_[timeStep].scLinTrack = costParam.scLinTrack;
     parameter_[timeStep].scLinTire = costParam.scLinTire;
     parameter_[timeStep].scLinAlpha = costParam.scLinAlpha;
+    parameter_[timeStep].scLinControl = costParam.scLinControl;
   }
 }
 

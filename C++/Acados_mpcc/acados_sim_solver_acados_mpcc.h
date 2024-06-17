@@ -80,6 +80,7 @@ typedef struct acados_mpcc_sim_solver_capsule
 
 ACADOS_SYMBOL_EXPORT int acados_mpcc_acados_sim_create(acados_mpcc_sim_solver_capsule *capsule);
 ACADOS_SYMBOL_EXPORT int acados_mpcc_acados_sim_solve(acados_mpcc_sim_solver_capsule *capsule);
+ACADOS_SYMBOL_EXPORT void acados_mpcc_acados_sim_batch_solve(acados_mpcc_sim_solver_capsule **capsules, int N_batch);
 ACADOS_SYMBOL_EXPORT int acados_mpcc_acados_sim_free(acados_mpcc_sim_solver_capsule *capsule);
 ACADOS_SYMBOL_EXPORT int acados_mpcc_acados_sim_update_params(acados_mpcc_sim_solver_capsule *capsule, double *value, int np);
 

@@ -35,7 +35,7 @@ namespace mpcc
 
 #define NB 15  // max number of bounds
 #define NPC 3  // number of polytopic constraints
-#define NS 5
+#define NS 6
 
 static constexpr int N = 100;
 static constexpr double INF = 1E5;

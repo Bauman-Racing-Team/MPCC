@@ -37,7 +37,7 @@
   "maxAlphaL":-0.05,
   "maxAlphaU":0.05,
   "rOutL":0,
-  "rOutU":1,
+  "rOutU":0.5,
   "ellipseL":0,
   "ellipseU":1
 

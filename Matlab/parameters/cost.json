@@ -26,8 +26,10 @@
     "scQuadTrack": 1E3,
     "scQuadTire": 1E2,
     "scQuadAlpha": 1E4,
+    "scQuadControl": 1E7,
     
     "scLinTrack": 1E2,
     "scLinTire": 1E2,
-    "scLinAlpha": 1E2
+    "scLinAlpha": 1E2,
+    "scLinControl": 1E6
 }
