@@ -88,46 +88,37 @@ void Plotting::plotRun(const std::list<MPCReturn> &log, const TrackPos &track_xy
   plt::ylabel("Y [m]");
 
   plt::figure();
-  plt::subplot(3, 2, 1);
   plt::plot(plot_x);
   plt::ylabel("X [m]");
 
-  //   plt::figure();
-  plt::subplot(3, 2, 2);
+    plt::figure();
   plt::plot(plot_y);
   plt::ylabel("Y [m]");
 
-  //   plt::figure();
-  plt::subplot(3, 2, 3);
+    plt::figure();
   plt::plot(plot_phi);
   plt::ylabel("phi [rad]");
 
-  //   plt::figure();
-  plt::subplot(3, 2, 4);
+    plt::figure();
   plt::plot(plot_vx);
   plt::ylabel("v_x [m/s]");
 
-  //   plt::figure();
-  plt::subplot(3, 2, 5);
+    plt::figure();
   plt::plot(plot_vy);
   plt::ylabel("v_y [m/s]");
 
-  //   plt::figure();
-  plt::subplot(3, 2, 6);
+    plt::figure();
   plt::plot(plot_r);
   plt::ylabel("r [rad/s]");
 
   plt::figure();
   plt::plot(plot_d);
-  plt::ylabel("D [-]");
+  plt::plot(plot_b);
+  plt::ylabel("throttle/brake [-]");
 
   plt::figure();
   plt::plot(plot_delta);
   plt::ylabel("delta [rad]");
-
-  plt::figure();
-  plt::plot(plot_b);
-  plt::ylabel("brake [-]");
 
   plt::figure();
   plt::plot(plot_vs);
