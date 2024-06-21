@@ -24,7 +24,7 @@ git clone https://github.com/Bauman-Racing-Team/MPCC.git
 
 1. Ubuntu (Tested on Ubuntu 22.04);
 2. Matlab (Tested on Matlab R2022a);
-3. [**CasADi**](https://web.casadi.org/) for automatic differentiation and **ipopt** solver, which comes with **CasADi**;
+3. [**CasADi**](https://web.casadi.org/) for automatic differentiation;
 4. [**acados**](https://github.com/acados/acados) for solving OCP in a real time.
 
 ### Requirements to run C++ version of MPCC

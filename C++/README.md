@@ -64,17 +64,16 @@ It could be:
 1. **tracks/competitions.json**;
 2. **tracks/constrictor.json**;
 3. **tracks/FSG.json**;
-4. **tracks/FSG_nirajbasnet.json**;
-5. **tracks/FSI.json**;
-6. **tracks/garden.json**;
-7. **tracks/hairpins.json**;
-8. **tracks/mess.json**;
-9. **tracks/peanut.json**;
-10. **tracks/rand.json**;
-11. **tracks/rectangle.json**;
-12. **tracks/small.json**;
-13. **tracks/thin.json**;
-14. **tracks/track.json**. 
+4. **tracks/FSI.json**;
+5. **tracks/garden.json**;
+6. **tracks/hairpins.json**;
+7. **tracks/mess.json**;
+8. **tracks/peanut.json**;
+9.  **tracks/rand.json**;
+10. **tracks/rectangle.json**;
+11. **tracks/small.json**;
+12. **tracks/thin.json**;
+13. **tracks/track.json**. 
 
 ### TODO
 
