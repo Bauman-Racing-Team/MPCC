@@ -38,16 +38,6 @@ There is no obstacle avoidance available yet in the C++ version
 ### Options
 Currently, only one track and car model is implemented. However, adapting the parameters only requires changing the json files in the Params folder.
 
-## Installation 
-
-To install additional dependencies for running **C++** version run **install.sh** from the `MPCC` folder
-```bash
-./install.sh
-```
-this clones,`acados`,  `matplotlip-cpp`, `nlohmann/json`,  and `eigen` from their git repo, and safes them in a folder External. 
-
-Note that `matplotlib-cpp` does also require `Python-2.7` or `Python-3` and `matplotlib`, for more details see (https://github.com/lava/matplotlib-cpp).
-
 ## Running instructions for the C++ version of MPCC
 
 Once all dependencies are installed `cmake` can be used to build the project
