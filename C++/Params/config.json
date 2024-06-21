@@ -10,5 +10,5 @@
   "model_path": "Params/model.json",
   "cost_path": "Params/cost.json",
   "bounds_path": "Params/bounds.json",
-  "track_path": "Params/tracks/FSG_matlab.json"
+  "track_path": "Params/tracks/FSG.json"
 }

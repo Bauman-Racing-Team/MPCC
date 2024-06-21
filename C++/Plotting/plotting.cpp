@@ -40,14 +40,14 @@ void Plotting::plotRun(const std::list<MPCReturn> &log, const TrackPos &track_xy
   std::vector<double> plot_vy;
   std::vector<double> plot_r;
   std::vector<double> plot_s;
-  std::vector<double> plot_d;
-  std::vector<double> plot_b;
-  std::vector<double> plot_delta;
+  std::vector<double> plot_throttle;
+  std::vector<double> plot_brakes;
+  std::vector<double> plot_steering;
   std::vector<double> plot_vs;
 
-  std::vector<double> plot_dd;
-  std::vector<double> plot_db;
-  std::vector<double> plot_ddelta;
+  std::vector<double> plot_dThrottle;
+  std::vector<double> plot_dBrakes;
+  std::vector<double> plot_dsteering;
   std::vector<double> plot_dvs;
 
   std::vector<double> plot_alpha_f;
@@ -62,14 +62,14 @@ void Plotting::plotRun(const std::list<MPCReturn> &log, const TrackPos &track_xy
     plot_vy.push_back(log_i.mpc_horizon[0].xk.vy);
     plot_r.push_back(log_i.mpc_horizon[0].xk.r);
     plot_s.push_back(log_i.mpc_horizon[0].xk.s);
-    plot_d.push_back(log_i.mpc_horizon[0].xk.throttle);
-    plot_delta.push_back(log_i.mpc_horizon[0].xk.steeringAngle);
-    plot_b.push_back(log_i.mpc_horizon[0].xk.brakes);
+    plot_throttle.push_back(log_i.mpc_horizon[0].xk.throttle);
+    plot_steering.push_back(log_i.mpc_horizon[0].xk.steeringAngle);
+    plot_brakes.push_back(log_i.mpc_horizon[0].xk.brakes);
     plot_vs.push_back(log_i.mpc_horizon[0].xk.vs);
 
-    plot_dd.push_back(log_i.mpc_horizon[0].uk.dThrottle);
-    plot_ddelta.push_back(log_i.mpc_horizon[0].uk.dSteeringAngle);
-    plot_db.push_back(log_i.mpc_horizon[0].uk.dBrakes);
+    plot_dThrottle.push_back(log_i.mpc_horizon[0].uk.dThrottle);
+    plot_dsteering.push_back(log_i.mpc_horizon[0].uk.dSteeringAngle);
+    plot_dBrakes.push_back(log_i.mpc_horizon[0].uk.dBrakes);
     plot_dvs.push_back(log_i.mpc_horizon[0].uk.dVs);
 
     const StateVector x_vec = stateToVector(log_i.mpc_horizon[2].xk);
@@ -91,50 +91,50 @@ void Plotting::plotRun(const std::list<MPCReturn> &log, const TrackPos &track_xy
   plt::plot(plot_x);
   plt::ylabel("X [m]");
 
-    plt::figure();
+  plt::figure();
   plt::plot(plot_y);
   plt::ylabel("Y [m]");
 
-    plt::figure();
+  plt::figure();
   plt::plot(plot_phi);
   plt::ylabel("phi [rad]");
 
-    plt::figure();
+  plt::figure();
   plt::plot(plot_vx);
   plt::ylabel("v_x [m/s]");
 
-    plt::figure();
+  plt::figure();
   plt::plot(plot_vy);
   plt::ylabel("v_y [m/s]");
 
-    plt::figure();
+  plt::figure();
   plt::plot(plot_r);
   plt::ylabel("r [rad/s]");
 
   plt::figure();
-  plt::plot(plot_d);
-  plt::plot(plot_b);
-  plt::ylabel("throttle/brake [-]");
+  plt::plot(plot_throttle);
+  plt::plot(plot_brakes);
+  plt::ylabel("throttle/brakes [-]");
 
   plt::figure();
-  plt::plot(plot_delta);
-  plt::ylabel("delta [rad]");
+  plt::plot(plot_steering);
+  plt::ylabel("steering [rad]");
 
   plt::figure();
   plt::plot(plot_vs);
   plt::ylabel("v_s [m/s]");
 
   plt::figure();
-  plt::plot(plot_dd);
-  plt::ylabel("dot{D} [-]");
+  plt::plot(plot_dThrottle);
+  plt::ylabel("dot{Throttle} [-]");
 
   plt::figure();
-  plt::plot(plot_db);
-  plt::ylabel("dot{B} [-]");
+  plt::plot(plot_dBrakes);
+  plt::ylabel("dot{Brakes} [-]");
 
   plt::figure();
-  plt::plot(plot_ddelta);
-  plt::ylabel("dot{delta} [rad/s]");
+  plt::plot(plot_dsteering);
+  plt::ylabel("dot{steering} [rad/s]");
 
   plt::figure();
   plt::plot(plot_dvs);
