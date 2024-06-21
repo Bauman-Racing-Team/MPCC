@@ -38,16 +38,6 @@ There is no obstacle avoidance available yet in the C++ version
 ### Options
 Currently, only one track and car model is implemented. However, adapting the parameters only requires changing the json files in the Params folder.
 
-## Installation 
-
-To install additional dependencies for running **C++** version run **install.sh** from the `MPCC` folder
-```bash
-./install.sh
-```
-this clones,`acados`,  `matplotlip-cpp`, `nlohmann/json`,  and `eigen` from their git repo, and safes them in a folder External. 
-
-Note that `matplotlib-cpp` does also require `Python-2.7` or `Python-3` and `matplotlib`, for more details see (https://github.com/lava/matplotlib-cpp).
-
 ## Running instructions for the C++ version of MPCC
 
 Once all dependencies are installed `cmake` can be used to build the project
@@ -74,17 +64,16 @@ It could be:
 1. **tracks/competitions.json**;
 2. **tracks/constrictor.json**;
 3. **tracks/FSG.json**;
-4. **tracks/FSG_nirajbasnet.json**;
-5. **tracks/FSI.json**;
-6. **tracks/garden.json**;
-7. **tracks/hairpins.json**;
-8. **tracks/mess.json**;
-9. **tracks/peanut.json**;
-10. **tracks/rand.json**;
-11. **tracks/rectangle.json**;
-12. **tracks/small.json**;
-13. **tracks/thin.json**;
-14. **tracks/track.json**. 
+4. **tracks/FSI.json**;
+5. **tracks/garden.json**;
+6. **tracks/hairpins.json**;
+7. **tracks/mess.json**;
+8. **tracks/peanut.json**;
+9.  **tracks/rand.json**;
+10. **tracks/rectangle.json**;
+11. **tracks/small.json**;
+12. **tracks/thin.json**;
+13. **tracks/track.json**. 
 
 ### TODO
 

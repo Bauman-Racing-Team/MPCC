@@ -5,9 +5,9 @@ Here is a fork of original [**MPCC**](https://github.com/alexliniger/MPCC) from 
 
 In this fork **MPCC** has **Matlab** and **C++** implementations. **Matlab** implementation is developed for creating one of the control approaches for the Formula Student Driverless car of **Bauman Racing Team**.
 
-In the current **Matlab** version new cost function, constraints functions were suggested. Moreover **Matlab** version does not use [**hpipm**](https://github.com/giaf/hpipm) solver anymore, [**acados**](https://github.com/acados/acados) and [**ipopt**](https://coin-or.github.io/Ipopt/) solvers with [**CasADi**](https://web.casadi.org/) interface for automatic equations differentiation are used instead.
+In the current **Matlab** and **C++** version new cost function, constraints functions were suggested. Moreover **Matlab** version does not use [**hpipm**](https://github.com/giaf/hpipm) solver anymore, [**acados**](https://github.com/acados/acados) with [**CasADi**](https://web.casadi.org/) interface for automatic equations differentiation are used instead.[**Ipopt**](https://coin-or.github.io/Ipopt/) solver is no longer supported.
 
-Now a primary version uses **acados**, because it has lots of benefits for solving OCPs in a real time applications. **ipopt** version is used as a reference and on the current version have some problems, which will be solved soon.
+Now a primary version uses **acados**, because it has lots of benefits for solving OCPs in a real time applications. 
 
 ![racing lap on the FSG track](https://github.com/Bauman-Racing-Team/MPCC/blob/develop/Matlab/race_FSG_track.gif)
 ![racing lap on the FSI track](https://github.com/Bauman-Racing-Team/MPCC/blob/develop/Matlab/race_FSI_track.gif)
@@ -24,7 +24,7 @@ git clone https://github.com/Bauman-Racing-Team/MPCC.git
 
 1. Ubuntu (Tested on Ubuntu 22.04);
 2. Matlab (Tested on Matlab R2022a);
-3. [**CasADi**](https://web.casadi.org/) for automatic differentiation and **ipopt** solver, which comes with **CasADi**;
+3. [**CasADi**](https://web.casadi.org/) for automatic differentiation;
 4. [**acados**](https://github.com/acados/acados) for solving OCP in a real time.
 
 ### Requirements to run C++ version of MPCC
@@ -33,6 +33,7 @@ git clone https://github.com/Bauman-Racing-Team/MPCC.git
 2. [**acados**](https://github.com/acados/acados) for solving OCP in a real time, which contains **HPIPM** for solving OCP QP and **BLASFEO** (HPIPM dependency);
 3. [**nlohmann/json**](https://github.com/nlohmann/json) for reading parameters from the json file .
 4. [**matplotlib-cpp**](https://github.com/lava/matplotlib-cpp) for plotting the result of the program.
+- Note that `matplotlib-cpp` does also require `Python-2.7` or `Python-3` and `matplotlib`, for more details see (https://github.com/lava/matplotlib-cpp).
 5. [**eigen**](https://gitlab.com/libeigen/eigen) for linear algebra operations.
 
 ### Requirements installation with a script, which will install all requirenments for both versions Matlab and C++
