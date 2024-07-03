@@ -4,6 +4,7 @@ classdef Parameters
     
     properties (Access = public)
         bounds
+        boundsTRO
         mpcModel
         costs
         car
@@ -26,6 +27,15 @@ classdef Parameters
             str = char(raw');
             fclose(fid);
             obj.bounds = jsondecode(str);
+
+            obj.d_config = config;
+            %load boundsTRO
+            fname = 'boundsTRO.json';
+            fid = fopen(fname);
+            raw = fread(fid,inf);
+            str = char(raw');
+            fclose(fid);
+            obj.boundsTRO = jsondecode(str);
 
             %load mpcmodelparameters
             fname = 'model.json';

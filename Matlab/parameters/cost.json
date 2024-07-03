@@ -19,6 +19,7 @@
     "rdSteeringAngle": 5E2,
     "rdBrakes": 1E2,
     "rdVs": 1E-4,
+    "rMtv": 1E-4,
     
     "qCNmult": 1000.0,
     "qRNmult": 10.0,

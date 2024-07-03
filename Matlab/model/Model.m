@@ -158,6 +158,95 @@ classdef Model
 
         end
 
+        function [Ffx,Ffy,Frx,Fry] = initCurvFrictionEllipseConstraint(obj, states)
+                    vx = states(3);
+                    vy = states(4);
+                    r = states(5);
+                    throttle = states(6);
+                    steeringAngle = states(7);
+                    brakes = states(8);
+       
+                    %Dynamic forces
+                    rDyn = obj.car.rDyn;
+                    
+                    cdrv = obj.car.cm1 * obj.car.gearRatio;
+                    cbf = obj.car.cbf;
+                    cbr = obj.car.cbr;
+        
+                    m = obj.car.m;
+                    lf = obj.car.lf;
+                    lr = obj.car.lr;
+                    gAcc = obj.car.g;
+                    fzNominal = obj.car.fzNominal;
+        
+                    % normal load on the one front wheel
+                    Ffz = lr*m*gAcc/(2.0*(lf+lr));
+                    Dffz = (Ffz-fzNominal)/fzNominal;
+        
+                    % normal load on the one rear wheel
+                    Frz = lf*m*gAcc/(2.0*(lf+lr));
+                    Drfz = (Frz-fzNominal)/fzNominal;
+                    
+                    % rolling resistance of the two front wheels
+                    Ffrr = 2*obj.tire.QSY1*Ffz*tanh(vx);
+        
+                    % rolling resistance of the two rear wheels
+                    Frrr = 2*obj.tire.QSY1*Frz*tanh(vx);
+                    
+                    % brakes front force
+                    Fbf = (-cbf*brakes)/rDyn*tanh(vx);
+        
+                    % brakes rear force
+                    Fbr = (-cbr*brakes)/rDyn*tanh(vx);
+        
+                    % drivetrain force
+                    Fdrv = (cdrv*throttle)/rDyn;
+        
+                    % longitudinal front force
+                    Ffx = Fbf+Ffrr;
+                    
+                    % longitudinal rear force
+                    Frx = Fbr+Fdrv+Frrr;
+        
+                    % slip angle of the front wheel
+                    saf = atan2((vy+r*lf),vx)-steeringAngle;
+        
+                    % slip angle of the rear wheel
+                    sar = atan2((vy-r*lr),vx);
+        
+                    % latteral tire force Pacejka coefficients
+                    % front wheel coefficients
+                    Kfy = obj.tire.PKY1*fzNominal *...
+                    sin(2.0*atan2(Ffz,(obj.tire.PKY2*fzNominal*obj.tire.LFZO)))*obj.tire.LFZO*obj.tire.LKY;
+        
+                    mufy = (obj.tire.PDY1+obj.tire.PDY2*Dffz)*obj.tire.LMUY;
+                    Dfy = mufy*Ffz;
+        
+                    Cfy = obj.tire.PCY1*obj.tire.LCY;
+        
+                    Bfy = Kfy/(Cfy*Dfy);
+        
+                    Efy = (obj.tire.PEY1+obj.tire.PEY2*Dffz)*obj.tire.LEY;
+                    
+                    % rear wheel coefficients
+                    Kry = obj.tire.PKY1*fzNominal *...
+                    sin(2.0*atan2(Frz,(obj.tire.PKY2*fzNominal*obj.tire.LFZO)))*obj.tire.LFZO*obj.tire.LKY;
+        
+                    mury = (obj.tire.PDY1+obj.tire.PDY2*Drfz)*obj.tire.LMUY;
+                    Dry = mury*Frz;
+        
+                    Cry = obj.tire.PCY1*obj.tire.LCY;
+        
+                    Bry = Kry/(Cry*Dry);
+        
+                    Ery = (obj.tire.PEY1+obj.tire.PEY2*Drfz)*obj.tire.LEY;   
+                    % latteral front force
+                    Ffy = 2*Dfy*sin(Cfy*atan(Bfy*saf-Efy*(Bfy*saf-atan(Bfy*saf))));
+                    % latteral rear force
+                    Fry = 2*Dry*sin(Cry*atan(Bry*sar-Ery*(Bry*sar-atan(Bry*sar))));
+
+        end
+
         function rhs = initKinematicModel(obj, states, controls)
             yaw = states(3);
             vx = states(4);
@@ -586,6 +675,122 @@ classdef Model
 
         end
 
+        function rhs = initCurvilinearDynamicModel(obj, states, controls)
+            curv=0.01;
+                    n = states(1);
+                    miu = states(2);
+                    vx = states(3);
+                    vy = states(4);
+                    r = states(5);
+                    throttle = states(6);
+                    steeringAngle = states(7);
+                    brakes = states(8);
+        
+                    dThrottle = controls(1);
+                    dSteeringAngle = controls(2);
+                    dBrakes = controls(3);
+                    Mtv = controls(4);
+        
+                    %Dynamic forces
+                    rDyn = obj.car.rDyn;
+                    
+                    cdrv = obj.car.cm1 * obj.car.gearRatio;
+                    cbf = obj.car.cbf;
+                    cbr = obj.car.cbr;
+        
+                    m = obj.car.m;
+                    iz = obj.car.iz;
+                    lf = obj.car.lf;
+                    lr = obj.car.lr;
+                    gAcc = obj.car.g;
+                    fzNominal = obj.car.fzNominal;
+        
+                    % normal load on the one front wheel
+                    Ffz = lr*m*gAcc/(2.0*(lf+lr));
+                    Dffz = (Ffz-fzNominal)/fzNominal;
+        
+                    % normal load on the one rear wheel
+                    Frz = lf*m*gAcc/(2.0*(lf+lr));
+                    Drfz = (Frz-fzNominal)/fzNominal;
+                    
+                    % rolling resistance of the two front wheels
+                    Ffrr = 2*obj.tire.QSY1*Ffz*tanh(vx);
+                    
+                    % rolling resistance of the two rear wheels
+                    Frrr = 2*obj.tire.QSY1*Frz*tanh(vx);
+                    
+                    % brakes front force
+                    Fbf = (-cbf*brakes)/rDyn*tanh(vx);
+        
+                    % brakes rear force
+                    Fbr = (-cbr*brakes)/rDyn*tanh(vx);
+        
+                    % drivetrain force
+                    Fdrv = (cdrv*throttle)/rDyn;
+        
+                    % longitudinal front force
+                    Ffx = Fbf+Ffrr;
+                    
+                    % longitudinal rear force
+                    Frx = Fbr+Fdrv+Frrr;
+        
+                    % slip angle of the front wheel
+                    saf = atan2((vy+r*lf),vx)-steeringAngle;
+        
+                    % slip angle of the rear wheel
+                    sar = atan2((vy-r*lr),vx);
+        
+                    % latteral tire force Pacejka coefficients
+                    % front wheel coefficients
+                    Kfy = obj.tire.PKY1*fzNominal *...
+                    sin(2.0*atan2(Ffz,(obj.tire.PKY2*fzNominal*obj.tire.LFZO)))*obj.tire.LFZO*obj.tire.LKY;
+        
+                    mufy = (obj.tire.PDY1+obj.tire.PDY2*Dffz)*obj.tire.LMUY;
+                    Dfy = mufy*Ffz;
+        
+                    Cfy = obj.tire.PCY1*obj.tire.LCY;
+        
+                    Bfy = Kfy/(Cfy*Dfy);
+        
+                    Efy = (obj.tire.PEY1+obj.tire.PEY2*Dffz)*obj.tire.LEY;
+                    
+                    % rear wheel coefficients
+                    Kry = obj.tire.PKY1*fzNominal *...
+                    sin(2.0*atan2(Frz,(obj.tire.PKY2*fzNominal*obj.tire.LFZO)))*obj.tire.LFZO*obj.tire.LKY;
+        
+                    mury = (obj.tire.PDY1+obj.tire.PDY2*Drfz)*obj.tire.LMUY;
+                    Dry = mury*Frz;
+        
+                    Cry = obj.tire.PCY1*obj.tire.LCY;
+        
+                    Bry = Kry/(Cry*Dry);
+        
+                    Ery = (obj.tire.PEY1+obj.tire.PEY2*Drfz)*obj.tire.LEY;
+        
+                    % latteral front force
+                    Ffy = 2*Dfy*sin(Cfy*atan(Bfy*saf-Efy*(Bfy*saf-atan(Bfy*saf))));
+        
+                    % latteral rear force
+                    Fry = 2*Dry*sin(Cry*atan(Bry*sar-Ery*(Bry*sar-atan(Bry*sar))));
+                    
+                    % drag force
+                    Fdrag = obj.car.cd*vx^2.0;
+                    
+                    sDot = (vx*cos(miu)-vy*sin(miu))/(1-n*curv);
+                    rhsTemp = [vx*sin(miu)+vy*cos(miu);
+                           r - curv * sDot;
+                           1/m*...
+                           (Frx+cos(steeringAngle)*Ffx+Fdrag-sin(steeringAngle)*Ffy +...
+                           m*vy*r);
+                           1/m*...
+                           (Fry+cos(steeringAngle)*Ffy+sin(steeringAngle)*Ffx-m*vx*r);
+                           1/iz *...
+                           (-Fry*lr+(cos(steeringAngle)*Ffy+sin(steeringAngle)*Ffx)*lf+Mtv);
+                           dThrottle;
+                           dSteeringAngle;
+                           dBrakes];
+                    rhs = rhsTemp./sDot;
+        end
 
         function rhs = initSimpleCombinedModel(obj,state,input)
             dynamicRhs = obj.initSimpleDynamicModel(state,input);

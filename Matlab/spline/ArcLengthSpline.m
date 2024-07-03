@@ -96,6 +96,18 @@ classdef ArcLengthSpline < handle
           path = obj.d_pathData;
       end
         
+      function curvature = getCurvature(obj, s)
+          dsPath = obj.getDerivative(s);
+          ddsPath = obj.getSecondDerivative(s);
+          dx_ds = dsPath(1);
+          dy_ds = dsPath(2);
+          d2x_ds2 = ddsPath(1);
+          d2y_ds2 = ddsPath(2);
+
+          curvature = (dx_ds .* d2y_ds2 - dy_ds .* d2x_ds2) ./ ((dx_ds.^2 + dy_ds.^2).^(3/2));
+      end
+
+
     end
 
     methods (Access = private)

@@ -1,0 +1,39 @@
+{
+    "lowerStateBounds":{
+      "sL":0.0,
+      "nL":-3,
+      "miuL": -10,
+      "vxL": 0.0,
+      "vyL": -10.0,
+      "rL": -2.5,
+      "throttleL": 0.0,
+      "steeringAngleL": -0.37,
+      "brakesL": 0.0
+    },
+
+    "upperStateBounds":{
+      "sU": 2500.0,
+      "nU":3,
+      "miuU": 10,
+      "vxU": 30.0,
+      "vyU": 10.0,
+      "rU": 2.5,
+      "throttleU": 1.0,
+      "steeringAngleU": 0.37,
+      "brakesU": 1.0
+    },
+
+    "lowerInputBounds":{
+      "dThrottleL": -1.0,
+      "dSteeringAngleL": -1.0,
+      "dBrakesL": -1.0,
+      "MtvL": -500
+    },
+
+    "upperInputBounds":{
+      "dThrottleU": 1.0,
+      "dSteeringAngleU": 1.0,
+      "dBrakesU": 1.0,
+      "MtvU": 500
+    }
+}
