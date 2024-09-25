@@ -35,6 +35,7 @@ cmake_minimum_required(VERSION 3.13)
 project(acados_mpcc)
 
 # build options.
+
 option(BUILD_ACADOS_SOLVER_LIB "Should the solver library acados_solver_acados_mpcc be build?" OFF)
 option(BUILD_ACADOS_OCP_SOLVER_LIB "Should the OCP solver library acados_ocp_solver_acados_mpcc be build?" ON)
 option(BUILD_EXAMPLE "Should the example main_acados_mpcc be build?" OFF)
@@ -53,6 +54,13 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "GNU" AND CMAKE_SYSTEM_NAME MATCHES "Windows")
 endif()
 
 
+if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
+    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE c_generated_code)
+    set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE c_generated_code)
+    set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE c_generated_code)
+endif()
+
+
 # object target names
 set(MODEL_OBJ model_acados_mpcc)
 set(OCP_OBJ ocp_acados_mpcc)
@@ -66,6 +74,8 @@ set(MODEL_SRC
 )
 add_library(${MODEL_OBJ} OBJECT ${MODEL_SRC} )
 
+
+
 # optimal control problem - mostly CasADi exports
 if(${BUILD_ACADOS_SOLVER_LIB} OR ${BUILD_ACADOS_OCP_SOLVER_LIB} OR ${BUILD_EXAMPLE})
     set(OCP_SRC
@@ -74,13 +84,20 @@ if(${BUILD_ACADOS_SOLVER_LIB} OR ${BUILD_ACADOS_OCP_SOLVER_LIB} OR ${BUILD_EXAMP
         acados_mpcc_cost/acados_mpcc_cost_ext_cost_0_fun.c
         acados_mpcc_cost/acados_mpcc_cost_ext_cost_0_fun_jac.c
         acados_mpcc_cost/acados_mpcc_cost_ext_cost_0_fun_jac_hess.c
+        
+        
         acados_mpcc_cost/acados_mpcc_cost_ext_cost_fun.c
         acados_mpcc_cost/acados_mpcc_cost_ext_cost_fun_jac.c
         acados_mpcc_cost/acados_mpcc_cost_ext_cost_fun_jac_hess.c
+        
+        
         acados_mpcc_cost/acados_mpcc_cost_ext_cost_e_fun.c
         acados_mpcc_cost/acados_mpcc_cost_ext_cost_e_fun_jac.c
         acados_mpcc_cost/acados_mpcc_cost_ext_cost_e_fun_jac_hess.c
-        acados_solver_acados_mpcc.c)
+        
+        
+        acados_solver_acados_mpcc.c
+    )
     add_library(${OCP_OBJ} OBJECT ${OCP_SRC})
 endif()
 # for sim solver
@@ -89,7 +106,6 @@ if(${BUILD_ACADOS_SOLVER_LIB} OR ${BUILD_EXAMPLE}
     set(SIM_SRC acados_sim_solver_acados_mpcc.c)
     add_library(${SIM_OBJ} OBJECT ${SIM_SRC})
 endif()
-
 # for target example
 set(EX_SRC main_acados_mpcc.c)
 set(EX_EXE main_acados_mpcc)
@@ -97,13 +113,13 @@ set(EXTERNAL_DIR)
 set(EXTERNAL_LIB)
 
 # set some search paths for preprocessor and linker
-set(ACADOS_INCLUDE_PATH ../../External/acados/include CACHE PATH "Define the path which contains the include directory for acados.")
-set(ACADOS_LIB_PATH ../../External/acados/lib CACHE PATH "Define the path which contains the lib directory for acados.")
+set(ACADOS_INCLUDE_PATH /home/pavel/MPCC/Matlab/../External/acados/include CACHE PATH "Define the path which contains the include directory for acados.")
+set(ACADOS_LIB_PATH /home/pavel/MPCC/Matlab/../External/acados/lib CACHE PATH "Define the path which contains the lib directory for acados.")
 
 # c-compiler flags for debugging
 set(CMAKE_C_FLAGS_DEBUG "-O0 -ggdb")
 
-set(CMAKE_C_FLAGS "-fPIC -std=c99  ")
+set(CMAKE_C_FLAGS "-fPIC -std=c99   -O2  ")
 #-fno-diagnostics-show-line-numbers -g
 
 include_directories(
@@ -124,7 +140,6 @@ else()
 endif()
 
 # the targets
-
 # bundled_shared_lib
 if(${BUILD_ACADOS_SOLVER_LIB})
     set(LIB_ACADOS_SOLVER acados_solver_acados_mpcc)

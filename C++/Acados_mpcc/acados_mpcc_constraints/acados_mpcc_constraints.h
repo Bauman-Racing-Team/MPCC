@@ -49,6 +49,7 @@ const int *acados_mpcc_constr_h_fun_jac_uxt_zt_sparsity_in(int);
 const int *acados_mpcc_constr_h_fun_jac_uxt_zt_sparsity_out(int);
 int acados_mpcc_constr_h_fun_jac_uxt_zt_n_in(void);
 int acados_mpcc_constr_h_fun_jac_uxt_zt_n_out(void);
+real_t* acados_mpcc_constr_h_fun_jac_uxt_zt_get_pool_double(const char*);
 
 int acados_mpcc_constr_h_fun(const real_t** arg, real_t** res, int* iw, real_t* w, void *mem);
 int acados_mpcc_constr_h_fun_work(int *, int *, int *, int *);
@@ -56,6 +57,7 @@ const int *acados_mpcc_constr_h_fun_sparsity_in(int);
 const int *acados_mpcc_constr_h_fun_sparsity_out(int);
 int acados_mpcc_constr_h_fun_n_in(void);
 int acados_mpcc_constr_h_fun_n_out(void);
+real_t* acados_mpcc_constr_h_fun_get_pool_double(const char*);
 
 
 

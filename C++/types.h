@@ -59,10 +59,10 @@ struct State {
     while (s < 0) s += track_length;
   }
 
-  void vxVsNonZero(double vx_zero)
+  void vxVsNonZero(double vxMin)
   {
-    if (vx < vx_zero) vx = vx_zero;
-    if (vs < vx_zero) vs = vx_zero;
+    if (vx < vxMin) vx = vxMin;
+    if (vs < vxMin) vs = vxMin;
   }
 };
 
@@ -135,7 +135,6 @@ struct PathToJson {
   const std::string cost_path;
   const std::string bounds_path;
   const std::string track_path;
-  const std::string normalization_path;
   const std::string adcodegen_path;
 };
 

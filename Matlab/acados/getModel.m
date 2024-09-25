@@ -85,15 +85,15 @@ function model = getModel(parameters)
     vRef = parameters.mpcModel.vRef;
 
     % Coeffs for control inputs penalization with normalization
-    throttleU = parameters.bounds.upperStateBounds.throttleU;
-    steeringAngleU = parameters.bounds.upperStateBounds.steeringAngleU;
-    brakesU = parameters.bounds.upperStateBounds.brakesU;
-    vsU = parameters.bounds.upperStateBounds.vsU;
+    dThrottleU = parameters.bounds.upperInputBounds.dThrottleU;
+    dSteeringAngleU = parameters.bounds.upperInputBounds.dSteeringAngleU;
+    dBrakesU = parameters.bounds.upperInputBounds.dBrakesU;
+    dVsU = parameters.bounds.upperInputBounds.dVsU;
 
-    R = diag([rdThrottle / throttleU.^2, ...
-              rdSteeringAngle / steeringAngleU.^2, ...
-              rdBrakes / brakesU.^2, ...
-              rdVs / vsU.^2]);
+    R = diag([rdThrottle / dThrottleU.^2, ...
+              rdSteeringAngle / dSteeringAngleU.^2, ...
+              rdBrakes / dBrakesU.^2, ...
+              rdVs / dVsU.^2]);
 
     cost_expr_ext_cost = error'*Q*error+input'*R*input+qVs*(vRef-vs)^2;
     cost_expr_ext_cost_e = error'*Q*error+qVs*(vRef-vs)^2; 

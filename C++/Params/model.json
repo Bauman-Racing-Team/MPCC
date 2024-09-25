@@ -1,49 +1,20 @@
 
 {
-  "Cm1" : 8000.0,
-  "Cm2" : 172.0,
+  "lf"  : 0.765,
+  "lr"  : 0.765,
 
-  "Cr0" : 180.0,
-  "Cr2" : 0.7,
+  "car_l": 3.0,
+  "car_w": 1.36,
 
-  "CBf"  : 4000.0,
-  "CBr"  : 2000.0,
+  "rIn" : 1.0,
+  "rOut" : 1.0,
 
-  "Cl": 1.1142,
-  "rho": 1.225,
-  "S": 1.2,
-  "aero_split_front": 0.5,
-  
-  "Br"  : 10.0,
-  "Cr"  : -1.38,
-  "Dr"  : 1.6,
-
-  "Bf"  : 10.0,
-  "Cf"  : -1.38,
-  "Df"  : 1.6,
-
-  "m"   : 190.0,
-  "Iz"  : 110.0,
-  "lf"  : 1.22,
-  "lr"  : 1.22,
-
-  "car_l": 2.0,
-  "car_w": 1.0,
-
-  "g"   : 9.81,
-
-  "R_in" : 1.0,
-  "R_out" : 1.0,
-
-  "max_dist_proj": 3.0,
-
-  "E_long" : 1.25,
-  "E_eps" : 1.05,
+  "maxDistProj": 3.0,
 
   "maxAlpha" : 0.06,
 
-  "initial_velocity" : 15.0,
-  "s_trust_region" : 30.0,
+  "vxMin": 1.0,
+  "vRef": 30.0,
 
-  "vx_zero": 1.0
+  "sTrustRegion" : 30.0
 }

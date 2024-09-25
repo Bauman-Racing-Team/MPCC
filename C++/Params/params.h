@@ -28,49 +28,23 @@ using json = nlohmann::json;
 
 class Param{
 public:
-    double Cm1;
-    double Cm2;
-    double Cr0;
-    double Cr2;
-    double CBf;
-    double CBr;
-    double Cl;
-    double rho;
-    double S;
-    double aero_split_front;
-
-    double Br;
-    double Cr;
-    double Dr;
-
-    double Bf;
-    double Cf;
-    double Df;
-
-    double m;
-    double Iz;
     double lf;
     double lr;
 
     double car_l;
     double car_w;
 
-    double g;
-
     double r_in;
     double r_out;
 
     double max_dist_proj;
 
-    double e_long;
-    double e_eps;
-
     double max_alpha;
 
-    double initial_velocity;
     double s_trust_region;
 
-    double vx_zero;
+    double vRef;
+    double vxMin;
 
     Param();
     Param(std::string file);
@@ -89,11 +63,6 @@ public:
 
     double qBeta;
     int betaKinCost;
-
-    double rThrottle;
-    double rSteeringAngle;
-    double rBrakes;
-    double rVs;
 
     double rdThrottle;
     double rdSteeringAngle;
@@ -162,11 +131,13 @@ public:
         double maxAlphaL;
         double rOutL;
         double ellipseL;
+        double lonControlL;
     };
     struct UpperConstBounds{
         double maxAlphaU;
         double rOutU;
         double ellipseU;
+        double lonControlU;
     };
 
     LowerStateBounds lower_state_bounds;

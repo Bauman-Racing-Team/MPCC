@@ -64,6 +64,7 @@ struct StateInputIndex {
   int conTrack = 2;
   int conElipF = 3;
   int conElipR = 4;
+  int conLonControl = 5;
 };
 
 static const StateInputIndex siIndex;

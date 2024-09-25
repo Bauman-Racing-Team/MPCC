@@ -217,7 +217,8 @@ classdef Acados < handle
             constr_lh = [constr_lh,0,0];
             
             constr_uh = [constr_uh,1,1];
-
+            
+            % longitudinal control constraint bounds
             constr_lh = [constr_lh,0];
 
             constr_uh = [constr_uh,0];
@@ -482,16 +483,16 @@ classdef Acados < handle
             rdVs = obj.paramVec(11,1);
             
             % Maximum input values for normalization
-            throttleU = obj.parameters.bounds.upperStateBounds.throttleU;
-            steeringAngleU = obj.parameters.bounds.upperStateBounds.steeringAngleU;
-            brakesU = obj.parameters.bounds.upperStateBounds.brakesU;
-            vsU = obj.parameters.bounds.upperStateBounds.vsU;
+            dThrottleU = obj.parameters.bounds.upperInputBounds.dThrottleU;
+            dSteeringAngleU = obj.parameters.bounds.upperInputBounds.dSteeringAngleU;
+            dBrakesU = obj.parameters.bounds.upperInputBounds.dBrakesU;
+            dVsU = obj.parameters.bounds.upperInputBounds.dVsU;
             
             % R matrix for quad cost with normalization
-            R = diag([rdThrottle / throttleU.^2, ...
-                      rdSteeringAngle / steeringAngleU.^2, ...
-                      rdBrakes / brakesU.^2, ...
-                      rdVs / vsU.^2]);
+            R = diag([rdThrottle / dThrottleU.^2, ...
+                      rdSteeringAngle / dSteeringAngleU.^2, ...
+                      rdBrakes / dBrakesU.^2, ...
+                      rdVs / dVsU.^2]);
             
             cost_expr_ext_cost = 0;
 

@@ -77,7 +77,7 @@ void MPC::updateInitialGuess(const State &x0)
   initialGuess[N].xk = integrator_.RK4(initialGuess[N - 1].xk, initialGuess[N - 1].uk, Ts_);
   initialGuess[N].uk.setZero();
 
-  for (int i = 0; i < N + 1; i++) initialGuess[i].xk.vxVsNonZero(param_.vx_zero);
+  for (int i = 0; i < N + 1; i++) initialGuess[i].xk.vxVsNonZero(param_.vxMin);
   unwrapInitialGuess();
 }
 
@@ -101,13 +101,13 @@ void MPC::unwrapInitialGuess()
 void MPC::generateNewInitialGuess(const State &x0)
 {
   initialGuess[0].xk = x0;
-  initialGuess[0].xk.vxVsNonZero(param_.vx_zero);
+  initialGuess[0].xk.vxVsNonZero(param_.vxMin);
   initialGuess[0].uk.setZero();
 
   for (int i = 1; i <= N; i++) {
     initialGuess[i].xk.setZero();
     initialGuess[i].uk.setZero();
-    initialGuess[i].xk.vxVsNonZero(param_.vx_zero);
+    initialGuess[i].xk.vxVsNonZero(param_.vxMin);
 
     initialGuess[i].xk.s = initialGuess[i - 1].xk.s + Ts_ * initialGuess[i - 1].xk.vs;
     Eigen::Vector2d trackPosI = track_.getPostion(initialGuess[i].xk.s);

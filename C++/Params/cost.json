@@ -11,15 +11,10 @@
   "qBeta" : 10E0,
   "betaKin": 1,
 
-  "rThrottle" : 1E-3,
-  "rSteeringAngle" : 1E-9,
-  "rBrakes" : 1E-2,
-  "rVs" : 1E-5,
-
   "rdThrottle" : 1E2,
   "rdSteeringAngle" : 5E2,
   "rdBrakes" : 1E2,
-  "rdVs" : 1E-4,
+  "rdVs" : 25E-4,
 
   "qCNmult": 1000.0,
   "qRNmult": 10.0,

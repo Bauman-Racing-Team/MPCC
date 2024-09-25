@@ -34,51 +34,27 @@ Param::Param(std::string file)
   json jsonModel;
   iModel >> jsonModel;
   // Model Parameters
-  Cm1 = jsonModel["Cm1"];
-  Cm2 = jsonModel["Cm2"];
 
-  Cr0 = jsonModel["Cr0"];
-  Cr2 = jsonModel["Cr2"];
-  CBf = jsonModel["CBf"];
-  CBr = jsonModel["CBr"];
-
-  Cl = jsonModel["Cl"];
-  rho = jsonModel["rho"];
-  S = jsonModel["S"];
-  aero_split_front = jsonModel["aero_split_front"];
-
-  Br = jsonModel["Br"];
-  Cr = jsonModel["Cr"];
-  Dr = jsonModel["Dr"];
-
-  Bf = jsonModel["Bf"];
-  Cf = jsonModel["Cf"];
-  Df = jsonModel["Df"];
-
-  m = jsonModel["m"];
-  Iz = jsonModel["Iz"];
   lf = jsonModel["lf"];
   lr = jsonModel["lr"];
 
   car_l = jsonModel["car_l"];
   car_w = jsonModel["car_w"];
 
-  g = jsonModel["g"];
+
   // Constraint Parameters
-  r_in = jsonModel["R_in"];
-  r_out = jsonModel["R_out"];
+  r_in = jsonModel["rIn"];
+  r_out = jsonModel["rOut"];
 
-  max_dist_proj = jsonModel["max_dist_proj"];
-
-  e_long = jsonModel["E_long"];
-  e_eps = jsonModel["E_eps"];
+  max_dist_proj = jsonModel["maxDistProj"];
 
   max_alpha = jsonModel["maxAlpha"];
   // initial warm start and trust region (model dependent)
-  initial_velocity = jsonModel["initial_velocity"];
-  s_trust_region = jsonModel["s_trust_region"];
 
-  vx_zero = jsonModel["vx_zero"];
+  vRef = jsonModel["vRef"];
+  vxMin = jsonModel["vxMin"];
+
+  s_trust_region = jsonModel["sTrustRegion"];
 }
 
 CostParam::CostParam()
@@ -107,11 +83,6 @@ CostParam::CostParam(std::string file)
 
   qBeta = jsonCost["qBeta"];
   betaKinCost = jsonCost["betaKin"];
-
-  rThrottle = jsonCost["rThrottle"];
-  rSteeringAngle = jsonCost["rSteeringAngle"];
-  rBrakes = jsonCost["rBrakes"];
-  rVs = jsonCost["rVs"];
 
   rdThrottle = jsonCost["rdThrottle"];
   rdSteeringAngle = jsonCost["rdSteeringAngle"];
@@ -185,9 +156,11 @@ BoundsParam::BoundsParam(std::string file)
   lower_const_bounds.maxAlphaL = jsonBounds["maxAlphaL"];
   lower_const_bounds.rOutL = jsonBounds["rOutL"];
   lower_const_bounds.ellipseL = jsonBounds["ellipseL"];
+  lower_const_bounds.lonControlL = jsonBounds["lonControlL"];
 
   upper_const_bounds.maxAlphaU = jsonBounds["maxAlphaU"];
   upper_const_bounds.rOutU = jsonBounds["rOutU"];
   upper_const_bounds.ellipseU = jsonBounds["ellipseU"];
+  upper_const_bounds.lonControlU = jsonBounds["lonControlU"];
 }
 }  // namespace mpcc
