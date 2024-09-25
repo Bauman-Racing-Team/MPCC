@@ -480,11 +480,18 @@ classdef Acados < handle
             rdSteeringAngle = obj.paramVec(9,1);
             rdBrakes = obj.paramVec(10,1);
             rdVs = obj.paramVec(11,1);
-
-            R = diag([rdThrottle, ...
-                      rdSteeringAngle, ...
-                      rdBrakes, ...
-                      rdVs]);
+            
+            % Maximum input values for normalization
+            throttleU = obj.parameters.bounds.upperStateBounds.throttleU;
+            steeringAngleU = obj.parameters.bounds.upperStateBounds.steeringAngleU;
+            brakesU = obj.parameters.bounds.upperStateBounds.brakesU;
+            vsU = obj.parameters.bounds.upperStateBounds.vsU;
+            
+            % R matrix for quad cost with normalization
+            R = diag([rdThrottle / throttleU.^2, ...
+                      rdSteeringAngle / steeringAngleU.^2, ...
+                      rdBrakes / brakesU.^2, ...
+                      rdVs / vsU.^2]);
             
             cost_expr_ext_cost = 0;
 

@@ -20,11 +20,10 @@ classdef Model
                     brakes = states(10);
        
                     %Dynamic forces
-                    rDyn = obj.car.rDyn;
+                    rDyn = obj.tire.R;
                     
-                    cdrv = obj.car.cm1 * obj.car.gearRatio;
-                    cbf = obj.car.cbf;
-                    cbr = obj.car.cbr;
+                    gearRatio = obj.car.gearRatio;
+                    brakesRatio = obj.car.brakesRatio;
         
                     m = obj.car.m;
                     lf = obj.car.lf;
@@ -44,13 +43,13 @@ classdef Model
                     Frrr = 2*obj.tire.QSY1*Frz*tanh(vx);
                     
                     % brakes front force
-                    Fbf = (-cbf*brakes)/rDyn*tanh(vx);
+                    Fbf = (-brakes*brakesRatio/(1 + brakesRatio))/rDyn*tanh(vx);
         
                     % brakes rear force
-                    Fbr = (-cbr*brakes)/rDyn*tanh(vx);
+                    Fbr = (-brakes*1/(1 + brakesRatio))/rDyn*tanh(vx);
         
                     % drivetrain force
-                    Fdrv = (cdrv*throttle)/rDyn;
+                    Fdrv = (gearRatio*throttle)/rDyn;
         
                     % longitudinal front force
                     Ffx = Fbf+Ffrr;
@@ -78,17 +77,16 @@ classdef Model
                     brakes = states(10);
        
                     %Dynamic forces
-                    rDyn = obj.car.rDyn;
+                    rDyn = obj.tire.R;
                     
-                    cdrv = obj.car.cm1 * obj.car.gearRatio;
-                    cbf = obj.car.cbf;
-                    cbr = obj.car.cbr;
+                    gearRatio = obj.car.gearRatio;
+                    brakesRatio = obj.car.brakesRatio;
         
                     m = obj.car.m;
                     lf = obj.car.lf;
                     lr = obj.car.lr;
                     gAcc = obj.car.g;
-                    fzNominal = obj.car.fzNominal;
+                    fzNominal = obj.tire.fzNominal;
         
                     % normal load on the one front wheel
                     Ffz = lr*m*gAcc/(2.0*(lf+lr));
@@ -105,13 +103,13 @@ classdef Model
                     Frrr = 2*obj.tire.QSY1*Frz*tanh(vx);
                     
                     % brakes front force
-                    Fbf = (-cbf*brakes)/rDyn*tanh(vx);
+                    Fbf = (-brakes*brakesRatio/(1 + brakesRatio))/rDyn*tanh(vx);
         
                     % brakes rear force
-                    Fbr = (-cbr*brakes)/rDyn*tanh(vx);
+                    Fbr = (-brakes*1/(1 + brakesRatio))/rDyn*tanh(vx);
         
                     % drivetrain force
-                    Fdrv = (cdrv*throttle)/rDyn;
+                    Fdrv = (gearRatio*throttle)/rDyn;
         
                     % longitudinal front force
                     Ffx = Fbf+Ffrr;
@@ -174,11 +172,10 @@ classdef Model
             dVs = controls(4);
             
             % car parameters
-            rDyn = obj.car.rDyn;
+            rDyn = obj.tire.R;
             
-            cdrv = obj.car.cm1*obj.car.gearRatio;
-            cbf = obj.car.cbf;
-            cbr = obj.car.cbr;
+            gearRatio = obj.car.gearRatio;
+            brakesRatio = obj.car.brakesRatio;
 
             m = obj.car.m;
             lf = obj.car.lf;
@@ -198,13 +195,13 @@ classdef Model
             Frrr = 2*obj.tire.QSY1*Frz*tanh(vx);
 
             % brakes front force
-            Fbf = (-cbf*brakes)/rDyn*tanh(vx);
-
+            Fbf = (-brakes*brakesRatio/(1 + brakesRatio))/rDyn*tanh(vx);
+    
             % brakes rear force
-            Fbr = (-cbr*brakes)/rDyn*tanh(vx);
-
+            Fbr = (-brakes*1/(1 + brakesRatio))/rDyn*tanh(vx);
+    
             % drivetrain force
-            Fdrv = (cdrv*throttle)/rDyn;
+            Fdrv = (gearRatio*throttle)/rDyn;
 
             % longitudinal front force
             Ffx = Fbf+Ffrr;
@@ -253,10 +250,10 @@ classdef Model
             lf = obj.car.lf;
             lr = obj.car.lr;
             gAcc = obj.car.g;
-            cbf = obj.car.cbf;
-            cbr = obj.car.cbr;
-            rDyn = obj.car.rDyn;
-            cdrv = obj.car.cm1 * obj.car.gearRatio;
+            gearRatio = obj.car.gearRatio;
+            brakesRatio = obj.car.brakesRatio;
+            
+            rDyn = obj.tire.R;
 
             % normal load on the one front wheel
             Ffz = lr*m*gAcc/(2.0*(lf+lr));
@@ -271,13 +268,13 @@ classdef Model
             Frrr = 2*obj.tire.QSY1*Frz*tanh(vx);
             
             % brakes front force
-            Fbf = (-cbf*brakes)/rDyn*tanh(vx);
+            Fbf = (-brakes*brakesRatio/(1 + brakesRatio))/rDyn*tanh(vx);
 
             % brakes rear force
-            Fbr = (-cbr*brakes)/rDyn*tanh(vx);
+            Fbr = (-brakes*1/(1 + brakesRatio))/rDyn*tanh(vx);
 
             % drivetrain force
-            Fdrv = (cdrv*throttle)/rDyn;
+            Fdrv = (gearRatio*throttle)/rDyn;
 
             % longitudinal front force
             Ffx = Fbf+Ffrr;
@@ -333,18 +330,17 @@ classdef Model
                     dVs = controls(4);
         
                     %Dynamic forces
-                    rDyn = obj.car.rDyn;
+                    rDyn = obj.tire.R;
                     
-                    cdrv = obj.car.cm1 * obj.car.gearRatio;
-                    cbf = obj.car.cbf;
-                    cbr = obj.car.cbr;
+                    gearRatio = obj.car.gearRatio;
+                    brakesRatio = obj.car.brakesRatio;
         
                     m = obj.car.m;
                     iz = obj.car.iz;
                     lf = obj.car.lf;
                     lr = obj.car.lr;
                     gAcc = obj.car.g;
-                    fzNominal = obj.car.fzNominal;
+                    fzNominal = obj.tire.fzNominal;
         
                     % normal load on the one front wheel
                     Ffz = lr*m*gAcc/(2.0*(lf+lr));
@@ -361,13 +357,13 @@ classdef Model
                     Frrr = 2*obj.tire.QSY1*Frz*tanh(vx);
                     
                     % brakes front force
-                    Fbf = (-cbf*brakes)/rDyn*tanh(vx);
+                    Fbf = (-brakes*brakesRatio/(1 + brakesRatio))/rDyn*tanh(vx);
         
                     % brakes rear force
-                    Fbr = (-cbr*brakes)/rDyn*tanh(vx);
+                    Fbr = (-brakes*1/(1 + brakesRatio))/rDyn*tanh(vx);
         
                     % drivetrain force
-                    Fdrv = (cdrv*throttle)/rDyn;
+                    Fdrv = (gearRatio*throttle)/rDyn;
         
                     % longitudinal front force
                     Ffx = Fbf+Ffrr;
@@ -452,19 +448,18 @@ classdef Model
                     dVs = controls(4);
         
                     %Dynamic forces
-                    rDyn = obj.car.rDyn;
+                    rDyn = obj.tire.R;
                     
-                    cdrv = obj.car.cm1 * obj.car.gearRatio;
-                    cbf = obj.car.cbf;
-                    cbr = obj.car.cbr;
+                    gearRatio = obj.car.gearRatio;
+                    brakesRatio = obj.car.brakesRatio;
         
                     m = obj.car.m;
                     iz = obj.car.iz;
                     lf = obj.car.lf;
                     lr = obj.car.lr;
-                    iw = obj.car.iw;
+                    iw = obj.tire.I;
                     gAcc = obj.car.g;
-                    fzNominal = obj.car.fzNominal;
+                    fzNominal = obj.tire.fzNominal;
         
                     % normal load on the one front wheel
                     Ffz = lr*m*gAcc/(2.0*(lf+lr));
@@ -476,20 +471,20 @@ classdef Model
                     
                     % rolling resistance of the two front wheels
                     Ffrr = 2*obj.tire.QSY1*Ffz*tanh(vx);
-%                     Ffrr = 200*tanh(vx);
+                    % Ffrr = 200*tanh(vx);
         
                     % rolling resistance of the two rear wheels
                     Frrr = 2*obj.tire.QSY1*Frz*tanh(vx);
-%                     Frrr = 200*tanh(vx);
+                    % Frrr = 200*tanh(vx);
                     
                     % brakes front force
-                    Fbf = (-cbf*brakes)/rDyn*tanh(vx);
+                    Fbf = (-brakes*brakesRatio/(1 + brakesRatio))/rDyn*tanh(vx);
         
                     % brakes rear force
-                    Fbr = (-cbr*brakes)/rDyn*tanh(vx);
+                    Fbr = (-brakes*1/(1 + brakesRatio))/rDyn*tanh(vx);
         
                     % drivetrain force
-                    Fdrv = (cdrv*throttle)/rDyn;
+                    Fdrv = (gearRatio*throttle)/rDyn;
                
                     % slip angle of the front wheel
                     saf0 = atan2((vy+r*lf),vx)-steeringAngle;

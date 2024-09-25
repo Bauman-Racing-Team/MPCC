@@ -84,11 +84,16 @@ function model = getModel(parameters)
 %     qVs = parameters.costs.qVs;
     vRef = parameters.mpcModel.vRef;
 
-    % Coeffs for control inputs penalization
-    R = diag([rdThrottle, ...
-              rdSteeringAngle, ...
-              rdBrakes, ...
-              rdVs]);
+    % Coeffs for control inputs penalization with normalization
+    throttleU = parameters.bounds.upperStateBounds.throttleU;
+    steeringAngleU = parameters.bounds.upperStateBounds.steeringAngleU;
+    brakesU = parameters.bounds.upperStateBounds.brakesU;
+    vsU = parameters.bounds.upperStateBounds.vsU;
+
+    R = diag([rdThrottle / throttleU.^2, ...
+              rdSteeringAngle / steeringAngleU.^2, ...
+              rdBrakes / brakesU.^2, ...
+              rdVs / vsU.^2]);
 
     cost_expr_ext_cost = error'*Q*error+input'*R*input+qVs*(vRef-vs)^2;
     cost_expr_ext_cost_e = error'*Q*error+qVs*(vRef-vs)^2; 
@@ -112,8 +117,8 @@ function model = getModel(parameters)
 
     % friction ellipse constraint
     [Ffx,Ffy,Frx,Fry] = carModel.initFrictionEllipseConstraint(state);
-    constrF = (Ffx/parameters.car.muxFz)^2+(Ffy/parameters.car.muyFz)^2;
-    constrR = (Frx/parameters.car.muxFz)^2+(Fry/parameters.car.muyFz)^2;
+    constrF = (Ffx/parameters.tire.muxFz)^2+(Ffy/parameters.tire.muyFz)^2;
+    constrR = (Frx/parameters.tire.muxFz)^2+(Fry/parameters.tire.muyFz)^2;
     constr_expr_h = [constr_expr_h;constrF;constrR];
 
     constr_expr_h = [constr_expr_h;throttle*brakes];

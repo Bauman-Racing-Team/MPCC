@@ -8,7 +8,6 @@ classdef Parameters
         costs
         car
         tire
-        normalization
         config
     end
 
@@ -58,36 +57,6 @@ classdef Parameters
             str = char(raw');
             fclose(fid);
             obj.tire = jsondecode(str);
-
-            %load noermalization parameters
-            fname = 'normalization.json';
-            fid = fopen(fname);
-            raw = fread(fid,inf);
-            str = char(raw');
-            fclose(fid);
-            decoded = jsondecode(str);
-
-            normStateVec = [decoded.x, decoded.y, decoded.yaw, decoded.vx, decoded.vy,...
-                decoded.r, decoded.s, decoded.throttle, decoded.steeringAngle,...
-                decoded.brakes, decoded.vs];
-
-            obj.normalization.tX = diag(normStateVec);
-
-            for i = 1:obj.d_config.NX
-                obj.normalization.tXInv(i,i) = 1/obj.normalization.tX(i,i);
-            end
-
-            normInputVec = [decoded.dThrottle, decoded.dSteeringAngle,...
-                decoded.dBrakes, decoded.dVs];
-
-            obj.normalization.tU = diag(normInputVec);
-
-            for i = 1:obj.d_config.NU
-                obj.normalization.tUInv(i,i) = 1/obj.normalization.tU(i,i);
-            end
-
-            obj.normalization.tS = eye(2);
-            obj.normalization.tSInv = eye(2);
 
             %load config
             fname = 'config.json';
