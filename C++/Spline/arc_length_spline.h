@@ -55,14 +55,14 @@ private:
     void setRegularData(const Eigen::VectorXd &X_in,const Eigen::VectorXd &Y_in,const Eigen::VectorXd &s_in);
     Eigen::VectorXd compArcLength(const Eigen::VectorXd &X_in,const Eigen::VectorXd &Y_in) const;
     PathData resamplePath(const CubicSpline &initial_spline_x,const CubicSpline &initial_spline_y,double total_arc_length) const;
-    RawPath outlierRemoval(const Eigen::VectorXd &X_original,const Eigen::VectorXd &Y_original) const;
+    RawPath outlierRemoval(const Eigen::VectorXd &xOriginal,const Eigen::VectorXd &yOriginal) const;
     void fitSpline(const Eigen::VectorXd &X,const Eigen::VectorXd &Y);
     double unwrapInput(double x) const;
 
-    PathData path_data_;      // initial data and data used for successive fitting
+    PathData pathData;      // initial data and data used for successive fitting
 //    PathData pathDataFinal; // final data
-    CubicSpline spline_x_;
-    CubicSpline spline_y_;
+    CubicSpline splineX;
+    CubicSpline splineY;
     Param param_;
 };
 }

@@ -21,14 +21,10 @@
 #include "types.h"
 #include "Params/params.h"
 #include "Spline/arc_length_spline.h"
-#include "Model/model.h"
 #include "Model/integrator.h"
-#include "Cost/cost.h"
-#include "Constraints/constraints.h"
 #include "Constraints/bounds.h"
 
-#include "Interfaces/solver_interface.h"
-#include "Interfaces/hpipm_interface.h"
+#include "Interfaces/acados_interface.h"
 
 #include <array>
 #include <memory>
@@ -36,98 +32,83 @@
 #include <ratio>
 #include <chrono>
 
-namespace mpcc{
-
-struct OptVariables {
-    State xk;
-    Input uk;
-};
-
+namespace mpcc
+{
 struct Stage {
-    LinModelMatrix lin_model;
-    CostMatrix cost_mat;
-    ConstrainsMatrix constrains_mat;
+  Bounds_x u_bounds_x;
+  Bounds_x l_bounds_x;
 
-    Bounds_x u_bounds_x;
-    Bounds_x l_bounds_x;
+  Bounds_u u_bounds_u;
+  Bounds_u l_bounds_u;
 
-    Bounds_u u_bounds_u;
-    Bounds_u l_bounds_u;
+  Bounds_s u_bounds_s;
+  Bounds_s l_bounds_s;
 
-    Bounds_s u_bounds_s;
-    Bounds_s l_bounds_s;
-
-    //nx    -> number of states
-    //nu    -> number of inputs
-    //nbx   -> number of bounds on x
-    //nbu   -> number of bounds on u
-    //ng    -> number of polytopic constratins
-    //ns   -> number of soft constraints
-    int nx, nu, nbx, nbu, ng, ns;
+  // nx    -> number of states
+  // nu    -> number of inputs
+  // nbx   -> number of bounds on x
+  // nbu   -> number of bounds on u
+  // ng    -> number of polytopic constratins
+  // ns   -> number of soft constraints
+  int nx, nu, nbx, nbu, ng, ns;
 };
 
 struct MPCReturn {
-    const Input u0;
-    const std::array<OptVariables,N+1> mpc_horizon;
-    const double time_total;
+  const Input u0;
+  const std::array<OptVariables, N + 1> mpc_horizon;
+  const double time_total;
+  const int solverStatus;
 };
 
-class MPC {
+class MPC
+{
 public:
-    MPCReturn runMPC(State &x0);
+  MPCReturn runMPC(State &x0);
 
-    void setTrack(const Eigen::VectorXd &X, const Eigen::VectorXd &Y);
+  void setTrack(const Eigen::VectorXd &X, const Eigen::VectorXd &Y);
 
-    MPC();
-    MPC(int n_sqp, int n_reset, double sqp_mixing, double Ts,const PathToJson &path);
+  MPC();
+  MPC(int n_sqp, int n_reset, double sqp_mixing, double Ts, const PathToJson &path);
 
 private:
-    bool valid_initial_guess_;
+  bool validInitialGuess;
 
-    std::array<Stage, N + 1> stages_;
+  std::array<Stage, N + 1> stages_;
+  std::array<Parameter, N + 1> parameter_;
 
-    std::array<OptVariables, N + 1> initial_guess_;
-    std::array<OptVariables, N + 1> optimal_solution_;
+  std::array<OptVariables, N + 1> initialGuess;
+  std::array<OptVariables, N + 1> tempGuess;
+  std::array<OptVariables, N + 1> optimalSolution;
 
-    void setMPCProblem();
+  void fillParametersVector();
 
-    void setStage(const State &xk, const Input &uk,const State &xk1, int time_step);
+  void setMPCProblem();
 
-    CostMatrix normalizeCost(const CostMatrix &cost_mat);
-    LinModelMatrix normalizeDynamics(const LinModelMatrix &lin_model);
-    ConstrainsMatrix normalizeCon(const ConstrainsMatrix &con_mat);
-    std::array<OptVariables,N+1> deNormalizeSolution(const std::array<OptVariables,N+1> &solution);
+  void updateInitialGuess(const State &x0);
 
-    void updateInitialGuess(const State &x0);
+  void generateNewInitialGuess(const State &x0);
 
-    void generateNewInitialGuess(const State &x0);
+  void unwrapInitialGuess();
 
-    void unwrapInitialGuess();
+  int nSqp;
+  double sqpMixing;
+  int nNoSolvesSqp;
+  int nNoSolvesSqpMax;
+  int nReset;
 
-    std::array<OptVariables, N + 1> sqpSolutionUpdate(const std::array<OptVariables, N + 1> &last_solution,
-                                                      const std::array<OptVariables, N + 1> &current_solution);
+  double bounds_x[2 * NX];
+  const double Ts_;
 
-    int n_sqp_;
-    double sqp_mixing_;
-    int n_non_solves_;
-    int n_no_solves_sqp_;
-    int n_reset_;
+  Integrator integrator_;
+  ArcLengthSpline track_;
 
-    const double Ts_;
+  Bounds bounds_;
+  Param param_;
+  CostParam costParam;
 
-    Model model_;
-    Integrator integrator_;
-    Cost cost_;
-    Constraints constraints_;
-    ArcLengthSpline track_;
-
-    Bounds bounds_;
-    NormalizationParam normalization_param_;
-    Param param_;
-
-    std::unique_ptr<SolverInterface> solver_interface_;
+  std::unique_ptr<AcadosInterface> solverInterface;
 };
 
-}
+}  // namespace mpcc
 
-#endif //MPCC_MPC_H
+#endif  // MPCC_MPC_H

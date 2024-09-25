@@ -20,117 +20,152 @@
 #include "config.h"
 #include <vector>
 
-namespace mpcc{
-struct State{
-    double X;
-    double Y;
-    double phi;
-    double vx;
-    double vy;
-    double r;
-    double s;
-    double D;
-    double B;
-    double delta;
-    double vs;
+namespace mpcc
+{
+struct State {
+  double X;
+  double Y;
+  double phi;
+  double vx;
+  double vy;
+  double r;
+  double s;
+  double throttle;
+  double steeringAngle;
+  double brakes;
+  double vs;
 
-    void setZero()
-    {
-        X = 0.0;
-        Y = 0.0;
-        phi = 0.0;
-        vx = 0.0;
-        vy = 0.0;
-        r = 0.0;
-        s = 0.0;
-        D = 0.0;
-        B = 0.0;
-        delta = 0.0;
-        vs = 0.0;
-    }
+  void setZero()
+  {
+    X = 0.0;
+    Y = 0.0;
+    phi = 0.0;
+    vx = 0.0;
+    vy = 0.0;
+    r = 0.0;
+    s = 0.0;
+    throttle = 0.0;
+    steeringAngle = 0.0;
+    brakes = 0.0;
+    vs = 0.0;
+  }
 
-    void unwrap(double track_length)
-    {
-        if (phi > M_PI)
-            phi -= 2.0 * M_PI;
-        if (phi < -M_PI)
-            phi += 2.0 * M_PI;
+  void unwrap(double track_length)
+  {
+    while (phi > M_PI) phi -= 2.0 * M_PI;
+    while (phi < -M_PI) phi += 2.0 * M_PI;
 
-        if (s > track_length)
-            s -= track_length;
-        if (s < 0)
-            s += track_length;
-    }
+    while (s > track_length) s -= track_length;
+    while (s < 0) s += track_length;
+  }
 
-    void vxNonZero(double vx_zero)
-    {
-        if(vx < vx_zero){
-            vx = vx_zero;
-            vy = 0.0;
-            r = 0.0;
-            delta = 0.0;
-        }
-    }
-
-    void vxNonZero1(double vx_zero) {
-        if (vx < vx_zero) {}; // FIX: this was added only to avoid unused var error
-        vx = std::max(vx,5.0);
-    }
+  void vxVsNonZero(double vx_zero)
+  {
+    if (vx < vx_zero) vx = vx_zero;
+    if (vs < vx_zero) vs = vx_zero;
+  }
 };
 
-struct Input{
-    double dD;
-    double dB;
-    double dDelta;
-    double dVs;
+struct Input {
+  double dThrottle;
+  double dSteeringAngle;
+  double dBrakes;
+  double dVs;
 
-    void setZero()
-    {
-        dD = 0.0;
-        dB = 0.0;
-        dDelta = 0.0;
-        dVs = 0.0;
-    }
+  void setZero()
+  {
+    dThrottle = 0.0;
+    dSteeringAngle = 0.0;
+    dBrakes = 0.0;
+    dVs = 0.0;
+  }
 };
 
-struct PathToJson{
-    const std::string param_path;
-    const std::string cost_path;
-    const std::string bounds_path;
-    const std::string track_path;
-    const std::string normalization_path;
-    const std::string adcodegen_path;
+struct OptVariables {
+  State xk;
+  Input uk;
 };
 
-typedef Eigen::Matrix<double,NX,1> StateVector;
-typedef Eigen::Matrix<double,NU,1> InputVector;
+struct solverReturn {
+  std::array<OptVariables, N + 1> mpcHorizon;
+  int status;
+};
 
-typedef Eigen::Matrix<double,NX,NX> A_MPC;
-typedef Eigen::Matrix<double,NX,NU> B_MPC;
-typedef Eigen::Matrix<double,NX,1> g_MPC;
+struct Parameter {
+  double xTrack;
+  double yTrack;
+  double phiTrack;
+  double s0;
+  double qC;
+  double qL;
+  double qVs;
+  double rdThrottle;
+  double rdSteeringAngle;
+  double rdBrakes;
+  double rdVs;
 
-typedef Eigen::Matrix<double,NX,NX> Q_MPC;
-typedef Eigen::Matrix<double,NU,NU> R_MPC;
-typedef Eigen::Matrix<double,NX,NU> S_MPC;
+  double scQuadTrack;
+  double scQuadTire;
+  double scQuadAlpha;
 
-typedef Eigen::Matrix<double,NX,1> q_MPC;
-typedef Eigen::Matrix<double,NU,1> r_MPC;
+  double scLinTrack;
+  double scLinTire;
+  double scLinAlpha;
 
-typedef Eigen::Matrix<double,NPC,NX> C_MPC;
-typedef Eigen::Matrix<double,1,NX> C_i_MPC;
-typedef Eigen::Matrix<double,NPC,NU> D_MPC;
-typedef Eigen::Matrix<double,NPC,1> d_MPC;
+  void setZero()
+  {
+    xTrack = 0;
+    yTrack = 0;
+    phiTrack = 0;
+    s0 = 0;
+    qC = 0;
+    qL = 0;
+    qVs = 0;
+    rdThrottle = 0;
+    rdSteeringAngle = 0;
+    rdBrakes = 0;
+    rdVs = 0;
+  }
+};
 
-typedef Eigen::Matrix<double,NS,NS> Z_MPC;
-typedef Eigen::Matrix<double,NS,1> z_MPC;
+struct PathToJson {
+  const std::string param_path;
+  const std::string cost_path;
+  const std::string bounds_path;
+  const std::string track_path;
+  const std::string normalization_path;
+  const std::string adcodegen_path;
+};
 
-typedef Eigen::Matrix<double,NX,NX> TX_MPC;
-typedef Eigen::Matrix<double,NU,NU> TU_MPC;
-typedef Eigen::Matrix<double,NS,NS> TS_MPC;
+typedef Eigen::Matrix<double, NX, 1> StateVector;
+typedef Eigen::Matrix<double, NU, 1> InputVector;
 
-typedef Eigen::Matrix<double,NX,1> Bounds_x;
-typedef Eigen::Matrix<double,NU,1> Bounds_u;
-typedef Eigen::Matrix<double,NS,1> Bounds_s;
+typedef Eigen::Matrix<double, NX, NX> A_MPC;
+typedef Eigen::Matrix<double, NX, NU> B_MPC;
+typedef Eigen::Matrix<double, NX, 1> g_MPC;
+
+typedef Eigen::Matrix<double, NX, NX> Q_MPC;
+typedef Eigen::Matrix<double, NU, NU> R_MPC;
+typedef Eigen::Matrix<double, NX, NU> S_MPC;
+
+typedef Eigen::Matrix<double, NX, 1> q_MPC;
+typedef Eigen::Matrix<double, NU, 1> r_MPC;
+
+typedef Eigen::Matrix<double, NPC, NX> C_MPC;
+typedef Eigen::Matrix<double, 1, NX> C_i_MPC;
+typedef Eigen::Matrix<double, NPC, NU> D_MPC;
+typedef Eigen::Matrix<double, NPC, 1> d_MPC;
+
+typedef Eigen::Matrix<double, NS, NS> Z_MPC;
+typedef Eigen::Matrix<double, NS, 1> z_MPC;
+
+typedef Eigen::Matrix<double, NX, NX> TX_MPC;
+typedef Eigen::Matrix<double, NU, NU> TU_MPC;
+typedef Eigen::Matrix<double, NS, NS> TS_MPC;
+
+typedef Eigen::Matrix<double, NX, 1> Bounds_x;
+typedef Eigen::Matrix<double, NU, 1> Bounds_u;
+typedef Eigen::Matrix<double, NS, 1> Bounds_s;
 
 StateVector stateToVector(const State &x);
 InputVector inputToVector(const Input &u);
@@ -141,6 +176,6 @@ Input vectorToInput(const InputVector &uk);
 State arrayToState(double *xk);
 Input arrayToInput(double *uk);
 
-std::vector<double> stateInputToVector(const State x,const Input u);
-}
-#endif //MPCC_TYPES_H
+std::vector<double> stateInputToVector(const State x, const Input u);
+}  // namespace mpcc
+#endif  // MPCC_TYPES_H

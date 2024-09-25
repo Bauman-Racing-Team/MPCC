@@ -1,10 +1,9 @@
 build
 External
 C++/build
-C++/ADCodeGen/build
 C++/.vscode
 Matlab/build
 Matlab/c_generated_code
-acados_ocp_nlp.json
+Matlab/acados_ocp_nlp.json
 *.asv
 
