@@ -30,10 +30,10 @@ void ArcLengthSpline::setData(const Eigen::VectorXd &X_in,const Eigen::VectorXd 
     // set input data if x and y have same length
     // compute arc length based on an piecewise linear approximation
     if(X_in.size() == Y_in.size()){
-        path_data_.X = X_in;
-        path_data_.Y = Y_in;
-        path_data_.n_points = X_in.size();
-        path_data_.s = compArcLength(X_in,Y_in);
+        pathData.X = X_in;
+        pathData.Y = Y_in;
+        pathData.n_points = X_in.size();
+        pathData.s = compArcLength(X_in,Y_in);
     }
     else{
         std::cout << "input data does not have the same length" << std::endl;
@@ -44,10 +44,10 @@ void ArcLengthSpline::setRegularData(const Eigen::VectorXd &X_in,const Eigen::Ve
     // set final x-y data if x and y have same length
     // x-y points are space such that they are very close to arc length parametrized
     if(X_in.size() == Y_in.size()){
-        path_data_.X = X_in;
-        path_data_.Y = Y_in;
-        path_data_.n_points = X_in.size();
-        path_data_.s = s_in;
+        pathData.X = X_in;
+        pathData.Y = Y_in;
+        pathData.n_points = X_in.size();
+        pathData.s = s_in;
     }
     else{
         std::cout << "input data does not have the same length" << std::endl;
@@ -85,24 +85,24 @@ PathData ArcLengthSpline::resamplePath(const CubicSpline &initial_spline_x,const
 
     // s -> "arc length" where points should be extracted
     // equilly spaced between 0 and current length of path
-    PathData resampled_path;
-    resampled_path.n_points=N_SPLINE;
-    resampled_path.s.setLinSpaced(N_SPLINE,0,total_arc_length);
+    PathData resampledPath;
+    resampledPath.n_points=N_SPLINE;
+    resampledPath.s.setLinSpaced(N_SPLINE,0,total_arc_length);
 
     // initialize new points as zero
-    resampled_path.X.setZero(N_SPLINE);
-    resampled_path.Y.setZero(N_SPLINE);
+    resampledPath.X.setZero(N_SPLINE);
+    resampledPath.Y.setZero(N_SPLINE);
 
     // extract X-Y points
     for(int i=0;i<N_SPLINE;i++)
     {
-        resampled_path.X(i) = initial_spline_x.getPoint(resampled_path.s(i));
-        resampled_path.Y(i) = initial_spline_y.getPoint(resampled_path.s(i));
+        resampledPath.X(i) = initial_spline_x.getPoint(resampledPath.s(i));
+        resampledPath.Y(i) = initial_spline_y.getPoint(resampledPath.s(i));
     }
-    return resampled_path;
+    return resampledPath;
 }
 
-RawPath ArcLengthSpline::outlierRemoval(const Eigen::VectorXd &X_original,const Eigen::VectorXd &Y_original) const
+RawPath ArcLengthSpline::outlierRemoval(const Eigen::VectorXd &xOriginal,const Eigen::VectorXd &yOriginal) const
 {
 
     // remove points which are not at all equally spaced, to avoid fitting problems
@@ -114,28 +114,28 @@ RawPath ArcLengthSpline::outlierRemoval(const Eigen::VectorXd &X_original,const 
     Eigen::VectorXd distVec;   // vector with all the distances
     double meanDist;    // mean distance
     double dist;        // temp variable for distance
-    RawPath resampled_path;
+    RawPath resampledPath;
     int k = 0;          // indecies
     int j = 0;
 
-    if (X_original.size() != Y_original.size()){
+    if (xOriginal.size() != yOriginal.size()){
         //error
     }
-//    std::cout << X_original << std::endl;
+//    std::cout << xOriginal << std::endl;
 
-    int n_points = X_original.size();
+    int n_points = xOriginal.size();
 
     // initialize with zero
-    resampled_path.X.setZero(n_points);
-    resampled_path.Y.setZero(n_points);
+    resampledPath.X.setZero(n_points);
+    resampledPath.Y.setZero(n_points);
 
 
 
     // compute distance between points in X-Y data
     distVec.setZero(n_points-1);
     for(int i=0;i<n_points-1;i++){
-        dx = X_original(i+1)-X_original(i);
-        dy = Y_original(i+1)-Y_original(i);
+        dx = xOriginal(i+1)-xOriginal(i);
+        dy = yOriginal(i+1)-yOriginal(i);
         distVec(i) = std::sqrt(dx*dx + dy*dy);
     }
     // compute mean distance between points
@@ -143,36 +143,36 @@ RawPath ArcLengthSpline::outlierRemoval(const Eigen::VectorXd &X_original,const 
 
     // compute the new points
     // start point is the original start point
-    resampled_path.X(k) = X_original(k);
-    resampled_path.Y(k) = Y_original(k);
+    resampledPath.X(k) = xOriginal(k);
+    resampledPath.Y(k) = yOriginal(k);
     k++;
     for(int i=1;i<n_points-1;i++){
         // compute distance between currently checked point and the one last added to the new X-Y path
-        dx = X_original(i)-X_original(j);
-        dy = Y_original(i)-Y_original(j);
+        dx = xOriginal(i)-xOriginal(j);
+        dy = yOriginal(i)-yOriginal(j);
         dist = std::sqrt(dx*dx + dy*dy);
         // if this distance is smaller than 0.7 the mean distance add this point to the new X-Y path
         if(dist >= 0.7*meanDist)
         {
-            resampled_path.X(k) = X_original(i);
-            resampled_path.Y(k) = Y_original(i);
+            resampledPath.X(k) = xOriginal(i);
+            resampledPath.Y(k) = yOriginal(i);
             k++;
             j = i;
         }
     }
     // always add the last point
-    resampled_path.X(k) = X_original(n_points-1);
-    resampled_path.Y(k) = Y_original(n_points-1);
+    resampledPath.X(k) = xOriginal(n_points-1);
+    resampledPath.Y(k) = yOriginal(n_points-1);
     k++;
 
 //    std::cout << "not resiszed " << X_new.transpose() << std::endl;
     // set the new X-Y data
 //    setData(X.head(k),Y.head(k));
-    resampled_path.X.conservativeResize(k);
-    resampled_path.Y.conservativeResize(k);
+    resampledPath.X.conservativeResize(k);
+    resampledPath.Y.conservativeResize(k);
 
 //    std::cout << "resiszed " << X_new.transpose()  << std::endl;
-    return resampled_path;
+    return resampledPath;
 }
 
 double ArcLengthSpline::unwrapInput(double x) const
@@ -213,8 +213,8 @@ void ArcLengthSpline::fitSpline(const Eigen::VectorXd &X,const Eigen::VectorXd &
     setRegularData(second_refined_path.X,second_refined_path.Y,second_refined_path.s);
 //    setData(second_refined_path.X,second_refined_path.Y);
     // Final spline fit with fixed Delta_s
-    spline_x_.genSpline(path_data_.s,path_data_.X,true);
-    spline_y_.genSpline(path_data_.s,path_data_.Y,true);
+    splineX.genSpline(pathData.s,pathData.X,true);
+    splineY.genSpline(pathData.s,pathData.Y,true);
 
 
 }
@@ -235,8 +235,8 @@ void ArcLengthSpline::gen2DSpline(const Eigen::VectorXd &X,const Eigen::VectorXd
 Eigen::Vector2d ArcLengthSpline::getPostion(const double s) const
 {
     Eigen::Vector2d s_path;
-    s_path(0) = spline_x_.getPoint(s);
-    s_path(1) = spline_y_.getPoint(s);
+    s_path(0) = splineX.getPoint(s);
+    s_path(1) = splineY.getPoint(s);
 
     return s_path;
 }
@@ -244,8 +244,8 @@ Eigen::Vector2d ArcLengthSpline::getPostion(const double s) const
 Eigen::Vector2d ArcLengthSpline::getDerivative(const double s) const
 {
     Eigen::Vector2d ds_path;
-    ds_path(0) = spline_x_.getDerivative(s);
-    ds_path(1) = spline_y_.getDerivative(s);
+    ds_path(0) = splineX.getDerivative(s);
+    ds_path(1) = splineY.getDerivative(s);
 
     return ds_path;
 }
@@ -253,15 +253,15 @@ Eigen::Vector2d ArcLengthSpline::getDerivative(const double s) const
 Eigen::Vector2d ArcLengthSpline::getSecondDerivative(const double s) const
 {
     Eigen::Vector2d dds_path;
-    dds_path(0) = spline_x_.getSecondDerivative(s);
-    dds_path(1) = spline_y_.getSecondDerivative(s);
+    dds_path(0) = splineX.getSecondDerivative(s);
+    dds_path(1) = splineY.getSecondDerivative(s);
 
     return dds_path;
 }
 
 double ArcLengthSpline::getLength() const
 {
-    return path_data_.s(path_data_.n_points-1);
+    return pathData.s(pathData.n_points-1);
 }
 
 double ArcLengthSpline::porjectOnSpline(const State &x) const
@@ -278,12 +278,12 @@ double ArcLengthSpline::porjectOnSpline(const State &x) const
     if (dist >= param_.max_dist_proj)
     {
         std::cout << "dist too large" << std::endl;
-        Eigen::ArrayXd diff_x_all = path_data_.X.array() - pos(0);
-        Eigen::ArrayXd diff_y_all = path_data_.Y.array() - pos(1);
+        Eigen::ArrayXd diff_x_all = pathData.X.array() - pos(0);
+        Eigen::ArrayXd diff_y_all = pathData.Y.array() - pos(1);
         Eigen::ArrayXd dist_square = diff_x_all.square() + diff_y_all.square();
         std::vector<double> dist_square_vec(dist_square.data(),dist_square.data() + dist_square.size());
         auto min_iter = std::min_element(dist_square_vec.begin(),dist_square_vec.end());
-        s_opt = path_data_.s(std::distance(dist_square_vec.begin(), min_iter));
+        s_opt = pathData.s(std::distance(dist_square_vec.begin(), min_iter));
     }
     double s_old = s_opt;
     for(int i=0; i<20; i++)

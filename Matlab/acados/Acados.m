@@ -129,22 +129,26 @@ classdef Acados < handle
         end
 
         function setBounds(obj)
-            nbx = 9;
+            nbx = 11;
             jbx = zeros(nbx,obj.config.NX);
 
-            jbx(1,3) = 1;
-            jbx(2,4) = 1;
-            jbx(3,5) = 1;
-            jbx(4,6) = 1;
-            jbx(5,7) = 1;
-            jbx(6,8) = 1;
-            jbx(7,9) = 1;
-            jbx(8,10) = 1;
-            jbx(9,11) = 1;
+            jbx(1,1) = 1;
+            jbx(2,2) = 1;
+            jbx(3,3) = 1;
+            jbx(4,4) = 1;
+            jbx(5,5) = 1;
+            jbx(6,6) = 1;
+            jbx(7,7) = 1;
+            jbx(8,8) = 1;
+            jbx(9,9) = 1;
+            jbx(10,10) = 1;
+            jbx(11,11) = 1;
 
             obj.ocpModel.set('constr_Jbx',jbx);
 
             obj.ocpModel.set('constr_lbx',[ ...
+                                            obj.parameters.bounds.lowerStateBounds.xL, ...
+                                            obj.parameters.bounds.lowerStateBounds.yL, ...
                                             obj.parameters.bounds.lowerStateBounds.yawL, ...
                                             obj.parameters.bounds.lowerStateBounds.vxL, ...
                                             obj.parameters.bounds.lowerStateBounds.vyL, ...
@@ -156,6 +160,8 @@ classdef Acados < handle
                                             obj.parameters.bounds.lowerStateBounds.vsL]);
 
             obj.ocpModel.set('constr_ubx',[ ...
+                                            obj.parameters.bounds.upperStateBounds.xU, ...
+                                            obj.parameters.bounds.upperStateBounds.yU, ...
                                             obj.parameters.bounds.upperStateBounds.yawU, ...
                                             obj.parameters.bounds.upperStateBounds.vxU, ...
                                             obj.parameters.bounds.upperStateBounds.vyU, ...
@@ -211,6 +217,10 @@ classdef Acados < handle
             constr_lh = [constr_lh,0,0];
             
             constr_uh = [constr_uh,1,1];
+
+            constr_lh = [constr_lh,0];
+
+            constr_uh = [constr_uh,0];
            
             obj.ocpModel.set('constr_lh',constr_lh);
             obj.ocpModel.set('constr_uh',constr_uh);
@@ -219,14 +229,16 @@ classdef Acados < handle
             scQuadTrack = obj.parameters.costs.scQuadTrack;
             scQuadTire = obj.parameters.costs.scQuadTire;
             scQuadAlpha = obj.parameters.costs.scQuadAlpha;
+            scQuadControl = obj.parameters.costs.scQuadControl;
             scLinTrack = obj.parameters.costs.scLinTrack;
             scLinTire = obj.parameters.costs.scLinTire;
             scLinAlpha = obj.parameters.costs.scLinAlpha;
+            scLinControl = obj.parameters.costs.scLinControl;
                         
             % quadratic part
-            Z = diag([scQuadAlpha, scQuadAlpha, scQuadTrack,scQuadTire,scQuadTire]);
+            Z = diag([scQuadAlpha, scQuadAlpha, scQuadTrack,scQuadTire,scQuadTire,scQuadControl]);
             % linear part
-            z = [scLinAlpha; scLinAlpha; scLinTrack;scLinTire;scLinTire];
+            z = [scLinAlpha; scLinAlpha; scLinTrack;scLinTire;scLinTire;scLinControl];
 
             jsh = eye(obj.config.NS); % all constraints are softened
             
@@ -435,6 +447,8 @@ classdef Acados < handle
         end
 
         function unwrapInitialGuess(obj)
+            trackLength = obj.track.centerLine.getLength();
+            lapLength = trackLength/2;
             for i = 2:obj.config.N+1
               if (obj.initialStateGuess(obj.config.siIndex.yaw,i) - obj.initialStateGuess(obj.config.siIndex.yaw,i - 1)) < -pi
                 obj.initialStateGuess(obj.config.siIndex.yaw,i) = obj.initialStateGuess(obj.config.siIndex.yaw,i) + 2.0 * pi;
@@ -442,18 +456,9 @@ classdef Acados < handle
               if (obj.initialStateGuess(obj.config.siIndex.yaw,i) - obj.initialStateGuess(obj.config.siIndex.yaw,i - 1)) > pi
                 obj.initialStateGuess(obj.config.siIndex.yaw,i) = obj.initialStateGuess(obj.config.siIndex.yaw,i) - 2.0 * pi;
               end
-            end
-
-            trackLength = obj.track.centerLine.getLength();
-            lapLength = trackLength/2;
-            if obj.initialStateGuess(obj.config.siIndex.s,1) > lapLength/2
-                for i = 2:obj.config.N+1
-                    obj.initialStateGuess(obj.config.siIndex.s,i) = rem(obj.initialStateGuess(obj.config.siIndex.s,i),trackLength);
-                end
-            else
-                for i = 2:obj.config.N+1
-                    obj.initialStateGuess(obj.config.siIndex.s,i) = rem(obj.initialStateGuess(obj.config.siIndex.s,i),lapLength);
-                end
+              if (obj.initialStateGuess(obj.config.siIndex.s,i) - obj.initialStateGuess(obj.config.siIndex.s,i - 1)) > lapLength/2
+                obj.initialStateGuess(obj.config.siIndex.s,i) = rem(obj.initialStateGuess(obj.config.siIndex.s,i),lapLength);
+              end
             end
         end
 

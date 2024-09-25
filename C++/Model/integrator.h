@@ -18,23 +18,21 @@
 #define MPCC_INTEGRATOR_H
 
 #include "config.h"
-#include "model.h"
 #include "types.h"
+#include "Interfaces/acados_sim_interface.h"
 
-namespace mpcc{
-class Integrator {
+namespace mpcc
+{
+class Integrator : public AcadosSimInterface
+{
 public:
-    State RK4(const State &x, const Input &u,double ts) const;
-    State EF(const State &x, const Input &u,double ts) const;
-    State simTimeStep(const State &x, const Input &u,double ts) const;
+  State RK4(const State &x, const Input &u, double ts);
+  State simTimeStep(const State &x, const Input &u, double ts);
 
-    Integrator();
-    Integrator(double Ts, const PathToJson &path);
+  Integrator();
 
 private:
-    const double fine_time_step_ = 0.001;
-
-    Model model_;
+  const double FineTimeStep = 0.05;
 };
-}
-#endif //MPCC_INTEGRATOR_H
+}  // namespace mpcc
+#endif  // MPCC_INTEGRATOR_H

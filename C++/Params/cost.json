@@ -1,7 +1,7 @@
 
 {
   "qC" : 0.1,
-  "qL" : 1000.0,
+  "qL" : 100.0,
   "qVs" : 0.2,
 
   "qMu": 1.0,
@@ -11,24 +11,26 @@
   "qBeta" : 10E0,
   "betaKin": 1,
 
-  "rD" : 1E-3,
-  "rB" : 1E-2,
-  "rDelta" : 1E-9,
+  "rThrottle" : 1E-3,
+  "rSteeringAngle" : 1E-9,
+  "rBrakes" : 1E-2,
   "rVs" : 1E-5,
 
-  "rdD" : 1E-1,
-  "rdB" : 1E0,
-  "rdDelta" : 5E2,
+  "rdThrottle" : 1E2,
+  "rdSteeringAngle" : 5E2,
+  "rdBrakes" : 1E2,
   "rdVs" : 1E-4,
 
   "qCNmult": 1000.0,
-  "qRNmult": 1.0,
+  "qRNmult": 10.0,
 
-  "sc_quad_track": 100.0,
-  "sc_quad_tire_f": 100.0,
-  "sc_quad_tire_r": 100.0,
+  "sc_quad_track": 1E3,
+  "sc_quad_tire": 1E2,
+  "sc_quad_alpha": 1E4,
+  "sc_quad_control": 1E7,
 
-  "sc_lin_track": 10.0,
-  "sc_lin_tire_f": 10.0,
-  "sc_lin_tire_r": 10.0
+  "sc_lin_track": 1E2,
+  "sc_lin_tire": 1E2,
+  "sc_lin_alpha": 1E2,
+  "sc_lin_control": 1E6
 }

@@ -116,6 +116,8 @@ function model = getModel(parameters)
     constrR = (Frx/parameters.car.muxFz)^2+(Fry/parameters.car.muyFz)^2;
     constr_expr_h = [constr_expr_h;constrF;constrR];
 
+    constr_expr_h = [constr_expr_h;throttle*brakes];
+
     % model filling
     model.f_expl_expr = f_expl;
     model.f_impl_expr = f_impl;

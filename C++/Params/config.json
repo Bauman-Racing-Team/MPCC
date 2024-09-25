@@ -1,16 +1,14 @@
 
 {
-  "n_sqp": 2,
+  "n_sqp": 5,
   "n_reset": 2,
   "sqp_mixing": 0.9,
-  "n_sim": 800,
+  "n_sim": 700,
   "Ts": 0.05,
-  "v0": 10.0,
+  "v0": 0.0,
   
   "model_path": "Params/model.json",
   "cost_path": "Params/cost.json",
   "bounds_path": "Params/bounds.json",
-  "track_path": "Params/tracks/FSG_nirajbasnet.json",
-  "normalization_path": "Params/normalization.json",
-  "adcodegen_path": "ADCodeGen/build"
+  "track_path": "Params/tracks/FSG.json"
 }

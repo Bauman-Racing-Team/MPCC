@@ -5,7 +5,7 @@ function config = config()
     config.NU  = 4;
     
     config.NB = 11;  % max number of bounds
-    config.NS = 5; % number of soft constraints
+    config.NS = 6; % number of soft constraints
 
     config.N = 100; % horizon length
     config.NSpline = 5000; % number of track approximation points

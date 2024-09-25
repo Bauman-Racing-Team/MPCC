@@ -15,55 +15,28 @@
 ///////////////////////////////////////////////////////////////////////////
 
 #include "integrator.h"
-namespace mpcc{
+namespace mpcc
+{
 Integrator::Integrator()
 {
-    std::cout << "default constructor, not everything is initialized properly" << std::endl;
+  // std::cout << "default constructor, not everything is initialized properly" << std::endl;
 }
 
-Integrator::Integrator(double Ts,const PathToJson &path)
-:model_(Ts,path)
+State Integrator::RK4(const State &x, const Input &u, double ts)
 {
+  State xNext = Simulate(x, u, ts);
+  return xNext;
 }
 
-State Integrator::RK4(const State &x, const Input &u,const double ts) const
+State Integrator::simTimeStep(const State &x, const Input &u, const double ts)
 {
-    // 4th order Runge Kutta (RK4) implementation
-    // 4 evaluation points of continuous dynamics
-    const StateVector x_vec = stateToVector(x);
-    const InputVector u_vec = inputToVector(u);
-    // evaluating the 4 points
-    const StateVector k1 = model_.getF(vectorToState(x_vec),u);
-    const StateVector k2 = model_.getF(vectorToState(x_vec+ts/2.*k1),u);
-    const StateVector k3 = model_.getF(vectorToState(x_vec+ts/2.*k2),u);
-    const StateVector k4 = model_.getF(vectorToState(x_vec+ts*k3),u);
-    // combining to give output
-    const StateVector x_next = x_vec + ts*(k1/6.+k2/3.+k3/3.+k4/6.);
-    return vectorToState(x_next);
+  // integrate time step
+  State xNext = x;
+  const int integrationSteps = (int)(ts / FineTimeStep);
+  if (ts / FineTimeStep != integrationSteps) {
+    std::cout << "Warning" << std::endl;
+  }
+  for (int i = 0; i < integrationSteps; i++) xNext = RK4(xNext, u, FineTimeStep);
+  return xNext;
 }
-
-State Integrator::EF(const State &x, const Input &u,const double ts) const
-{
-    // Euler Forward integration
-    const StateVector x_vec = stateToVector(x);
-    const StateVector f = model_.getF(x,u); // evaluation continuous dynmaics
-    // compute next time step
-    const StateVector x_next = x_vec + ts*f;
-    return vectorToState(x_next);
-}
-
-State Integrator::simTimeStep(const State &x, const Input &u,const double ts) const
-{
-    // integrate time step
-    State x_next = x;
-    const int integration_steps = (int)(ts/fine_time_step_);
-    if(ts/fine_time_step_ != integration_steps)
-    {
-        std::cout << "Warning" << std::endl;
-    }
-    for(int i = 0;i<integration_steps;i++)
-        x_next = RK4(x_next,u,fine_time_step_);
-
-    return x_next;
-}
-}
+}  // namespace mpcc
