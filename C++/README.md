@@ -56,7 +56,7 @@ To run the code simply execute the `MPCC` from the `MPCC/C++/build` folder:
 
 ## Tracks
 
-By default a track from [**nirajbasnet**](https://github.com/nirajbasnet/Nonlinear_MPCC_for_autonomous_racing) is used. It is a splined **FSG** track for Formula Student Driverless competitions.
+By default an **FSG** track is used. It is a track of Formula Student Driverless Germany competitions.
 
 To use other tracks change value of **track_path** parameter in `Params/config.json` file
 
