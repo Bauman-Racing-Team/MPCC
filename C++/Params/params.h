@@ -106,10 +106,12 @@ public:
     double scQuadTrack;
     double scQuadTire;
     double scQuadAlpha;
+    double scQuadLonControl;
 
     double scLinTrack;
     double scLinTire;
     double scLinAlpha;
+    double scLinLonControl;
 
     CostParam();
     CostParam(std::string file);

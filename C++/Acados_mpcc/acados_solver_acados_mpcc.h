@@ -45,7 +45,7 @@
 #define ACADOS_MPCC_NBU    4
 #define ACADOS_MPCC_NSBX   0
 #define ACADOS_MPCC_NSBU   0
-#define ACADOS_MPCC_NSH    5
+#define ACADOS_MPCC_NSH    6
 #define ACADOS_MPCC_NSH0   0
 #define ACADOS_MPCC_NSG    0
 #define ACADOS_MPCC_NSPHI  0
@@ -54,7 +54,7 @@
 #define ACADOS_MPCC_NSPHIN 0
 #define ACADOS_MPCC_NSPHI0 0
 #define ACADOS_MPCC_NSBXN  0
-#define ACADOS_MPCC_NS     5
+#define ACADOS_MPCC_NS     6
 #define ACADOS_MPCC_NS0    0
 #define ACADOS_MPCC_NSN    0
 #define ACADOS_MPCC_NG     0
@@ -64,7 +64,7 @@
 #define ACADOS_MPCC_NY     0
 #define ACADOS_MPCC_NYN    0
 #define ACADOS_MPCC_N      100
-#define ACADOS_MPCC_NH     5
+#define ACADOS_MPCC_NH     6
 #define ACADOS_MPCC_NHN    0
 #define ACADOS_MPCC_NH0    0
 #define ACADOS_MPCC_NPHI0  0
@@ -110,14 +110,20 @@ typedef struct acados_mpcc_solver_capsule
 
 
 
+
+
     external_function_param_casadi ext_cost_0_fun;
     external_function_param_casadi ext_cost_0_fun_jac;
     external_function_param_casadi ext_cost_0_fun_jac_hess;
 
 
+
+
     external_function_param_casadi ext_cost_e_fun;
     external_function_param_casadi ext_cost_e_fun_jac;
     external_function_param_casadi ext_cost_e_fun_jac_hess;
+
+
 
     // constraints
     external_function_param_casadi *nl_constr_h_fun_jac;
@@ -157,6 +163,7 @@ ACADOS_SYMBOL_EXPORT int acados_mpcc_acados_update_params(acados_mpcc_solver_cap
 ACADOS_SYMBOL_EXPORT int acados_mpcc_acados_update_params_sparse(acados_mpcc_solver_capsule * capsule, int stage, int *idx, double *p, int n_update);
 
 ACADOS_SYMBOL_EXPORT int acados_mpcc_acados_solve(acados_mpcc_solver_capsule * capsule);
+ACADOS_SYMBOL_EXPORT void acados_mpcc_acados_batch_solve(acados_mpcc_solver_capsule ** capsules, int N_batch);
 ACADOS_SYMBOL_EXPORT int acados_mpcc_acados_free(acados_mpcc_solver_capsule * capsule);
 ACADOS_SYMBOL_EXPORT void acados_mpcc_acados_print_stats(acados_mpcc_solver_capsule * capsule);
 ACADOS_SYMBOL_EXPORT int acados_mpcc_acados_custom_update(acados_mpcc_solver_capsule* capsule, double* data, int data_len);

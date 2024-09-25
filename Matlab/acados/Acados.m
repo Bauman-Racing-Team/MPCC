@@ -217,6 +217,10 @@ classdef Acados < handle
             constr_lh = [constr_lh,0,0];
             
             constr_uh = [constr_uh,1,1];
+
+            constr_lh = [constr_lh,0];
+
+            constr_uh = [constr_uh,0];
            
             obj.ocpModel.set('constr_lh',constr_lh);
             obj.ocpModel.set('constr_uh',constr_uh);
@@ -225,14 +229,16 @@ classdef Acados < handle
             scQuadTrack = obj.parameters.costs.scQuadTrack;
             scQuadTire = obj.parameters.costs.scQuadTire;
             scQuadAlpha = obj.parameters.costs.scQuadAlpha;
+            scQuadLonControl = obj.parameters.costs.scQuadLonControl;
             scLinTrack = obj.parameters.costs.scLinTrack;
             scLinTire = obj.parameters.costs.scLinTire;
             scLinAlpha = obj.parameters.costs.scLinAlpha;
+            scLinLonControl = obj.parameters.costs.scLinLonControl;
                         
             % quadratic part
-            Z = diag([scQuadAlpha, scQuadAlpha, scQuadTrack,scQuadTire,scQuadTire]);
+            Z = diag([scQuadAlpha, scQuadAlpha, scQuadTrack,scQuadTire,scQuadTire,scQuadLonControl]);
             % linear part
-            z = [scLinAlpha; scLinAlpha; scLinTrack;scLinTire;scLinTire];
+            z = [scLinAlpha; scLinAlpha; scLinTrack;scLinTire;scLinTire;scLinLonControl];
 
             jsh = eye(obj.config.NS); % all constraints are softened
             

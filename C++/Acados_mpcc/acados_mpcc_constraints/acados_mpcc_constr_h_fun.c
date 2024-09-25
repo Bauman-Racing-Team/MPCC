@@ -51,7 +51,7 @@ extern "C" {
 static const casadi_int casadi_s0[15] = {11, 1, 0, 11, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 static const casadi_int casadi_s1[8] = {4, 1, 0, 4, 0, 1, 2, 3};
 static const casadi_int casadi_s2[3] = {0, 0, 0};
-static const casadi_int casadi_s3[9] = {5, 1, 0, 5, 0, 1, 2, 3, 4};
+static const casadi_int casadi_s3[10] = {6, 1, 0, 6, 0, 1, 2, 3, 4, 5};
 
 casadi_real casadi_fmax(casadi_real x, casadi_real y) {
 /* Pre-c99 compatibility */
@@ -73,7 +73,7 @@ casadi_real casadi_fmin(casadi_real x, casadi_real y) {
 
 casadi_real casadi_sq(casadi_real x) { return x*x;}
 
-/* acados_mpcc_constr_h_fun:(i0[11],i1[4],i2[],i3[11])->(o0[5]) */
+/* acados_mpcc_constr_h_fun:(i0[11],i1[4],i2[],i3[11])->(o0[6]) */
 static int casadi_f0(const casadi_real** arg, casadi_real** res, casadi_int* iw, casadi_real* w, int mem) {
   casadi_real a0, a1, a10, a11, a12, a13, a14, a15, a2, a3, a4, a5, a6, a7, a8, a9;
   a0=arg[0]? arg[0][4] : 0;
@@ -151,15 +151,15 @@ static int casadi_f0(const casadi_real** arg, casadi_real** res, casadi_int* iw,
   a3=-612.;
   a3=(a3*a6);
   a3=(a3/a7);
-  a6=tanh(a4);
-  a3=(a3*a6);
-  a6=840.;
-  a5=arg[0]? arg[0][7] : 0;
-  a6=(a6*a5);
-  a6=(a6/a7);
-  a3=(a3+a6);
-  a6=tanh(a4);
-  a8=(a8*a6);
+  a5=tanh(a4);
+  a3=(a3*a5);
+  a5=840.;
+  a13=arg[0]? arg[0][7] : 0;
+  a5=(a5*a13);
+  a5=(a5/a7);
+  a3=(a3+a5);
+  a5=tanh(a4);
+  a8=(a8*a5);
   a3=(a3+a8);
   a3=(a3/a9);
   a3=casadi_sq(a3);
@@ -181,6 +181,8 @@ static int casadi_f0(const casadi_real** arg, casadi_real** res, casadi_int* iw,
   a10=casadi_sq(a10);
   a3=(a3+a10);
   if (res[0]!=0) res[0][4]=a3;
+  a13=(a13*a6);
+  if (res[0]!=0) res[0][5]=a13;
   return 0;
 }
 

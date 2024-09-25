@@ -182,21 +182,24 @@ void AcadosInterface::setParam(std::array<Parameter, N + 1> parameter_)
     Zl[2] = parameter_[i].scQuadTrack;
     Zl[3] = parameter_[i].scQuadTire;
     Zl[4] = parameter_[i].scQuadTire;
+    Zl[5] = parameter_[i].scQuadLonControl;
     Zu[0] = parameter_[i].scQuadAlpha;
     Zu[1] = parameter_[i].scQuadAlpha;
     Zu[2] = parameter_[i].scQuadTrack;
     Zu[3] = parameter_[i].scQuadTire;
-    Zu[4] = parameter_[i].scQuadTire;
+    Zu[5] = parameter_[i].scQuadLonControl;
     zl[0] = parameter_[i].scLinAlpha;
     zl[1] = parameter_[i].scLinAlpha;
     zl[2] = parameter_[i].scLinTrack;
     zl[3] = parameter_[i].scLinTire;
     zl[4] = parameter_[i].scLinTire;
+    zl[5] = parameter_[i].scLinLonControl;
     zu[0] = parameter_[i].scLinAlpha;
     zu[1] = parameter_[i].scLinAlpha;
     zu[2] = parameter_[i].scLinTrack;
     zu[3] = parameter_[i].scLinTire;
     zu[4] = parameter_[i].scLinTire;
+    zu[5] = parameter_[i].scLinLonControl;
 
     ocp_nlp_cost_model_set(nlp_config, nlp_dims, nlp_in, i, "Zl", Zl);
     ocp_nlp_cost_model_set(nlp_config, nlp_dims, nlp_in, i, "Zu", Zu);

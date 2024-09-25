@@ -32,7 +32,7 @@
 
 cmake_minimum_required(VERSION 3.13)
 
-project(Acados_mpcc)
+project(acados_mpcc)
 
 # build options.
 option(BUILD_ACADOS_SOLVER_LIB "Should the solver library acados_solver_acados_mpcc be build?" OFF)
