@@ -62,14 +62,14 @@ Bounds::Bounds(BoundsParam bounds_param)
     l_bounds_s_(siIndex.conTrack) = bounds_param.lower_const_bounds.rOutL;
     l_bounds_s_(siIndex.conElipF) = bounds_param.lower_const_bounds.ellipseL;
     l_bounds_s_(siIndex.conElipR) = bounds_param.lower_const_bounds.ellipseL;
-    l_bounds_s_(siIndex.conElipR) = bounds_param.lower_const_bounds.lonControlL;
+    l_bounds_s_(siIndex.conLonControl) = bounds_param.lower_const_bounds.lonControlL;
 
     u_bounds_s_(siIndex.conTireF) = bounds_param.upper_const_bounds.maxAlphaU;
     u_bounds_s_(siIndex.conTireR) = bounds_param.upper_const_bounds.maxAlphaU;
     u_bounds_s_(siIndex.conTrack) = bounds_param.upper_const_bounds.rOutU;
     u_bounds_s_(siIndex.conElipF) = bounds_param.upper_const_bounds.ellipseU;
     u_bounds_s_(siIndex.conElipR) = bounds_param.upper_const_bounds.ellipseU;
-    u_bounds_s_(siIndex.conElipR) = bounds_param.upper_const_bounds.lonControlU;
+    u_bounds_s_(siIndex.conLonControl) = bounds_param.upper_const_bounds.lonControlU;
 
     std::cout << "bounds initialized" << std::endl;
 }

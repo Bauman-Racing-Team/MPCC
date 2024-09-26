@@ -187,6 +187,7 @@ void AcadosInterface::setParam(std::array<Parameter, N + 1> parameter_)
     Zu[1] = parameter_[i].scQuadAlpha;
     Zu[2] = parameter_[i].scQuadTrack;
     Zu[3] = parameter_[i].scQuadTire;
+    Zu[4] = parameter_[i].scQuadTire;
     Zu[5] = parameter_[i].scQuadLonControl;
     zl[0] = parameter_[i].scLinAlpha;
     zl[1] = parameter_[i].scLinAlpha;
