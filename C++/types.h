@@ -127,6 +127,16 @@ struct Parameter {
     rdSteeringAngle = 0;
     rdBrakes = 0;
     rdVs = 0;
+    
+    scQuadTrack = 0;
+    scQuadTire = 0;
+    scQuadAlpha = 0;
+    scQuadLonControl = 0;
+    
+    scLinTrack = 0;
+    scLinTire = 0;
+    scLinAlpha = 0;
+    scLinLonControl = 0;
   }
 };
 

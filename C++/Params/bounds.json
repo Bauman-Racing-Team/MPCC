@@ -24,14 +24,14 @@
   "brakesU": 1862.0,
   "vsU": 30.0,
 
-  "dThrottleL": -240.0,
+  "dThrottleL": -100.0,
   "dSteeringAngleL": -1.0,
-  "dBrakesL": -1862.0,
+  "dBrakesL": -100.0,
   "dVsL": -5.0,
 
-  "dThrottleU": 240.0,
+  "dThrottleU": 100.0,
   "dSteeringAngleU": 1.0,
-  "dBrakesU": 1862.0,
+  "dBrakesU": 100.0,
   "dVsU": 5.0,
 
   "maxAlphaL": -0.06,

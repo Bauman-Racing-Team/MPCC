@@ -75,9 +75,6 @@ CostParam::CostParam(std::string file)
   rdBrakes = jsonCost["rdBrakes"];
   rdVs = jsonCost["rdVs"];
 
-  qCNmult = jsonCost["qCNmult"];
-  qRNmult = jsonCost["qRNmult"];
-
   scQuadTrack = jsonCost["sc_quad_track"];
   scQuadTire = jsonCost["sc_quad_tire"];
   scQuadAlpha = jsonCost["sc_quad_alpha"];
@@ -87,6 +84,11 @@ CostParam::CostParam(std::string file)
   scLinTire = jsonCost["sc_lin_tire"];
   scLinAlpha = jsonCost["sc_lin_alpha"];
   scLinLonControl = jsonCost["sc_lin_lon_control"];
+
+  std::cout << "rdThrottle: " << rdThrottle << std::endl;
+  std::cout << "rdSteeringAngle: " << rdSteeringAngle << std::endl;
+  std::cout << "rdBrakes: " << rdBrakes << std::endl;
+  std::cout << "rdVs: " << rdVs << std::endl;
 }
 
 BoundsParam::BoundsParam()

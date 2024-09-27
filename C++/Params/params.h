@@ -57,9 +57,6 @@ public:
     double rdBrakes;
     double rdVs;
 
-    double qCNmult;
-    double qRNmult;
-
     double scQuadTrack;
     double scQuadTire;
     double scQuadAlpha;
