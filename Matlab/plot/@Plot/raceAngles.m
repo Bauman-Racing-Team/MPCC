@@ -125,8 +125,8 @@ function raceAngles(obj)
     subplot(1,2,1);
     hold on;
     axis equal;
-    equation = @(x, y) (x/obj.parameters.car.muxFz).^2 + (y/obj.parameters.car.muyFz).^2 - 1;
-    ezplot(equation, [-obj.parameters.car.muxFz, obj.parameters.car.muxFz, -obj.parameters.car.muyFz, obj.parameters.car.muyFz]);
+    equation = @(x, y) (x/obj.parameters.tire.muxFz).^2 + (y/obj.parameters.tire.muyFz).^2 - 1;
+    ezplot(equation, [-obj.parameters.tire.muxFz, obj.parameters.tire.muxFz, -obj.parameters.tire.muyFz, obj.parameters.tire.muyFz]);
     h = get(gca, 'Children');
     set(h, 'Color', 'r','LineStyle','--');
     plot(Ffx,Ffy,'.')
@@ -137,8 +137,8 @@ function raceAngles(obj)
     subplot(1,2,2);
     hold on;
     axis equal;
-    equation = @(x, y) (x/obj.parameters.car.muxFz).^2 + (y/obj.parameters.car.muyFz).^2 - 1;
-    ezplot(equation, [-obj.parameters.car.muxFz, obj.parameters.car.muxFz, -obj.parameters.car.muyFz, obj.parameters.car.muyFz]);
+    equation = @(x, y) (x/obj.parameters.tire.muxFz).^2 + (y/obj.parameters.tire.muyFz).^2 - 1;
+    ezplot(equation, [-obj.parameters.tire.muxFz, obj.parameters.tire.muxFz, -obj.parameters.tire.muyFz, obj.parameters.tire.muyFz]);
     h = get(gca, 'Children');
     set(h, 'Color', 'r','LineStyle','--');
     plot(Frx,Fry,'.')

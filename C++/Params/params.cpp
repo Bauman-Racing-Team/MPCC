@@ -35,26 +35,12 @@ Param::Param(std::string file)
   iModel >> jsonModel;
   // Model Parameters
 
-  lf = jsonModel["lf"];
-  lr = jsonModel["lr"];
-
   car_l = jsonModel["car_l"];
   car_w = jsonModel["car_w"];
 
-
-  // Constraint Parameters
-  r_in = jsonModel["rIn"];
-  r_out = jsonModel["rOut"];
-
   max_dist_proj = jsonModel["maxDistProj"];
 
-  max_alpha = jsonModel["maxAlpha"];
-  // initial warm start and trust region (model dependent)
-
-  vRef = jsonModel["vRef"];
   vxMin = jsonModel["vxMin"];
-
-  s_trust_region = jsonModel["sTrustRegion"];
 }
 
 CostParam::CostParam()
@@ -124,7 +110,7 @@ BoundsParam::BoundsParam(std::string file)
   lower_state_bounds.phiL = jsonBounds["phiL"];
   lower_state_bounds.vxL = jsonBounds["vxL"];
   lower_state_bounds.vyL = jsonBounds["vyL"];
-  lower_state_bounds.rL = jsonBounds["vyL"];
+  lower_state_bounds.rL = jsonBounds["rL"];
   lower_state_bounds.sL = jsonBounds["sL"];
   lower_state_bounds.throttleL = jsonBounds["throttleL"];
   lower_state_bounds.steeringAngleL = jsonBounds["steeringAngleL"];

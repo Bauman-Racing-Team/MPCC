@@ -18,7 +18,7 @@
 #define MPCC_PARAMS_H
 
 #include <vector>
-#include <nlohmann/json.hpp>
+#include "nlohmann/json.hpp"
 #include "config.h"
 #include "types.h"
 
@@ -28,27 +28,15 @@ using json = nlohmann::json;
 
 class Param{
 public:
-    double lf;
-    double lr;
-
     double car_l;
     double car_w;
 
-    double r_in;
-    double r_out;
-
     double max_dist_proj;
 
-    double max_alpha;
-
-    double s_trust_region;
-
-    double vRef;
     double vxMin;
 
     Param();
     Param(std::string file);
-
 };
 
 class CostParam{
