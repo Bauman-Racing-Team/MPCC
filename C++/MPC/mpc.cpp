@@ -86,19 +86,6 @@ namespace mpcc
     unwrapInitialGuess();
   }
 
-  State MPC::ode4(const State &state, const Input &input, double ts) const
-  {
-    // 4th order Runge Kutta (RK4) implementation
-    // 4 evaluation points of continuous dynamics
-    // evaluating the 4 points
-    double k1 = obj.f(state, input);
-    double k2 = obj.f(state + ts / 2.0 * k1, input);
-    double k3 = obj.f(state + ts / 2.0 * k2, input);
-    double k4 = obj.f(state + ts * k3, input);
-    // combining to give output
-    return state + ts * (k1 / 6.0 + k2 / 3.0 + k3 / 3.0 + k4 / 6.0);
-  }
-
   void MPC::unwrapInitialGuess()
   {
     double L = track_.getLength();
