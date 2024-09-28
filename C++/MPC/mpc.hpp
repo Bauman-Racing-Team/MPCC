@@ -49,6 +49,8 @@ public:
 
   void setTrack(const Eigen::VectorXd &X, const Eigen::VectorXd &Y);
 
+  ArcLengthSpline getTrack() const;
+
 private:
   bool validInitialGuess;
 
@@ -68,6 +70,8 @@ private:
 
   void unwrapInitialGuess();
 
+  State ode4(const State &state, const Input &input, double ts) const;
+  
   int nSqp;
   double sqpMixing;
   int nNoSolvesSqp;

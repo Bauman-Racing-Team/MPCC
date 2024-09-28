@@ -3,25 +3,22 @@
 #include "config.hpp"
 #include "types.hpp"
 #include "Params/params.hpp"
+#include "Models/models.hpp"
+#include "Spline/arc_length_spline.hpp"
 
 namespace mpcc
 {
 class Simulator {
 
 public:
-  Simulator(void config, Car car, Tire tire, void centerLine);
+  Simulator(Car car, Tire tire, ArcLengthSpline centerLine);
   State simTimeStep(const State& state, const Input& input, double ts) const;
 
 private:
-  State ode4(const State& state, const Input& input, double ts) const;
-  State unwrapState(const State& state) const;
-  State calculateDerivatives(const State& state, const Input& input) const;
-
-private:
-  Car car;
-  Tire tire;
-  Model model;
-  Config config;
-  void centerLine;
+  Car d_car;
+  Tire d_tire;
+  Model d_model;
+  Models d_models;
+  ArcLengthSpline d_centerLine;
 };
 } // namespace mpcc
