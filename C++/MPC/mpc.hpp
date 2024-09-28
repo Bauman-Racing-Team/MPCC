@@ -17,14 +17,12 @@
 #ifndef MPCC_MPC_H
 #define MPCC_MPC_H
 
-#include "config.h"
-#include "types.h"
-#include "Params/params.h"
-#include "Spline/arc_length_spline.h"
-#include "Model/integrator.h"
-#include "Constraints/bounds.h"
+#include "config.hpp"
+#include "types.hpp"
+#include "Params/params.hpp"
+#include "Spline/arc_length_spline.hpp"
 
-#include "Interfaces/acados_interface.h"
+#include "Interfaces/acados_interface.hpp"
 
 #include <array>
 #include <memory>
@@ -34,24 +32,6 @@
 
 namespace mpcc
 {
-struct Stage {
-  Bounds_x u_bounds_x;
-  Bounds_x l_bounds_x;
-
-  Bounds_u u_bounds_u;
-  Bounds_u l_bounds_u;
-
-  Bounds_s u_bounds_s;
-  Bounds_s l_bounds_s;
-
-  // nx    -> number of states
-  // nu    -> number of inputs
-  // nbx   -> number of bounds on x
-  // nbu   -> number of bounds on u
-  // ng    -> number of polytopic constratins
-  // ns   -> number of soft constraints
-  int nx, nu, nbx, nbu, ng, ns;
-};
 
 struct MPCReturn {
   const Input u0;
@@ -63,18 +43,16 @@ struct MPCReturn {
 class MPC
 {
 public:
+  MPC(int n_sqp, int n_reset, double sqp_mixing, double Ts, const PathToJson &path);
+  
   MPCReturn runMPC(State &x0);
 
   void setTrack(const Eigen::VectorXd &X, const Eigen::VectorXd &Y);
 
-  MPC();
-  MPC(int n_sqp, int n_reset, double sqp_mixing, double Ts, const PathToJson &path);
-
 private:
   bool validInitialGuess;
 
-  std::array<Stage, N + 1> stages_;
-  std::array<Parameter, N + 1> parameter_;
+  AcadosParameters parameter_;
 
   std::array<OptVariables, N + 1> initialGuess;
   std::array<OptVariables, N + 1> tempGuess;
@@ -99,12 +77,11 @@ private:
   double bounds_x[2 * NX];
   const double Ts_;
 
-  Integrator integrator_;
   ArcLengthSpline track_;
 
-  Bounds bounds_;
-  Param param_;
-  CostParam costParam;
+  Bounds bounds;
+  Model model;
+  Cost cost;
 
   std::unique_ptr<AcadosInterface> solverInterface;
 };

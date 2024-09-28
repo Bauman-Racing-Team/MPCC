@@ -14,38 +14,46 @@
 ///////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////
 
-#ifndef MPCC_BOUNDS_H
-#define MPCC_BOUNDS_H
+#ifndef MPCC_TRACK_H
+#define MPCC_TRACK_H
 
-#include "config.h"
-#include "types.h"
-#include "Params/params.h"
+#include "config.hpp"
 
-namespace mpcc{
-class Bounds {
+#include <iostream>
+#include <fstream>
+#include <vector>
+#include <nlohmann/json.hpp>
+
+namespace mpcc {
+//used namespace
+using json = nlohmann::json;
+
+struct TrackPos {
+    const Eigen::VectorXd X;
+    const Eigen::VectorXd Y;
+
+    const Eigen::VectorXd X_inner;
+    const Eigen::VectorXd Y_inner;
+
+    const Eigen::VectorXd X_outer;
+    const Eigen::VectorXd Y_outer;
+};
+
+class Track {
 public:
-    Bounds();
-    Bounds(BoundsParam bounds_param);
-
-    Bounds_x getBoundsLX() const;
-    Bounds_x getBoundsUX() const;
-
-    Bounds_u getBoundsLU() const;
-    Bounds_u getBoundsUU() const;
-
-    Bounds_s getBoundsLS() const;
-    Bounds_s getBoundsUS() const;
+    Track(std::string file);
+    TrackPos getTrack();
 
 private:
+    Eigen::VectorXd X;
+    Eigen::VectorXd Y;
 
-    Bounds_x u_bounds_x_;
-    Bounds_x l_bounds_x_;
+    Eigen::VectorXd X_inner;
+    Eigen::VectorXd Y_inner;
 
-    Bounds_u u_bounds_u_;
-    Bounds_u l_bounds_u_;
-
-    Bounds_s u_bounds_s_;
-    Bounds_s l_bounds_s_;
+    Eigen::VectorXd X_outer;
+    Eigen::VectorXd Y_outer;
 };
-}
-#endif //MPCC_BOUNDS_H
+};
+
+#endif //MPCC_TRACK_H

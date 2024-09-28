@@ -17,9 +17,9 @@
 #ifndef MPCC_ARC_LENGTH_SPLINE_H
 #define MPCC_ARC_LENGTH_SPLINE_H
 
-#include "cubic_spline.h"
-#include "types.h"
-#include "Params/params.h"
+#include "cubic_spline.hpp"
+#include "types.hpp"
+#include "Params/params.hpp"
 #include <map>
 
 namespace mpcc{
@@ -48,7 +48,6 @@ public:
 
     ArcLengthSpline();
     ArcLengthSpline(const PathToJson &path);
-    // void setParam(const Param &param) { param_ = param; };
 
 private:
     void setData(const Eigen::VectorXd &X_in,const Eigen::VectorXd &Y_in);
@@ -63,7 +62,7 @@ private:
 //    PathData pathDataFinal; // final data
     CubicSpline splineX;
     CubicSpline splineY;
-    Param param_;
+    Model model;
 };
 }
 #endif //MPCC_ARC_LENGTH_SPLINE_H

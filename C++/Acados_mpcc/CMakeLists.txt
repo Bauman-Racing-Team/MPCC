@@ -40,7 +40,7 @@ option(BUILD_ACADOS_SOLVER_LIB "Should the solver library acados_solver_acados_m
 option(BUILD_ACADOS_OCP_SOLVER_LIB "Should the OCP solver library acados_ocp_solver_acados_mpcc be build?" ON)
 option(BUILD_EXAMPLE "Should the example main_acados_mpcc be build?" OFF)
 option(BUILD_SIM_EXAMPLE "Should the simulation example main_sim_acados_mpcc be build?" OFF)
-option(BUILD_ACADOS_SIM_SOLVER_LIB "Should the simulation solver library acados_sim_solver_acados_mpcc be build?" ON)
+option(BUILD_ACADOS_SIM_SOLVER_LIB "Should the simulation solver library acados_sim_solver_acados_mpcc be build?" OFF)
 
 
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU" AND CMAKE_SYSTEM_NAME MATCHES "Windows")

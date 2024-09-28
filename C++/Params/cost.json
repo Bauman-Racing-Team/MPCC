@@ -11,7 +11,7 @@
   "qBeta" : 10E0,
   "betaKin": 1,
 
-  "rdThrottle" : 1E4,
+  "rdThrottle" : 1E2,
   "rdSteeringAngle" : 5E2,
   "rdBrakes" : 1E2,
   "rdVs" : 25E-4,

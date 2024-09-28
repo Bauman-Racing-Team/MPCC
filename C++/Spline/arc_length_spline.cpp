@@ -14,14 +14,12 @@
 ///////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////
 
-#include "arc_length_spline.h"
+#include "arc_length_spline.hpp"
 
 namespace mpcc{
-ArcLengthSpline::ArcLengthSpline()
-{ 
-}
+
 ArcLengthSpline::ArcLengthSpline(const PathToJson &path)
-:param_(Param(path.param_path))
+:model(Model(path.param_path))
 {
 }
 
@@ -267,15 +265,15 @@ double ArcLengthSpline::getLength() const
 double ArcLengthSpline::porjectOnSpline(const State &x) const
 {
     Eigen::Vector2d pos;
-    pos(0) = x.X;
-    pos(1) = x.Y;
-    double s_guess = x.s;
+    pos(0) = x(X);
+    pos(1) = x(Y);
+    double s_guess = x(s);
     Eigen::Vector2d pos_path = getPostion(s_guess);
 
     double s_opt = s_guess;
     double dist = (pos-pos_path).norm();
 
-    if (dist >= param_.max_dist_proj)
+    if (dist >= model.maxDistProj)
     {
         std::cout << "dist too large" << std::endl;
         Eigen::ArrayXd diff_x_all = pathData.X.array() - pos(0);

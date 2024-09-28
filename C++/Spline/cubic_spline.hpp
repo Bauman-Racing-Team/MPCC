@@ -17,7 +17,7 @@
 #ifndef MPCC_CUBIC_SPLINE_H
 #define MPCC_CUBIC_SPLINE_H
 
-#include "config.h"
+#include "config.hpp"
 #include <map>
 
 namespace mpcc{

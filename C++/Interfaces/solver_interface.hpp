@@ -14,46 +14,27 @@
 ///////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////
 
-#ifndef MPCC_TRACK_H
-#define MPCC_TRACK_H
+#ifndef MPCC_SOLVER_INTERFACE_H
+#define MPCC_SOLVER_INTERFACE_H
 
-#include "config.h"
+#include "config.hpp"
+#include "types.hpp"
+#include "Params/params.hpp"
 
-#include <iostream>
-#include <fstream>
-#include <vector>
-#include <nlohmann/json.hpp>
+#include <array>
+namespace mpcc
+{
+struct OptVariables;
+struct solverReturn;
 
-namespace mpcc {
-//used namespace
-using json = nlohmann::json;
-
-struct TrackPos {
-    const Eigen::VectorXd X;
-    const Eigen::VectorXd Y;
-
-    const Eigen::VectorXd X_inner;
-    const Eigen::VectorXd Y_inner;
-
-    const Eigen::VectorXd X_outer;
-    const Eigen::VectorXd Y_outer;
-};
-
-class Track {
+class SolverInterface
+{
 public:
-    Track(std::string file);
-    TrackPos getTrack();
-
-private:
-    Eigen::VectorXd X;
-    Eigen::VectorXd Y;
-
-    Eigen::VectorXd X_inner;
-    Eigen::VectorXd Y_inner;
-
-    Eigen::VectorXd X_outer;
-    Eigen::VectorXd Y_outer;
+  virtual solverReturn solveMPC(
+    std::array<OptVariables, N + 1> &initialGuess, AcadosParameters parameter_,
+    const Bounds &bounds) = 0;
+  virtual ~SolverInterface() { std::cout << "Deleting Solver Interface" << std::endl; }
 };
-};
+}  // namespace mpcc
 
-#endif //MPCC_TRACK_H
+#endif  // MPCC_SOLVER_INTERFACE_H

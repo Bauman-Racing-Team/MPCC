@@ -14,29 +14,31 @@
 ///////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////
 
-#include "integrator.h"
+#ifndef MPCC_CONFIG_H
+#define MPCC_CONFIG_H
+
+#include <math.h>
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <Eigen/Core>
+
 namespace mpcc
 {
-Integrator::Integrator()
-{
-  // std::cout << "default constructor, not everything is initialized properly" << std::endl;
-}
 
-State Integrator::RK4(const State &x, const Input &u, double ts)
-{
-  State xNext = Simulate(x, u, ts);
-  return xNext;
-}
+// #define MAX(a,b) (a < b) ? b : a
 
-State Integrator::simTimeStep(const State &x, const Input &u, const double ts)
-{
-  // integrate time step
-  State xNext = x;
-  const int integrationSteps = (int)(ts / FineTimeStep);
-  if (ts / FineTimeStep != integrationSteps) {
-    std::cout << "Warning" << std::endl;
-  }
-  for (int i = 0; i < integrationSteps; i++) xNext = RK4(xNext, u, FineTimeStep);
-  return xNext;
-}
+#define NX 11
+#define NU 4
+#define NP 11
+
+#define NB 15  // max number of bounds
+#define NPC 3  // number of polytopic constraints
+#define NS 6
+
+static constexpr int N = 100;
+static constexpr double INF = 1E5;
+static constexpr int N_SPLINE = 2500;
+
 }  // namespace mpcc
+#endif  // MPCC_CONFIG_H

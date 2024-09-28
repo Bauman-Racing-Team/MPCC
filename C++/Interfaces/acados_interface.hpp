@@ -45,10 +45,10 @@
 // blasfeo
 #include "blasfeo/include/blasfeo_d_aux_ext_dep.h"
 
-#include "config.h"
-#include "types.h"
-#include "Constraints/bounds.h"
-#include "solver_interface.h"
+#include "config.hpp"
+#include "Params/params.hpp"
+#include "types.hpp"
+#include "solver_interface.hpp"
 
 #define NZ ACADOS_MPCC_NZ
 #define NBX ACADOS_MPCC_NBX
@@ -86,7 +86,7 @@ class AcadosInterface : public SolverInterface
 {
 public:
   solverReturn solveMPC(
-    std::array<OptVariables, N + 1> &initialGuess, std::array<Parameter, N + 1> parameter_,
+    std::array<OptVariables, N + 1> &initialGuess, AcadosParameters parameter_,
     const Bounds &bounds);
 
   ~AcadosInterface() { std::cout << "Deleting Acados Interface" << std::endl; }
@@ -132,7 +132,7 @@ private:
   void initMPC();
 
   void setInit(const Bounds &bounds, std::array<OptVariables, N + 1> &initialGuess);
-  void setParam(std::array<Parameter, N + 1> parameter_);
+  void setParam(AcadosParameters parameter_);
   solverReturn Solve();
   void printSol();
   void getSol();

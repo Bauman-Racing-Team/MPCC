@@ -17,13 +17,13 @@
 #ifndef MPCC_PLOTTING_H
 #define MPCC_PLOTTING_H
 
-#include "config.h"
-#include "types.h"
-#include "Params/params.h"
-#include "Params/track.h"
-#include <matplotlibcpp.h>
+#include "config.hpp"
+#include "types.hpp"
+#include "Params/params.hpp"
+#include "Params/track.hpp"
+#include <matplotlibcpp.hpp>
 #include <vector>
-#include <MPC/mpc.h>
+#include <MPC/mpc.hpp>
 
 namespace plt = matplotlibcpp;
 

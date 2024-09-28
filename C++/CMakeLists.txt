@@ -5,17 +5,17 @@ set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_FLAGS "-O0 -g")
 set(acados_DIR ../External/acados/cmake)
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
+
 add_executable(MPCC
         main.cpp
         types.cpp
         Params/params.cpp
+        Simulator/simulator.cpp
         Spline/cubic_spline.cpp
         Spline/arc_length_spline.cpp
         Interfaces/acados_interface.cpp
-        Interfaces/acados_sim_interface.cpp
         Interfaces/solver_interface.cpp
-        Constraints/bounds.cpp
-        Model/integrator.cpp
         # Tests/spline_test.cpp
         MPC/mpc.cpp
         Params/track.cpp
@@ -37,6 +37,5 @@ target_include_directories(MPCC PRIVATE
         )
 
 target_link_libraries(MPCC ${Python3_LIBRARIES}
-                           acados_sim_solver_acados_mpcc
                            acados_ocp_solver_acados_mpcc
                            acados)

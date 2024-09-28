@@ -14,46 +14,30 @@
 ///////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////
 
-#include "params.h"
+#include "params.hpp"
 namespace mpcc
 {
 
-Param::Param()
-{
-  std::cout << "Default initialization of model params" << std::endl;
-}
-
-Param::Param(std::string file)
+Model::Model(const std::string& file)
 {
   /////////////////////////////////////////////////////
-  // Loading Model and Constraint Parameters //////////
+  // Loading Model Parameters //////////
   /////////////////////////////////////////////////////
-  // std::cout << "model" << std::endl;
 
   std::ifstream iModel(file);
   json jsonModel;
   iModel >> jsonModel;
   // Model Parameters
 
-  car_l = jsonModel["car_l"];
-  car_w = jsonModel["car_w"];
-
-  max_dist_proj = jsonModel["maxDistProj"];
-
+  maxDistProj = jsonModel["maxDistProj"];
   vxMin = jsonModel["vxMin"];
 }
 
-CostParam::CostParam()
-{
-  std::cout << "Default initialization of cost" << std::endl;
-}
-
-CostParam::CostParam(std::string file)
+Cost::Cost(const std::string& file)
 {
   /////////////////////////////////////////////////////
   // Loading Cost Parameters //////////////////////////
   /////////////////////////////////////////////////////
-  // std::cout << "cost" << std::endl;
 
   std::ifstream iCost(file);
   json jsonCost;
@@ -62,13 +46,6 @@ CostParam::CostParam(std::string file)
   qC = jsonCost["qC"];
   qL = jsonCost["qL"];
   qVs = jsonCost["qVs"];
-
-  qMu = jsonCost["qMu"];
-
-  qR = jsonCost["qR"];
-
-  qBeta = jsonCost["qBeta"];
-  betaKinCost = jsonCost["betaKin"];
 
   rdThrottle = jsonCost["rdThrottle"];
   rdSteeringAngle = jsonCost["rdSteeringAngle"];
@@ -84,71 +61,198 @@ CostParam::CostParam(std::string file)
   scLinTire = jsonCost["sc_lin_tire"];
   scLinAlpha = jsonCost["sc_lin_alpha"];
   scLinLonControl = jsonCost["sc_lin_lon_control"];
-
-  std::cout << "rdThrottle: " << rdThrottle << std::endl;
-  std::cout << "rdSteeringAngle: " << rdSteeringAngle << std::endl;
-  std::cout << "rdBrakes: " << rdBrakes << std::endl;
-  std::cout << "rdVs: " << rdVs << std::endl;
 }
 
-BoundsParam::BoundsParam()
-{
-  std::cout << "Default initialization of bounds" << std::endl;
-}
-
-BoundsParam::BoundsParam(std::string file)
+Bounds::Bounds(const std::string& file)
 {
   /////////////////////////////////////////////////////
   // Loading Cost Parameters //////////////////////////
   /////////////////////////////////////////////////////
-  // std::cout << "bounds" << std::endl;
 
   std::ifstream iBounds(file);
   json jsonBounds;
   iBounds >> jsonBounds;
 
-  lower_state_bounds.xL = jsonBounds["xL"];
-  lower_state_bounds.yL = jsonBounds["yL"];
-  lower_state_bounds.phiL = jsonBounds["phiL"];
-  lower_state_bounds.vxL = jsonBounds["vxL"];
-  lower_state_bounds.vyL = jsonBounds["vyL"];
-  lower_state_bounds.rL = jsonBounds["rL"];
-  lower_state_bounds.sL = jsonBounds["sL"];
-  lower_state_bounds.throttleL = jsonBounds["throttleL"];
-  lower_state_bounds.steeringAngleL = jsonBounds["steeringAngleL"];
-  lower_state_bounds.brakesL = jsonBounds["brakesL"];
-  lower_state_bounds.vsL = jsonBounds["vsL"];
+  stateLowerBounds(xL) = jsonBounds["xL"];
+  stateLowerBounds(yL) = jsonBounds["yL"];
+  stateLowerBounds(yawL) = jsonBounds["yawL"];
+  stateLowerBounds(vxL) = jsonBounds["vxL"];
+  stateLowerBounds(vyL) = jsonBounds["vyL"];
+  stateLowerBounds(rL) = jsonBounds["rL"];
+  stateLowerBounds(sL) = jsonBounds["sL"];
+  stateLowerBounds(throttleL) = jsonBounds["throttleL"];
+  stateLowerBounds(steeringAngleL) = jsonBounds["steeringAngleL"];
+  stateLowerBounds(brakesL) = jsonBounds["brakesL"];
+  stateLowerBounds(vsL) = jsonBounds["vsL"];
 
-  upper_state_bounds.xU = jsonBounds["xU"];
-  upper_state_bounds.yU = jsonBounds["yU"];
-  upper_state_bounds.phiU = jsonBounds["phiU"];
-  upper_state_bounds.vxU = jsonBounds["vxU"];
-  upper_state_bounds.vyU = jsonBounds["vyU"];
-  upper_state_bounds.rU = jsonBounds["rU"];
-  upper_state_bounds.sU = jsonBounds["sU"];
-  upper_state_bounds.throttleU = jsonBounds["throttleU"];
-  upper_state_bounds.steeringAngleU = jsonBounds["steeringAngleU"];
-  upper_state_bounds.brakesU = jsonBounds["brakesU"];
-  upper_state_bounds.vsU = jsonBounds["vsU"];
+  stateUpperBounds(xU) = jsonBounds["xU"];
+  stateUpperBounds(yU) = jsonBounds["yU"];
+  stateUpperBounds(yawU) = jsonBounds["yawU"];
+  stateUpperBounds(vxU) = jsonBounds["vxU"];
+  stateUpperBounds(vyU) = jsonBounds["vyU"];
+  stateUpperBounds(rU) = jsonBounds["rU"];
+  stateUpperBounds(sU) = jsonBounds["sU"];
+  stateUpperBounds(throttleU) = jsonBounds["throttleU"];
+  stateUpperBounds(steeringAngleU) = jsonBounds["steeringAngleU"];
+  stateUpperBounds(brakesU) = jsonBounds["brakesU"];
+  stateUpperBounds(vsU) = jsonBounds["vsU"];
 
-  lower_input_bounds.dThrottleL= jsonBounds["dThrottleL"];
-  lower_input_bounds.dBrakesL= jsonBounds["dBrakesL"];
-  lower_input_bounds.dSteeringAngleL = jsonBounds["dSteeringAngleL"];
-  lower_input_bounds.dVsL = jsonBounds["dVsL"];
+  inputLowerBounds(dThrottleL) = jsonBounds["dThrottleL"];
+  inputLowerBounds(dBrakesL) = jsonBounds["dBrakesL"];
+  inputLowerBounds(dSteeringAngleL) = jsonBounds["dSteeringAngleL"];
+  inputLowerBounds(dVsL) = jsonBounds["dVsL"];
 
-  upper_input_bounds.dThrottleU= jsonBounds["dThrottleU"];
-  upper_input_bounds.dSteeringAngleU= jsonBounds["dSteeringAngleU"];
-  upper_input_bounds.dBrakesU = jsonBounds["dBrakesU"];
-  upper_input_bounds.dVsU = jsonBounds["dVsU"];
+  inputUpperBounds(dThrottleU) = jsonBounds["dThrottleU"];
+  inputUpperBounds(dSteeringAngleU) = jsonBounds["dSteeringAngleU"];
+  inputUpperBounds(dBrakesU) = jsonBounds["dBrakesU"];
+  inputUpperBounds(dVsU) = jsonBounds["dVsU"];
 
-  lower_const_bounds.maxAlphaL = jsonBounds["maxAlphaL"];
-  lower_const_bounds.rOutL = jsonBounds["rOutL"];
-  lower_const_bounds.ellipseL = jsonBounds["ellipseL"];
-  lower_const_bounds.lonControlL = jsonBounds["lonControlL"];
+  constraintsLowerBounds(maxAlphaFrontL) = jsonBounds["maxAlphaL"];
+  constraintsLowerBounds(maxAlphaRearL) = jsonBounds["maxAlphaL"];
+  constraintsLowerBounds(rOutL) = jsonBounds["rOutL"];
+  constraintsLowerBounds(ellipseFrontL) = jsonBounds["ellipseL"];
+  constraintsLowerBounds(ellipseRearL) = jsonBounds["ellipseL"];
+  constraintsLowerBounds(lonControlL) = jsonBounds["lonControlL"];
 
-  upper_const_bounds.maxAlphaU = jsonBounds["maxAlphaU"];
-  upper_const_bounds.rOutU = jsonBounds["rOutU"];
-  upper_const_bounds.ellipseU = jsonBounds["ellipseU"];
-  upper_const_bounds.lonControlU = jsonBounds["lonControlU"];
+  constraintsUpperBounds(maxAlphaFrontU) = jsonBounds["maxAlphaU"];
+  constraintsUpperBounds(maxAlphaRearU) = jsonBounds["maxAlphaU"];
+  constraintsUpperBounds(rOutU) = jsonBounds["rOutU"];
+  constraintsUpperBounds(ellipseFrontU) = jsonBounds["ellipseU"];
+  constraintsUpperBounds(ellipseRearU) = jsonBounds["ellipseU"];
+  constraintsUpperBounds(lonControlU) = jsonBounds["lonControlU"];
+}
+
+Car::Car(const std::string& file){
+  std::ifstream iCar(file);
+  json jsonCar;
+  iCar >> jsonCar;
+
+  m = jsonCar["m"];
+  g = jsonCar["g"];
+  iz = jsonCar["iz"];
+
+  lf = jsonCar["lf"];
+  lr = jsonCar["lr"];
+
+  cl = jsonCar["cl"];
+  cd = jsonCar["cd"];
+  cm = jsonCar["cm"];
+
+  brakesRatio = jsonCar["brakesRatio"];
+  gearRatio = jsonCar["gearRatio"];
+  pMax = jsonCar["pMax"];
+
+  carL = jsonCar["carL"];
+  carW = jsonCar["carW"];
+}
+
+Tire::Tire(const std::string& file){
+  std::ifstream iTire(file);
+  json jsonTire;
+  iTire >> jsonTire;
+
+  fzNominal = jsonTire["fzNominal"];
+  R = jsonTire["R"];
+  I = jsonTire["I"];
+
+  muyFz = jsonTire["muyFz"]; 
+  muxFz = jsonTire["muxFz"];
+
+  LFZO = jsonTire["LFZO"];				
+  LCX = jsonTire["LCX"];					
+  LMUX = jsonTire["LMUX"];					
+  LEX = jsonTire["LEX"];				
+  LKX	= jsonTire["LKX"];				
+  LHX	= jsonTire["LHX"];			
+  LVX = jsonTire["LVX"];					
+  LGAX = jsonTire["LGAX"];					
+  LCY	= jsonTire["LCY"];			
+  LMUY = jsonTire["LMUY"];				
+  LEY = jsonTire["LEY"];					
+  LKY	= jsonTire["LKY"];			
+  LHY	= jsonTire["LHY"];			
+  LVY	= jsonTire["LVY"];				
+  LGAY = jsonTire["LGAY"];				
+  LTR = jsonTire["LTR"];				
+  LRES = jsonTire["LRES"];					
+  LGAZ = jsonTire["LGAZ"];					
+  LXAL = jsonTire["LXAL"];				
+  LYKA = jsonTire["LYKA"];					
+  LVYKA = jsonTire["LVYKA"];					
+  LS = jsonTire["LS"];				
+  LSGKP = jsonTire["LSGKP"];				
+  LSGAL = jsonTire["LSGAL"];					
+  LGYR = jsonTire["LGYR"];					
+  LMX = jsonTire["LMX"]; 				
+  LVMX = jsonTire["LVMX"];				
+  LMY = jsonTire["LMY"];				
+
+  PCX1 = jsonTire["PCX1"];
+  PDX1 = jsonTire["PDX1"];			
+  PDX2 = jsonTire["PDX2"];	
+  PDX3 = jsonTire["PDX3"];			
+  PEX1 = jsonTire["PEX1"];	
+  PEX2 = jsonTire["PEX2"];
+  PEX3 = jsonTire["PEX3"];	
+  PEX4 = jsonTire["PEX4"];	
+  PKX1 = jsonTire["PKX1"];		
+  PKX2 = jsonTire["PKX2"];	
+  PKX3 = jsonTire["PKX3"];		
+  PHX1 = jsonTire["PHX1"];		
+  PHX2 = jsonTire["PHX2"];			
+  PVX1 = jsonTire["PVX1"];			
+  PVX2 = jsonTire["PVX2"];			
+  RBX1 = jsonTire["RBX1"];			
+  RBX2 = jsonTire["RBX2"];		
+  RCX1 = jsonTire["RCX1"];			
+  REX1 = jsonTire["REX1"];		
+  REX2 = jsonTire["REX2"];			
+  RHX1 = jsonTire["RHX1"];			
+  PTX1 = jsonTire["PTX1"];			
+  PTX2 = jsonTire["PTX2"];			
+  PTX3 = jsonTire["PTX3"];		
+
+  PCY1 = jsonTire["PCY1"];			
+  PDY1 = jsonTire["PDY1"];			
+  PDY2 = jsonTire["PDY2"];		
+  PDY3 = jsonTire["PDY3"];			
+  PEY1 = jsonTire["PEY1"];		
+  PEY2 = jsonTire["PEY2"];		
+  PEY3 = jsonTire["PEY3"];		
+  PEY4 = jsonTire["PEY4"];			
+  PKY1 = jsonTire["PKY1"];		
+  PKY2 = jsonTire["PKY2"];		
+  PKY3 = jsonTire["PKY3"];			
+  PHY1 = jsonTire["PHY1"];			
+  PHY2 = jsonTire["PHY2"];		
+  PHY3 = jsonTire["PHY3"];		
+  PVY1 = jsonTire["PVY1"];		
+  PVY2 = jsonTire["PVY2"];			
+  PVY3 = jsonTire["PVY3"];	
+  PVY4 = jsonTire["PVY4"];	
+  RBY1 = jsonTire["RBY1"];		
+  RBY2 = jsonTire["RBY2"];		
+  RBY3 = jsonTire["RBY3"];
+  RCY1 = jsonTire["RCY1"];		
+  REY1 = jsonTire["REY1"];	
+  REY2 = jsonTire["REY2"];		
+  RHY1 = jsonTire["RHY1"];		
+  RHY2 = jsonTire["RHY2"];		
+  RVY1 = jsonTire["RVY1"];			
+  RVY2 = jsonTire["RVY2"];
+  RVY3 = jsonTire["RVY3"];			
+  RVY4 = jsonTire["RVY4"];		
+  RVY5 = jsonTire["RVY5"];		
+  RVY6 = jsonTire["RVY6"];			
+  PTY1 = jsonTire["PTY1"];			
+  PTY2 = jsonTire["PTY2"];		
+
+  QSY1 = jsonTire["QSY1"];	
+  QSY2 = jsonTire["QSY2"];		
+  QSY3 = jsonTire["QSY3"];	
+  QSY4 = jsonTire["QSY4"];		
+
+  Cy = jsonTire["Cy"];
 }
 }  // namespace mpcc
+
