@@ -22,9 +22,10 @@ namespace mpcc
       : Ts_(Ts),
         validInitialGuess(false),
         solverInterface(new AcadosInterface()),
-        model(Model(path.param_path)),
-        cost(Cost(path.cost_path)),
-        bounds(Bounds(path.bounds_path)),
+        model(Model(path.modelPath)),
+        cost(Cost(path.costsPath)),
+        models(Models(path)),
+        bounds(Bounds(path.boundsPath)),
         track_(ArcLengthSpline(path))
   {
     nSqp = n_sqp;
@@ -68,6 +69,7 @@ namespace mpcc
 
   void MPC::updateInitialGuess(const State &x0)
   {
+    
     for (int i = 1; i < N; i++)
       initialGuess[i - 1].uk = initialGuess[i].uk;
     initialGuess[N - 1].uk = initialGuess[N - 2].uk;
@@ -76,7 +78,8 @@ namespace mpcc
     for (int i = 1; i < N; i++)
       initialGuess[i].xk = initialGuess[i + 1].xk;
 
-    initialGuess[N].xk = ode4(initialGuess[N - 1].xk, initialGuess[N - 1].uk, Ts_);
+    initialGuess[N].xk = models.ode4(initialGuess[N - 1].xk, initialGuess[N - 1].uk, Ts_, std::bind(&Models::calculateSimpleCombinedModelDerivatives, &models, std::placeholders::_1, std::placeholders::_2));
+    std::cout << "update" << std::endl;
     initialGuess[N].uk = Input::Zero();
 
     for (int i = 0; i < N + 1; i++)
@@ -130,12 +133,13 @@ namespace mpcc
     validInitialGuess = true;
   }
 
-  MPCReturn MPC::runMPC(State &x0)
+  MPCReturn MPC::runMPC(const State &x0)
   {
+    State x = x0;
     auto t1 = std::chrono::high_resolution_clock::now();
     int solver_status = -1;
-    x0(s) = track_.porjectOnSpline(x0);
-    unwrapState(x0, track_.getLength());
+    x(s) = track_.porjectOnSpline(x);
+    unwrapState(x, track_.getLength());
 
     nNoSolvesSqp = 0;
     nNoSolvesSqpMax = 0;
@@ -143,13 +147,14 @@ namespace mpcc
     while (nNoSolvesSqpMax < nSqp)
     {
       if (validInitialGuess)
-        updateInitialGuess(x0);
+        updateInitialGuess(x);
       else
-        generateNewInitialGuess(x0);
+        generateNewInitialGuess(x);
 
       fillParametersVector();
 
       solverReturn mpcSol = solverInterface->solveMPC(initialGuess, parameter_, bounds);
+
       solver_status = mpcSol.status;
 
       if (solver_status == 0)
@@ -163,6 +168,7 @@ namespace mpcc
       }
       if (solver_status != 0)
       {
+        // std::cout << "Solved" << std::endl;
         nNoSolvesSqp++;
         if (nNoSolvesSqp >= nReset)
         {

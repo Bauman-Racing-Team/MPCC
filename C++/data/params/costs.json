@@ -4,13 +4,6 @@
   "qL" : 100.0,
   "qVs" : 0.2,
 
-  "qMu": 1.0,
-
-  "qR" : 1E-4,
-
-  "qBeta" : 10E0,
-  "betaKin": 1,
-
   "rdThrottle" : 1E2,
   "rdSteeringAngle" : 5E2,
   "rdBrakes" : 1E2,

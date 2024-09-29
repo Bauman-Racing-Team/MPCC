@@ -3,11 +3,11 @@
 namespace mpcc
 {
 
-	Models::Models(const Car &car, const Tire &tire, const ArcLengthSpline &spline) : d_car(car), d_tire(tire), d_spline(spline)
+	Models::Models(const PathToJson &jsonPath) : d_car(jsonPath.carPath), d_tire(jsonPath.tirePath)
 	{
 	}
 
-	State Models::calculateCombinedSlipDynamicModelDerivatives(const State &state, const Input &input) const
+	State13 Models::calculateCombinedSlipDynamicModelDerivatives(const State13 &state, const Input &input) const
 	{
 		// Dynamic forces
 		double rDyn = d_tire.R;
@@ -71,45 +71,50 @@ namespace mpcc
 		double Fdrag = d_car.cd * std::pow(state(vx), 2.);
 
 		return {state(vx) * cos(state(yaw)) - state(vy) * sin(state(yaw)),
-				vx * sin(state(yaw)) + state(vy) * cos(state(yaw)),
-				r,
-				1 / m *
-					(Frx + cos(state(steeringAngle)) * Ffx + Fdrag - sin(state(steeringAngle)) * Ffy +
-					 m * state(vy) * state(r)),
-				1 / m *
-					(Fry + cos(state(steeringAngle)) * Ffy + sin(state(steeringAngle)) * Ffx - m * state(vx) * state(r)),
-				1 / iz *
-					(-Fry * lr + (cos(state(steeringAngle)) * Ffy + sin(state(steeringAngle)) * Ffx) * lf),
-				state(vs),
-				input(dThrottle),
-				input(dSteeringAngle),
-				input(dBrakes),
-				input(dVs),
-				-(Ffx - Fbf - Ffrr) / 2 * rDyn / iw,
-				(Fdrv + Fbr - Frx + Frrr) / 2 * rDyn / iw};
+						vx * sin(state(yaw)) + state(vy) * cos(state(yaw)),
+						r,
+						1 / m *
+								(Frx + cos(state(steeringAngle)) * Ffx + Fdrag - sin(state(steeringAngle)) * Ffy +
+								 m * state(vy) * state(r)),
+						1 / m *
+								(Fry + cos(state(steeringAngle)) * Ffy + sin(state(steeringAngle)) * Ffx - m * state(vx) * state(r)),
+						1 / iz *
+								(-Fry * lr + (cos(state(steeringAngle)) * Ffy + sin(state(steeringAngle)) * Ffx) * lf),
+						state(vs),
+						input(dThrottle),
+						input(dSteeringAngle),
+						input(dBrakes),
+						input(dVs),
+						-(Ffx - Fbf - Ffrr) / 2 * rDyn / iw,
+						(Fdrv + Fbr - Frx + Frrr) / 2 * rDyn / iw};
 	}
 
 	State Models::calculateSimpleCombinedModelDerivatives(const State &state, const Input &input) const
 	{
-		State dynamicState = calculateSimpleDynamicModel(state, input);
-		State kinematicState = calculateKinematicModel(state, input);
+		std::cout << "In model" << std::endl;
+		
+		State dynamicDerivs = calculateSimpleDynamicModelDerivatives(state, input);
+		
+		State kinematicDerivs = calculateKinematicModelDerivatives(state, input);
 
-		double lambda = std::min(std::max((state(vx) - 3) / 2, 0), 1);
+		
+
+		double lambda = std::min(std::max((state(vx) - 3.) / 2., 0.), 1.);
 
 		return {state(vx) * cos(state(yaw)) - state(vy) * sin(state(yaw)),
-				state(vx) * sin(state(yaw)) + state(vy) * cos(state(yaw)),
-				state(r),
-				lambda * dynamicRhs(vx) + (1. - lambda) * kinematicRhs(vx),
-				lambda * dynamicRhs(vy) + (1. - lambda) * kinematicRhs(vy),
-				lambda * dynamicRhs(r) + (1. - lambda) * kinematicRhs(r),
-				state(vs),
-				input(dThrottle),
-				input(dSteeringAngle),
-				input(dBrakes),
-				input(dVs)};
+						state(vx) * sin(state(yaw)) + state(vy) * cos(state(yaw)),
+						state(r),
+						lambda * dynamicDerivs(vx) + (1. - lambda) * kinematicDerivs(vx),
+						lambda * dynamicDerivs(vy) + (1. - lambda) * kinematicDerivs(vy),
+						lambda * dynamicDerivs(r) + (1. - lambda) * kinematicDerivs(r),
+						state(vs),
+						input(dThrottle),
+						input(dSteeringAngle),
+						input(dBrakes),
+						input(dVs)};
 	}
 
-	State Models::calculateSimpleDynamicModelDrivatives(const State &state, const Input &input) const
+	State Models::calculateSimpleDynamicModelDerivatives(const State &state, const Input &input) const
 	{
 		double m = d_car.m;
 		double iz = d_car.iz;
@@ -134,13 +139,13 @@ namespace mpcc
 		double Frrr = 2 * d_tire.QSY1 * Frz * tanh(state(vx));
 
 		// brakes front force
-		double Fbf = (-input(brakes) * brakesRatio / (1 + brakesRatio)) / rDyn * tanh(state(vx));
+		double Fbf = (-state(brakes) * brakesRatio / (1 + brakesRatio)) / rDyn * tanh(state(vx));
 
 		// brakes rear force
-		double Fbr = (-input(brakes) * 1 / (1 + brakesRatio)) / rDyn * tanh(vx);
+		double Fbr = (-state(brakes) * 1 / (1 + brakesRatio)) / rDyn * tanh(state(vx));
 
 		// drivetrain force
-		double Fdrv = (gearRatio * input(throttle)) / rDyn;
+		double Fdrv = (gearRatio * state(throttle)) / rDyn;
 
 		// longitudinal front force
 		double Ffx = Fbf + Ffrr;
@@ -149,7 +154,7 @@ namespace mpcc
 		double Frx = Fbr + Fdrv + Frrr;
 
 		// slip angle of the front wheel
-		double saf = atan2((state(vy) + state(r) * lf), state(vx)) - input(steeringAngle);
+		double saf = atan2((state(vy) + state(r) * lf), state(vx)) - state(steeringAngle);
 
 		// slip angle of the rear wheel
 		double sar = atan2((state(vy) - state(r) * lr), state(vx));
@@ -164,20 +169,16 @@ namespace mpcc
 		double Fdrag = d_car.cd * std::pow(state(vx), 2.0);
 
 		return {state(vx) * cos(state(yaw)) - state(vy) * sin(state(yaw)),
-				state(vx) * sin(state(yaw)) + state(vy) * cos(state(yaw)),
-				state(r),
-				1 / m *
-					(Frx + cos(input(steeringAngle)) * Ffx + Fdrag - sin(input(steeringAngle)) * Ffy +
-					 m * state(vy) * state(r)),
-				1 / m *
-					(Fry + cos(input(steeringAngle)) * Ffy + sin(input(steeringAngle)) * Ffx - m * state(vx) * state(r)),
-				1 / iz *
-					(-Fry * lr + (cos(input(steeringAngle)) * Ffy + sin(input(steeringAngle)) * Ffx) * lf),
-				state(vs),
-				input(dThrottle),
-				input(dSteeringAngle),
-				input(dBrakes),
-				input(dVs)};
+						state(vx) * sin(state(yaw)) + state(vy) * cos(state(yaw)),
+						state(r),
+						1. / m * (Frx + cos(state(steeringAngle)) * Ffx + Fdrag - sin(state(steeringAngle)) * Ffy + m * state(vy) * state(r)),
+						1. / m * (Fry + cos(state(steeringAngle)) * Ffy + sin(state(steeringAngle)) * Ffx - m * state(vx) * state(r)),
+						1. / iz * (-Fry * lr + (cos(state(steeringAngle)) * Ffy + sin(state(steeringAngle)) * Ffx) * lf),
+						state(vs),
+						input(dThrottle),
+						input(dSteeringAngle),
+						input(dBrakes),
+						input(dVs)};
 	}
 
 	State Models::calculateKinematicModelDerivatives(const State &state, const Input &input) const
@@ -206,13 +207,13 @@ namespace mpcc
 		double Frrr = 2 * d_tire.QSY1 * Frz * tanh(state(vx));
 
 		// brakes front force
-		double Fbf = (-input(brakes) * brakesRatio / (1 + brakesRatio)) / rDyn * tanh(state(vx));
+		double Fbf = (-state(brakes) * brakesRatio / (1 + brakesRatio)) / rDyn * tanh(state(vx));
 
 		// brakes rear force
-		double Fbr = (-input(brakes) * 1 / (1 + brakesRatio)) / rDyn * tanh(state(vx));
+		double Fbr = (-state(brakes) * 1 / (1 + brakesRatio)) / rDyn * tanh(state(vx));
 
 		// drivetrain force
-		double Fdrv = (gearRatio * input(throttle)) / rDyn;
+		double Fdrv = (gearRatio * state(throttle)) / rDyn;
 
 		// longitudinal front force
 		double Ffx = Fbf + Ffrr;
@@ -224,28 +225,28 @@ namespace mpcc
 		double Fdrag = d_car.cd * std::pow(state(vx), 2.);
 
 		// dot vx
-		double vxDot = 1 / m * (Frx + cos(input(steeringAngle)) * Ffx + Fdrag);
+		double vxDot = 1 / m * (Frx + cos(state(steeringAngle)) * Ffx + Fdrag);
 
 		return {state(vx) * cos(state(yaw)) - state(vy) * sin(state(yaw)),
-				state(vx) * sin(state(yaw)) + state(vy) * cos(state(yaw)),
-				state(r),
-				vxDot,
-				lr / (lr + lf) * (input(dSteeringAngle) * state(vx) + state(steeringAngle) * vxDot),
-				1 / (lr + lf) * (input(dSteeringAngle) * state(vx) + state(steeringAngle) * vxDot),
-				state(vs),
-				input(dThrottle),
-				input(dSteeringAngle),
-				input(dBrakes),
-				input(dVs)};
+						state(vx) * sin(state(yaw)) + state(vy) * cos(state(yaw)),
+						state(r),
+						vxDot,
+						lr / (lr + lf) * (input(dSteeringAngle) * state(vx) + state(steeringAngle) * vxDot),
+						1. / (lr + lf) * (input(dSteeringAngle) * state(vx) + state(steeringAngle) * vxDot),
+						state(vs),
+						input(dThrottle),
+						input(dSteeringAngle),
+						input(dBrakes),
+						input(dVs)};
 	}
 
-	std::pair<double, double> Models::calculateTireForces(double sa, double kappa, double Fz, double Dfz, double fzNominal) const
+	std::pair<double, double> Models::calculateTireForces(double alpha, double kappa, double Fz, double Dfz, double fzNominal) const
 	{
 		// latteral tire force Pacejka(Combined slip)
 		double SHy = (d_tire.PHY1 + d_tire.PHY2 * Dfz) * d_tire.LHY;
 		double SVy = Fz * ((d_tire.PVY1 + d_tire.PVY2 * Dfz) * d_tire.LVY) * d_tire.LMUY;
 
-		double Ky = d_tire.PKY1 * fzNominal * ...sin(2.0 * atan2(Fz, (d_tire.PKY2 * fzNominal * d_tire.LFZO))) * d_tire.LFZO * d_tire.LKY;
+		double Ky = d_tire.PKY1 * fzNominal * std::sin(2.0 * std::atan2(Fz, (d_tire.PKY2 * fzNominal * d_tire.LFZO))) * d_tire.LFZO * d_tire.LKY;
 
 		double muy = (d_tire.PDY1 + d_tire.PDY2 * Dfz) * d_tire.LMUY;
 		double Dy = muy * Fz;
@@ -258,8 +259,8 @@ namespace mpcc
 
 		// combined latteral force
 		double sa = alpha + SHy;
-		double Fy0 = Dy * sin(Cy * atan(By * sa - Ey * (By * sa - atan(By * sa)))) + SVy;
-		double Byk = d_tire.RBY1 * cos(atan(d_tire.RBY2 * (alpha - d_tire.RBY3))) * d_tire.LKY;
+		double Fy0 = Dy * std::sin(Cy * std::atan(By * sa - Ey * (By * sa - std::atan(By * sa)))) + SVy;
+		double Byk = d_tire.RBY1 * std::cos(std::atan(d_tire.RBY2 * (alpha - d_tire.RBY3))) * d_tire.LKY;
 		double Cyk = d_tire.RCY1;
 		double Eyk = d_tire.REY1 + d_tire.REY2 * Dfz;
 		double SHyk = d_tire.RHY1 + d_tire.RHY2 * Dfz;
@@ -294,36 +295,8 @@ namespace mpcc
 		return {Fy, Fx};
 	}
 
-	State Models::ode4(const State &state, const Input &input, double ts, State calculateDerivatives) const
+	double Models::sign(double value) const
 	{
-		// 4th order Runge Kutta (RK4) implementation
-		// 4 evaluation points of continuous dynamics
-		// evaluating the 4 points
-		double k1 = calculateDerivatives(state, input);
-		double k2 = calculateDerivatives(state + ts / 2. * k1, input);
-		double k3 = calculateDerivatives(state + ts / 2. * k2, input);
-		double k4 = calculateDerivatives(state + ts * k3, input);
-		// combining to give output
-		return state + ts * (k1 / 6. + k2 / 3. + k3 / 3. + k4 / 6.);
+		return (value >= 0.) ? 1 : -1;
 	}
-
-	void Models::unwrapState(State &state) const
-	{
-		if (state(yaw) > M_PI)
-		{
-			state(yaw) = state(yaw) - 2. * M_PI;
-		}
-
-		if (state(yaw) < -M_PI)
-		{
-			state(yaw) = state(yaw) + 2. * M_PI;
-		}
-
-		double trackLength = d_centerLine.getLength();
-		double lapLength = trackLength / 2.;
-
-		state(s) = d_centerLine.projectOnSpline(state);
-		state(s) = state(s) - (lapLength * floor(state(s) / lapLength));
-	}
-
 } // namespace mpcc

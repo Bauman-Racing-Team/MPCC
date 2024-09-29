@@ -40,8 +40,10 @@ enum {
 };
 
 using State = Eigen::Matrix<double, NX, 1>;
-void unwrapState(State& state, double trackLength)
-{
+using State13 = Eigen::Matrix<double, 13, 1>;
+
+template<typename S> 
+void unwrapState(S& state, double trackLength){
   if (state(yaw) > M_PI) {
     state(yaw) -= 2. * M_PI;
   }
@@ -53,19 +55,10 @@ void unwrapState(State& state, double trackLength)
   } 
   if (s < 0.) {
     state(s) += trackLength;
-  } 
+  }
 }
 
-void vxVsNonZero(State& state, double vxMin)
-{
-  if (state(vx) < vxMin) {
-    state(vx) = vxMin;
-  } 
-  if (state(vs) < vxMin) {
-    state(vs) = vxMin;
-  } 
-}
-
+void vxVsNonZero(State& state, double vxMin);
 
 enum {
   dThrottle = 0,
@@ -86,11 +79,12 @@ struct solverReturn {
 };
 
 struct PathToJson {
-  const std::string param_path;
-  const std::string cost_path;
-  const std::string bounds_path;
-  const std::string track_path;
-  const std::string adcodegen_path;
+  std::string modelPath;
+  std::string costsPath;
+  std::string boundsPath;
+  std::string trackPath;
+  std::string carPath;
+  std::string tirePath;
 };
 
 State arrayToState(double *xk);

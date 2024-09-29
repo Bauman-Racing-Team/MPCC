@@ -19,7 +19,7 @@
 namespace mpcc{
 
 ArcLengthSpline::ArcLengthSpline(const PathToJson &path)
-:model(Model(path.param_path))
+:model(Model(path.modelPath))
 {
 }
 

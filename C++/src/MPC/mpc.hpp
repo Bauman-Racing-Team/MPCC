@@ -19,6 +19,7 @@
 
 #include "config.hpp"
 #include "types.hpp"
+#include "Models/models.hpp"
 #include "Params/params.hpp"
 #include "Spline/arc_length_spline.hpp"
 
@@ -45,11 +46,18 @@ class MPC
 public:
   MPC(int n_sqp, int n_reset, double sqp_mixing, double Ts, const PathToJson &path);
   
-  MPCReturn runMPC(State &x0);
+  MPCReturn runMPC(const State &x0);
 
   void setTrack(const Eigen::VectorXd &X, const Eigen::VectorXd &Y);
 
   ArcLengthSpline getTrack() const;
+
+private:
+  void fillParametersVector();
+  void setMPCProblem();
+  void updateInitialGuess(const State &x0);
+  void generateNewInitialGuess(const State &x0);
+  void unwrapInitialGuess();
 
 private:
   bool validInitialGuess;
@@ -60,18 +68,6 @@ private:
   std::array<OptVariables, N + 1> tempGuess;
   std::array<OptVariables, N + 1> optimalSolution;
 
-  void fillParametersVector();
-
-  void setMPCProblem();
-
-  void updateInitialGuess(const State &x0);
-
-  void generateNewInitialGuess(const State &x0);
-
-  void unwrapInitialGuess();
-
-  State ode4(const State &state, const Input &input, double ts) const;
-  
   int nSqp;
   double sqpMixing;
   int nNoSolvesSqp;
@@ -86,6 +82,7 @@ private:
   Bounds bounds;
   Model model;
   Cost cost;
+  Models models;
 
   std::unique_ptr<AcadosInterface> solverInterface;
 };

@@ -16,6 +16,16 @@
 
 #include "types.hpp"
 namespace mpcc{
+
+void vxVsNonZero(State& state, double vxMin)
+{
+  if (state(vx) < vxMin) {
+    state(vx) = vxMin;
+  } 
+  if (state(vs) < vxMin) {
+    state(vs) = vxMin;
+  } 
+}
 State arrayToState(double *xk)
 {
     State x;

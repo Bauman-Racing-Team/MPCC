@@ -20,25 +20,27 @@
 #include "config.hpp"
 #include "types.hpp"
 #include "Params/params.hpp"
-#include "Params/track.hpp"
-#include <matplotlibcpp.hpp>
+#include "Track/track.hpp"
+#include "MPC/mpc.hpp"
+
+#include <matplotlibcpp.h>
+
 #include <vector>
-#include <MPC/mpc.hpp>
 
 namespace plt = matplotlibcpp;
 
 namespace mpcc {
 class Plotting {
 public:
-    void plotRun(const std::list<MPCReturn> &log, const TrackPos &track_xy) const;
-    void plotSim(const std::list<MPCReturn> &log, const TrackPos &track_xy) const;
+    void plotRun(const std::vector<MPCReturn> &log, const TrackPos &track_xy) const;
+    void plotSim(const std::vector<MPCReturn> &log, const TrackPos &track_xy) const;
 
-    Plotting(double Ts, PathToJson path);
+    Plotting(double Ts, const PathToJson& path);
 
 private:
     void plotBox(const State &x0) const;
 
-    Param param_;
+    Car car;
 };
 }
 

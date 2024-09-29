@@ -12,11 +12,11 @@ namespace mpcc
   {
 
   public:
-    Simulator(Car car, Tire tire, ArcLengthSpline centerLine);
-    State simTimeStep(const State &state, const Input &input, double ts) const;
+    Simulator(const PathToJson &jsonPath, const ArcLengthSpline &centerLine);
+    State13 simTimeStep(const State13 &state, const Input &input, double ts) const;
 
   private:
-    ArcLengthSpline d_spline;
+    ArcLengthSpline d_centerLine;
     Models d_models;
   };
 } // namespace mpcc

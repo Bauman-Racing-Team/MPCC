@@ -2,7 +2,7 @@
 {
   "xL": -3000,
   "yL": -3000,
-  "phiL": -10,
+  "yawL": -10,
   "vxL": 0.0,
   "vyL": -10.0,
   "rL": -2.5,
@@ -14,7 +14,7 @@
 
   "xU": 3000,
   "yU": 3000,
-  "phiU": 10,
+  "yawU": 10,
   "vxU": 30,
   "vyU": 10.0,
   "rU": 2.5,
@@ -34,12 +34,17 @@
   "dBrakesU": 1862.0,
   "dVsU": 5.0,
 
-  "maxAlphaL": -0.06,
-  "maxAlphaU": 0.06,
+  "maxAlphaFrontL": -0.06,
+  "maxAlphaRearL": -0.06,
   "rOutL": 0,
-  "rOutU": 1.0,
-  "ellipseL": 0,
-  "ellipseU": 1,
+  "ellipseFrontL": 0,
+  "ellipseRearL": 0,
   "lonControlL": 0,
+
+  "maxAlphaFrontU": 0.06,
+  "maxAlphaRearU": 0.06,
+  "rOutU": 1.0,
+  "ellipseFrontU": 1,
+  "ellipseRearU": 1,
   "lonControlU": 0
 } 

@@ -15,11 +15,14 @@
 ///////////////////////////////////////////////////////////////////////////
 
 #include "plotting.hpp"
+
+#include <vector>
+
 namespace mpcc
 {
 
-Plotting::Plotting(double Ts, PathToJson path) : param_(Param(path.param_path)) {}
-void Plotting::plotRun(const std::list<MPCReturn> &log, const TrackPos &track_xy) const
+Plotting::Plotting(double Ts, const PathToJson& path) : car(Car(path.carPath)) {}
+void Plotting::plotRun(const std::vector<MPCReturn> &log, const TrackPos &track_xy) const
 {
   std::vector<double> plot_xc(track_xy.X.data(), track_xy.X.data() + track_xy.X.size());
   std::vector<double> plot_yc(track_xy.Y.data(), track_xy.Y.data() + track_xy.Y.size());
@@ -55,25 +58,25 @@ void Plotting::plotRun(const std::list<MPCReturn> &log, const TrackPos &track_xy
   std::vector<double> plot_tire_front;
 
   for (MPCReturn log_i : log) {
-    plot_x.push_back(log_i.mpc_horizon[0].xk.X);
-    plot_y.push_back(log_i.mpc_horizon[0].xk.Y);
-    plot_phi.push_back(log_i.mpc_horizon[0].xk.phi);
-    plot_vx.push_back(log_i.mpc_horizon[0].xk.vx);
-    plot_vy.push_back(log_i.mpc_horizon[0].xk.vy);
-    plot_r.push_back(log_i.mpc_horizon[0].xk.r);
-    plot_s.push_back(log_i.mpc_horizon[0].xk.s);
-    plot_throttle.push_back(log_i.mpc_horizon[0].xk.throttle);
-    plot_steering.push_back(log_i.mpc_horizon[0].xk.steeringAngle);
-    plot_brakes.push_back(log_i.mpc_horizon[0].xk.brakes);
-    plot_vs.push_back(log_i.mpc_horizon[0].xk.vs);
+    plot_x.push_back(log_i.mpc_horizon[0].xk(X));
+    plot_y.push_back(log_i.mpc_horizon[0].xk(Y));
+    plot_phi.push_back(log_i.mpc_horizon[0].xk(yaw));
+    plot_vx.push_back(log_i.mpc_horizon[0].xk(vx));
+    plot_vy.push_back(log_i.mpc_horizon[0].xk(vy));
+    plot_r.push_back(log_i.mpc_horizon[0].xk(r));
+    plot_s.push_back(log_i.mpc_horizon[0].xk(s));
+    plot_throttle.push_back(log_i.mpc_horizon[0].xk(throttle));
+    plot_steering.push_back(log_i.mpc_horizon[0].xk(steeringAngle));
+    plot_brakes.push_back(log_i.mpc_horizon[0].xk(brakes));
+    plot_vs.push_back(log_i.mpc_horizon[0].xk(vs));
 
-    plot_dThrottle.push_back(log_i.mpc_horizon[0].uk.dThrottle);
-    plot_dsteering.push_back(log_i.mpc_horizon[0].uk.dSteeringAngle);
-    plot_dBrakes.push_back(log_i.mpc_horizon[0].uk.dBrakes);
-    plot_dvs.push_back(log_i.mpc_horizon[0].uk.dVs);
+    plot_dThrottle.push_back(log_i.mpc_horizon[0].uk(dThrottle));
+    plot_dsteering.push_back(log_i.mpc_horizon[0].uk(dSteeringAngle));
+    plot_dBrakes.push_back(log_i.mpc_horizon[0].uk(dBrakes));
+    plot_dvs.push_back(log_i.mpc_horizon[0].uk(dVs));
 
-    const StateVector x_vec = stateToVector(log_i.mpc_horizon[2].xk);
-    const std::vector<double> x_std_vec(x_vec.data(), x_vec.data() + x_vec.size());
+    const State x = log_i.mpc_horizon[1].xk;
+    const std::vector<double> xVec(x.data(), x.data() + x.size());
     double alpha_f = 0.0;  
     plot_alpha_f.push_back(alpha_f);
   }
@@ -146,7 +149,7 @@ void Plotting::plotRun(const std::list<MPCReturn> &log, const TrackPos &track_xy
 
   plt::show();
 }
-void Plotting::plotSim(const std::list<MPCReturn> &log, const TrackPos &track_xy) const
+void Plotting::plotSim(const std::vector<MPCReturn> &log, const TrackPos &track_xy) const
 {
   std::vector<double> plot_xc(track_xy.X.data(), track_xy.X.data() + track_xy.X.size());
   std::vector<double> plot_yc(track_xy.Y.data(), track_xy.Y.data() + track_xy.Y.size());
@@ -168,8 +171,8 @@ void Plotting::plotSim(const std::list<MPCReturn> &log, const TrackPos &track_xy
     plot_x.resize(0);
     plot_y.resize(0);
     for (int j = 0; j < log_i.mpc_horizon.size(); j++) {
-      plot_x.push_back(log_i.mpc_horizon[j].xk.X);
-      plot_y.push_back(log_i.mpc_horizon[j].xk.Y);
+      plot_x.push_back(log_i.mpc_horizon[j].xk(X));
+      plot_y.push_back(log_i.mpc_horizon[j].xk(Y));
     }
     double max_x = *std::max_element(plot_x.begin(), plot_x.end());
     double min_x = *std::min_element(plot_x.begin(), plot_x.end());
@@ -193,22 +196,22 @@ void Plotting::plotBox(const State &x0) const
 {
   std::vector<double> corner_x;
   std::vector<double> corner_y;
-  double body_xl = std::cos(x0.phi) * param_.car_l / 2;
-  double body_xw = std::sin(x0.phi) * param_.car_w / 2;
-  double body_yl = std::sin(x0.phi) * param_.car_l / 2;
-  double body_yw = -std::cos(x0.phi) * param_.car_w / 2;
+  double body_xl = std::cos(x0(yaw)) * car.carL / 2.;
+  double body_xw = std::sin(x0(yaw)) * car.carW / 2.;
+  double body_yl = std::sin(x0(yaw)) * car.carL / 2.;
+  double body_yw = -std::cos(x0(yaw)) * car.carW / 2.;
 
-  corner_x.push_back(x0.X + body_xl + body_xw);
-  corner_x.push_back(x0.X + body_xl - body_xw);
-  corner_x.push_back(x0.X - body_xl - body_xw);
-  corner_x.push_back(x0.X - body_xl + body_xw);
-  corner_x.push_back(x0.X + body_xl + body_xw);
+  corner_x.push_back(x0(X) + body_xl + body_xw);
+  corner_x.push_back(x0(X) + body_xl - body_xw);
+  corner_x.push_back(x0(X) - body_xl - body_xw);
+  corner_x.push_back(x0(X) - body_xl + body_xw);
+  corner_x.push_back(x0(X) + body_xl + body_xw);
 
-  corner_y.push_back(x0.Y + body_yl + body_yw);
-  corner_y.push_back(x0.Y + body_yl - body_yw);
-  corner_y.push_back(x0.Y - body_yl - body_yw);
-  corner_y.push_back(x0.Y - body_yl + body_yw);
-  corner_y.push_back(x0.Y + body_yl + body_yw);
+  corner_y.push_back(x0(Y) + body_yl + body_yw);
+  corner_y.push_back(x0(Y) + body_yl - body_yw);
+  corner_y.push_back(x0(Y) - body_yl - body_yw);
+  corner_y.push_back(x0(Y) - body_yl + body_yw);
+  corner_y.push_back(x0(Y) + body_yl + body_yw);
 
   plt::plot(corner_x, corner_y, "k-");
 }

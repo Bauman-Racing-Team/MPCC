@@ -165,7 +165,7 @@ void AcadosInterface::setParam(AcadosParameters parameter_)
     p[7] = parameter_(rdThrottleP,i);
     p[8] = parameter_(rdSteeringAngleP,i);
     p[9] = parameter_(rdBrakesP,i);
-    p[10] = parameter_(rdVsP.i);
+    p[10] = parameter_(rdVsP,i);
     acados_mpcc_acados_update_params(acados_ocp_capsule, i, p, NP);
   }
 
@@ -248,6 +248,7 @@ solverReturn AcadosInterface::Solve()
 
   // printSol();
   freeSolver();
+
   return mpcSol;
 }
 
