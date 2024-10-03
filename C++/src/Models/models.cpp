@@ -73,26 +73,24 @@ namespace mpcc
 		return {state(vx) * cos(state(yaw)) - state(vy) * sin(state(yaw)),
 						vx * sin(state(yaw)) + state(vy) * cos(state(yaw)),
 						r,
-						1 / m *
+						1. / m *
 								(Frx + cos(state(steeringAngle)) * Ffx + Fdrag - sin(state(steeringAngle)) * Ffy +
 								 m * state(vy) * state(r)),
-						1 / m *
+						1. / m *
 								(Fry + cos(state(steeringAngle)) * Ffy + sin(state(steeringAngle)) * Ffx - m * state(vx) * state(r)),
-						1 / iz *
+						1. / iz *
 								(-Fry * lr + (cos(state(steeringAngle)) * Ffy + sin(state(steeringAngle)) * Ffx) * lf),
 						state(vs),
 						input(dThrottle),
 						input(dSteeringAngle),
 						input(dBrakes),
 						input(dVs),
-						-(Ffx - Fbf - Ffrr) / 2 * rDyn / iw,
-						(Fdrv + Fbr - Frx + Frrr) / 2 * rDyn / iw};
+						-(Ffx - Fbf - Ffrr) / 2. * rDyn / iw,
+						(Fdrv + Fbr - Frx + Frrr) / 2. * rDyn / iw};
 	}
 
 	State Models::calculateSimpleCombinedModelDerivatives(const State &state, const Input &input) const
 	{
-		std::cout << "In model" << std::endl;
-		
 		State dynamicDerivs = calculateSimpleDynamicModelDerivatives(state, input);
 		
 		State kinematicDerivs = calculateKinematicModelDerivatives(state, input);

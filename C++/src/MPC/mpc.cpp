@@ -36,9 +36,9 @@ namespace mpcc
 
   void MPC::fillParametersVector()
   {
+    parameter_ = AcadosParameters::Zero();
     for (int timeStep = 0; timeStep <= N; timeStep++)
     {
-      parameter_ = AcadosParameters::Zero();
       Eigen::Vector2d trackPosI = track_.getPostion(initialGuess[timeStep].xk(s));
       Eigen::Vector2d trackDposI = track_.getDerivative(initialGuess[timeStep].xk(s));
       parameter_(xTrackP, timeStep) = trackPosI(0);
@@ -79,7 +79,6 @@ namespace mpcc
       initialGuess[i].xk = initialGuess[i + 1].xk;
 
     initialGuess[N].xk = models.ode4(initialGuess[N - 1].xk, initialGuess[N - 1].uk, Ts_, std::bind(&Models::calculateSimpleCombinedModelDerivatives, &models, std::placeholders::_1, std::placeholders::_2));
-    std::cout << "update" << std::endl;
     initialGuess[N].uk = Input::Zero();
 
     for (int i = 0; i < N + 1; i++)

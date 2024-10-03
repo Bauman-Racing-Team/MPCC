@@ -241,7 +241,7 @@ solverReturn AcadosInterface::Solve()
   for (int i = 0; i < N; i++) {
     optimalSolution[i].uk = arrayToInput(&utraj[i * NU]);
   }
-  optimalSolution[N].uk.Zero();
+  optimalSolution[N].uk.setZero();
 
   mpcSol.mpcHorizon = optimalSolution;
   mpcSol.status = status;
