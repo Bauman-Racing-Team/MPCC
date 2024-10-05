@@ -57,13 +57,13 @@ int main()
   
   double yaw0 = std::atan2(trackXY.Y(1) - trackXY.Y(0), trackXY.X(1) - trackXY.X(0));
   
-  State x0 = {trackXY.X(0),   trackXY.Y(0), yaw0, jsonConfig["v0"], 0., 0., 0., 0., 0., 0.,
-              jsonConfig["v0"]};
+  State13 x0 = {trackXY.X(0),   trackXY.Y(0), yaw0, jsonConfig["v0"], 0., 0., 0., 0., 0., 0.,
+              jsonConfig["v0"], 0., 0.};
   
   Simulator simulator(jsonPaths, mpc.getTrack());
   
   for (int i = 0; i < jsonConfig["n_sim"]; i++) {
-    MPCReturn mpcSol = mpc.runMPC(x0);
+    MPCReturn mpcSol = mpc.runMPC(x0.head<NX>());
 
     // Use ODE integrator
     x0 = simulator.simTimeStep(x0, mpcSol.u0, jsonConfig["Ts"]);

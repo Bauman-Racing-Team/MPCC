@@ -13,7 +13,7 @@ namespace mpcc
 
   public:
     Simulator(const PathToJson &jsonPath, const ArcLengthSpline &centerLine);
-    State simTimeStep(const State &state, const Input &input, double ts) const;
+    State13 simTimeStep(const State13 &state, const Input &input, double ts) const;
 
   private:
     ArcLengthSpline d_centerLine;

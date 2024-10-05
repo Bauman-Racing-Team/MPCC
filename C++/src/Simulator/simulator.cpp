@@ -8,16 +8,16 @@ namespace mpcc
   {
   }
 
-  State Simulator::simTimeStep(const State &state, const Input &input, double ts) const
+  State13 Simulator::simTimeStep(const State13 &state, const Input &input, double ts) const
   {
-    State nextState = state;
+    State13 nextState = state;
     int integrationSteps = static_cast<int>(ts / 0.001);
 
     double centerLineLength = d_centerLine.getLength();
 
     for (int i = 0; i < integrationSteps; ++i)
     {
-      nextState = d_models.ode4(nextState, input, 0.001, std::bind(&Models::calculateSimpleDynamicModelDerivatives, &d_models, std::placeholders::_1, std::placeholders::_2));
+      nextState = d_models.ode4(nextState, input, 0.001, std::bind(&Models::calculateCombinedSlipDynamicModelDerivatives, &d_models, std::placeholders::_1, std::placeholders::_2));
       unwrapState(nextState, centerLineLength);
     }
 

@@ -265,9 +265,9 @@ double ArcLengthSpline::getLength() const
 double ArcLengthSpline::porjectOnSpline(const State &x) const
 {
     Eigen::Vector2d pos;
-    pos(0) = x(X);
-    pos(1) = x(Y);
-    double s_guess = x(s);
+    pos(0) = x(xIdx);
+    pos(1) = x(yIdx);
+    double s_guess = x(sIdx);
     Eigen::Vector2d pos_path = getPostion(s_guess);
 
     double s_opt = s_guess;

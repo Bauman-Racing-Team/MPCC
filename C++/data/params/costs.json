@@ -9,13 +9,17 @@
   "rdBrakes" : 1E2,
   "rdVs" : 25E-4,
 
-  "sc_quad_track": 1E3,
-  "sc_quad_tire": 1E2,
-  "sc_quad_alpha": 1E4,
-  "sc_quad_lon_control": 1E7,
+  "scQuadAlphaFront": 1E4,
+  "scQuadAlphaRear": 1E4,
+  "scQuadROut": 1E3,
+  "scQuadEllipseFront": 1E2,
+  "scQuadEllipseRear": 1E2,
+  "scQuadLonControl": 1E7,
 
-  "sc_lin_track": 1E2,
-  "sc_lin_tire": 1E2,
-  "sc_lin_alpha": 1E2,
-  "sc_lin_lon_control": 1E6
+  "scLinAlphaFront": 1E2,
+  "scLinAlphaRear": 1E2,
+  "scLinROut": 1E2,
+  "scLinEllipseFront": 1E2,
+  "scLinEllipseRear": 1E2,
+  "scLinLonControl": 1E6
 }

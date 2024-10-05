@@ -39,12 +39,12 @@ namespace mpcc
     parameter_ = AcadosParameters::Zero();
     for (int timeStep = 0; timeStep <= N; timeStep++)
     {
-      Eigen::Vector2d trackPosI = track_.getPostion(initialGuess[timeStep].xk(s));
-      Eigen::Vector2d trackDposI = track_.getDerivative(initialGuess[timeStep].xk(s));
+      Eigen::Vector2d trackPosI = track_.getPostion(initialGuess[timeStep].xk(sIdx));
+      Eigen::Vector2d trackDposI = track_.getDerivative(initialGuess[timeStep].xk(sIdx));
       parameter_(xTrackP, timeStep) = trackPosI(0);
       parameter_(yTrackP, timeStep) = trackPosI(1);
       parameter_(yawTrackP, timeStep) = atan2(trackDposI(1), trackDposI(0));
-      parameter_(s0P, timeStep) = initialGuess[timeStep].xk(s);
+      parameter_(s0P, timeStep) = initialGuess[timeStep].xk(sIdx);
       parameter_(qCP, timeStep) = cost.qC;
       parameter_(qLP, timeStep) = cost.qL;
       parameter_(qVsP, timeStep) = cost.qVs;
@@ -52,17 +52,17 @@ namespace mpcc
       parameter_(rdSteeringAngleP, timeStep) = cost.rdSteeringAngle;
       parameter_(rdBrakesP, timeStep) = cost.rdBrakes;
       parameter_(rdVsP, timeStep) = cost.rdVs;
-      parameter_(scQuadAlphaFrontP, timeStep) = cost.scQuadAlpha;
-      parameter_(scQuadAlphaRearP, timeStep) = cost.scQuadAlpha;
-      parameter_(scQuadROutP, timeStep) = cost.scQuadTrack;
-      parameter_(scQuadEllipseFrontP, timeStep) = cost.scQuadTire;
-      parameter_(scQuadEllipseRearP, timeStep) = cost.scQuadTire;
+      parameter_(scQuadAlphaFrontP, timeStep) = cost.scQuadAlphaFront;
+      parameter_(scQuadAlphaRearP, timeStep) = cost.scQuadAlphaRear;
+      parameter_(scQuadROutP, timeStep) = cost.scQuadROut;
+      parameter_(scQuadEllipseFrontP, timeStep) = cost.scQuadEllipseFront;
+      parameter_(scQuadEllipseRearP, timeStep) = cost.scQuadEllipseRear;
       parameter_(scQuadLonControlP, timeStep) = cost.scQuadLonControl;
-      parameter_(scLinAlphaFrontP, timeStep) = cost.scLinAlpha;
-      parameter_(scLinAlphaRearP, timeStep) = cost.scLinAlpha;
-      parameter_(scLinROutP, timeStep) = cost.scLinTrack;
-      parameter_(scLinEllipseFrontP, timeStep) = cost.scLinTire;
-      parameter_(scLinEllipseRearP, timeStep) = cost.scLinTire;
+      parameter_(scLinAlphaFrontP, timeStep) = cost.scLinAlphaFront;
+      parameter_(scLinAlphaRearP, timeStep) = cost.scLinAlphaRear;
+      parameter_(scLinROutP, timeStep) = cost.scLinROut;
+      parameter_(scLinEllipseFrontP, timeStep) = cost.scLinEllipseFront;
+      parameter_(scLinEllipseRearP, timeStep) = cost.scLinEllipseRear;
       parameter_(scLinLonControlP, timeStep) = cost.scLinLonControl;
     }
   }
@@ -93,18 +93,18 @@ namespace mpcc
     double L = track_.getLength();
     for (int i = 1; i <= N; i++)
     {
-      if ((initialGuess[i].xk(yaw) - initialGuess[i - 1].xk(yaw)) < -M_PI)
+      if ((initialGuess[i].xk(yawIdx) - initialGuess[i - 1].xk(yawIdx)) < -M_PI)
       {
-        initialGuess[i].xk(yaw) += 2. * M_PI;
+        initialGuess[i].xk(yawIdx) += 2. * M_PI;
       }
-      if ((initialGuess[i].xk(yaw) - initialGuess[i - 1].xk(yaw)) > M_PI)
+      if ((initialGuess[i].xk(yawIdx) - initialGuess[i - 1].xk(yawIdx)) > M_PI)
       {
-        initialGuess[i].xk(yaw) -= 2. * M_PI;
+        initialGuess[i].xk(yawIdx) -= 2. * M_PI;
       }
 
-      if ((initialGuess[i].xk(s) - initialGuess[i - 1].xk(s)) > L / 2.)
+      if ((initialGuess[i].xk(sIdx) - initialGuess[i - 1].xk(sIdx)) > L / 2.)
       {
-        initialGuess[i].xk(s) -= L;
+        initialGuess[i].xk(sIdx) -= L;
       }
     }
   }
@@ -121,12 +121,12 @@ namespace mpcc
       initialGuess[i].uk = Input::Zero();
       vxVsNonZero(initialGuess[i].xk, model.vxMin);
 
-      initialGuess[i].xk(s) = initialGuess[i - 1].xk(s) + Ts_ * initialGuess[i - 1].xk(vs);
-      Eigen::Vector2d trackPosI = track_.getPostion(initialGuess[i].xk(s));
-      Eigen::Vector2d trackDposI = track_.getDerivative(initialGuess[i].xk(s));
-      initialGuess[i].xk(X) = trackPosI(0);
-      initialGuess[i].xk(Y) = trackPosI(1);
-      initialGuess[i].xk(yaw) = atan2(trackDposI(1), trackDposI(0));
+      initialGuess[i].xk(sIdx) = initialGuess[i - 1].xk(sIdx) + Ts_ * initialGuess[i - 1].xk(vsIdx);
+      Eigen::Vector2d trackPosI = track_.getPostion(initialGuess[i].xk(sIdx));
+      Eigen::Vector2d trackDposI = track_.getDerivative(initialGuess[i].xk(sIdx));
+      initialGuess[i].xk(xIdx) = trackPosI(0);
+      initialGuess[i].xk(yIdx) = trackPosI(1);
+      initialGuess[i].xk(yawIdx) = atan2(trackDposI(1), trackDposI(0));
     }
     unwrapInitialGuess();
     validInitialGuess = true;
@@ -137,7 +137,7 @@ namespace mpcc
     State x = x0;
     auto t1 = std::chrono::high_resolution_clock::now();
     int solver_status = -1;
-    x(s) = track_.porjectOnSpline(x);
+    x(sIdx) = track_.porjectOnSpline(x);
     unwrapState(x, track_.getLength());
 
     nNoSolvesSqp = 0;

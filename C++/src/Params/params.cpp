@@ -52,15 +52,19 @@ Cost::Cost(const std::string& file)
   rdBrakes = jsonCost["rdBrakes"];
   rdVs = jsonCost["rdVs"];
 
-  scQuadTrack = jsonCost["sc_quad_track"];
-  scQuadTire = jsonCost["sc_quad_tire"];
-  scQuadAlpha = jsonCost["sc_quad_alpha"];
-  scQuadLonControl = jsonCost["sc_quad_lon_control"];
+  scQuadAlphaFront = jsonCost["scQuadAlphaFront"];
+  scQuadAlphaRear = jsonCost["scQuadAlphaRear"];
+  scQuadROut = jsonCost["scQuadROut"];
+  scQuadEllipseFront = jsonCost["scQuadEllipseFront"];
+  scQuadEllipseRear = jsonCost["scQuadEllipseRear"];
+  scQuadLonControl = jsonCost["scQuadLonControl"];
 
-  scLinTrack = jsonCost["sc_lin_track"];
-  scLinTire = jsonCost["sc_lin_tire"];
-  scLinAlpha = jsonCost["sc_lin_alpha"];
-  scLinLonControl = jsonCost["sc_lin_lon_control"];
+  scLinAlphaFront = jsonCost["scLinAlphaFront"];
+  scLinAlphaRear = jsonCost["scLinAlphaRear"];
+  scLinROut = jsonCost["scLinROut"];
+  scLinEllipseFront = jsonCost["scLinEllipseFront"];
+  scLinEllipseRear = jsonCost["scLinEllipseRear"];
+  scLinLonControl = jsonCost["scLinLonControl"];
 }
 
 Bounds::Bounds(const std::string& file)
@@ -98,13 +102,13 @@ Bounds::Bounds(const std::string& file)
   stateUpperBounds(vsU) = jsonBounds["vsU"];
 
   inputLowerBounds(dThrottleL) = jsonBounds["dThrottleL"];
-  inputLowerBounds(dSteeringAngleL) = jsonBounds["dSteeringAngleL"];
   inputLowerBounds(dBrakesL) = jsonBounds["dBrakesL"];
+  inputLowerBounds(dSteeringAngleL) = jsonBounds["dSteeringAngleL"];
   inputLowerBounds(dVsL) = jsonBounds["dVsL"];
 
   inputUpperBounds(dThrottleU) = jsonBounds["dThrottleU"];
-  inputUpperBounds(dSteeringAngleU) = jsonBounds["dSteeringAngleU"];
   inputUpperBounds(dBrakesU) = jsonBounds["dBrakesU"];
+  inputUpperBounds(dSteeringAngleU) = jsonBounds["dSteeringAngleU"];
   inputUpperBounds(dVsU) = jsonBounds["dVsU"];
 
   constraintsLowerBounds(maxAlphaFrontL) = jsonBounds["maxAlphaFrontL"];

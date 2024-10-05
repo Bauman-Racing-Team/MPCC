@@ -58,22 +58,22 @@ void Plotting::plotRun(const std::vector<MPCReturn> &log, const TrackPos &track_
   std::vector<double> plot_tire_front;
 
   for (MPCReturn log_i : log) {
-    plot_x.push_back(log_i.mpc_horizon[0].xk(X));
-    plot_y.push_back(log_i.mpc_horizon[0].xk(Y));
-    plot_phi.push_back(log_i.mpc_horizon[0].xk(yaw));
-    plot_vx.push_back(log_i.mpc_horizon[0].xk(vx));
-    plot_vy.push_back(log_i.mpc_horizon[0].xk(vy));
-    plot_r.push_back(log_i.mpc_horizon[0].xk(r));
-    plot_s.push_back(log_i.mpc_horizon[0].xk(s));
-    plot_throttle.push_back(log_i.mpc_horizon[0].xk(throttle));
-    plot_steering.push_back(log_i.mpc_horizon[0].xk(steeringAngle));
-    plot_brakes.push_back(log_i.mpc_horizon[0].xk(brakes));
-    plot_vs.push_back(log_i.mpc_horizon[0].xk(vs));
+    plot_x.push_back(log_i.mpc_horizon[0].xk(xIdx));
+    plot_y.push_back(log_i.mpc_horizon[0].xk(yIdx));
+    plot_phi.push_back(log_i.mpc_horizon[0].xk(yawIdx));
+    plot_vx.push_back(log_i.mpc_horizon[0].xk(vxIdx));
+    plot_vy.push_back(log_i.mpc_horizon[0].xk(vyIdx));
+    plot_r.push_back(log_i.mpc_horizon[0].xk(rIdx));
+    plot_s.push_back(log_i.mpc_horizon[0].xk(sIdx));
+    plot_throttle.push_back(log_i.mpc_horizon[0].xk(throttleIdx));
+    plot_steering.push_back(log_i.mpc_horizon[0].xk(steeringAngleIdx));
+    plot_brakes.push_back(log_i.mpc_horizon[0].xk(brakesIdx));
+    plot_vs.push_back(log_i.mpc_horizon[0].xk(vsIdx));
 
-    plot_dThrottle.push_back(log_i.mpc_horizon[0].uk(dThrottle));
-    plot_dsteering.push_back(log_i.mpc_horizon[0].uk(dSteeringAngle));
-    plot_dBrakes.push_back(log_i.mpc_horizon[0].uk(dBrakes));
-    plot_dvs.push_back(log_i.mpc_horizon[0].uk(dVs));
+    plot_dThrottle.push_back(log_i.mpc_horizon[0].uk(dThrottleIdx));
+    plot_dsteering.push_back(log_i.mpc_horizon[0].uk(dSteeringAngleIdx));
+    plot_dBrakes.push_back(log_i.mpc_horizon[0].uk(dBrakesIdx));
+    plot_dvs.push_back(log_i.mpc_horizon[0].uk(dVsIdx));
 
     const State x = log_i.mpc_horizon[1].xk;
     const std::vector<double> xVec(x.data(), x.data() + x.size());
@@ -171,8 +171,8 @@ void Plotting::plotSim(const std::vector<MPCReturn> &log, const TrackPos &track_
     plot_x.resize(0);
     plot_y.resize(0);
     for (int j = 0; j < log_i.mpc_horizon.size(); j++) {
-      plot_x.push_back(log_i.mpc_horizon[j].xk(X));
-      plot_y.push_back(log_i.mpc_horizon[j].xk(Y));
+      plot_x.push_back(log_i.mpc_horizon[j].xk(xIdx));
+      plot_y.push_back(log_i.mpc_horizon[j].xk(yIdx));
     }
     double max_x = *std::max_element(plot_x.begin(), plot_x.end());
     double min_x = *std::min_element(plot_x.begin(), plot_x.end());
@@ -196,22 +196,22 @@ void Plotting::plotBox(const State &x0) const
 {
   std::vector<double> corner_x;
   std::vector<double> corner_y;
-  double body_xl = std::cos(x0(yaw)) * car.carL / 2.;
-  double body_xw = std::sin(x0(yaw)) * car.carW / 2.;
-  double body_yl = std::sin(x0(yaw)) * car.carL / 2.;
-  double body_yw = -std::cos(x0(yaw)) * car.carW / 2.;
+  double body_xl = std::cos(x0(yawIdx)) * car.carL / 2.;
+  double body_xw = std::sin(x0(yawIdx)) * car.carW / 2.;
+  double body_yl = std::sin(x0(yawIdx)) * car.carL / 2.;
+  double body_yw = -std::cos(x0(yawIdx)) * car.carW / 2.;
 
-  corner_x.push_back(x0(X) + body_xl + body_xw);
-  corner_x.push_back(x0(X) + body_xl - body_xw);
-  corner_x.push_back(x0(X) - body_xl - body_xw);
-  corner_x.push_back(x0(X) - body_xl + body_xw);
-  corner_x.push_back(x0(X) + body_xl + body_xw);
+  corner_x.push_back(x0(xIdx) + body_xl + body_xw);
+  corner_x.push_back(x0(xIdx) + body_xl - body_xw);
+  corner_x.push_back(x0(xIdx) - body_xl - body_xw);
+  corner_x.push_back(x0(xIdx) - body_xl + body_xw);
+  corner_x.push_back(x0(xIdx) + body_xl + body_xw);
 
-  corner_y.push_back(x0(Y) + body_yl + body_yw);
-  corner_y.push_back(x0(Y) + body_yl - body_yw);
-  corner_y.push_back(x0(Y) - body_yl - body_yw);
-  corner_y.push_back(x0(Y) - body_yl + body_yw);
-  corner_y.push_back(x0(Y) + body_yl + body_yw);
+  corner_y.push_back(x0(yIdx) + body_yl + body_yw);
+  corner_y.push_back(x0(yIdx) + body_yl - body_yw);
+  corner_y.push_back(x0(yIdx) - body_yl - body_yw);
+  corner_y.push_back(x0(yIdx) - body_yl + body_yw);
+  corner_y.push_back(x0(yIdx) + body_yl + body_yw);
 
   plt::plot(corner_x, corner_y, "k-");
 }

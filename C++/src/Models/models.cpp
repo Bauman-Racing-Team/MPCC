@@ -32,34 +32,32 @@ namespace mpcc
 		double Drfz = (Frz - fzNominal) / fzNominal;
 
 		// rolling resistance of the two front wheels
-		double Ffrr = 2. * d_tire.QSY1 * Ffz * std::tanh(state(vx));
-		// Ffrr = 200*tanh(vx);
+		double Ffrr = 2. * d_tire.QSY1 * Ffz * std::tanh(state(vxIdx));
 
 		// rolling resistance of the two rear wheels
-		double Frrr = 2. * d_tire.QSY1 * Frz * std::tanh(state(vx));
-		// Frrr = 200*tanh(vx);
+		double Frrr = 2. * d_tire.QSY1 * Frz * std::tanh(state(vxIdx));
 
 		// brakes front force
-		double Fbf = (-state(brakes) * brakesRatio / (1. + brakesRatio)) / rDyn * std::tanh(state(vx));
+		double Fbf = (-state(brakesIdx) * brakesRatio / (1. + brakesRatio)) / rDyn * std::tanh(state(vxIdx));
 
 		// brakes rear force
-		double Fbr = (-state(brakes) * 1. / (1. + brakesRatio)) / rDyn * std::tanh(state(vx));
+		double Fbr = (-state(brakesIdx) * 1. / (1. + brakesRatio)) / rDyn * std::tanh(state(vxIdx));
 
 		// drivetrain force
-		double Fdrv = (gearRatio * state(throttle)) / rDyn;
+		double Fdrv = (gearRatio * state(throttleIdx)) / rDyn;
 
 		// slip angle of the front wheel
-		double saf0 = std::atan2((state(vy) + state(r) * lf), vx) - state(steeringAngle);
+		double saf0 = std::atan2((state(vyIdx) + state(rIdx) * lf), state(vxIdx)) - state(steeringAngleIdx);
 
 		// slip angle of the rear wheel
-		double sar0 = std::atan2((state(vy) - state(r) * lr), state(vx));
+		double sar0 = std::atan2((state(vyIdx) - state(rIdx) * lr), state(vxIdx));
 
 		// slip ratio of the front wheel
-		double vlf = (state(vy) + state(r) * lf) * std::sin(state(steeringAngle)) + state(vx) * std::cos(state(steeringAngle));
-		double kappaf0 = (state(omegaf) * rDyn - vlf) / (std::max(1., vlf));
+		double vlf = (state(vyIdx) + state(rIdx) * lf) * std::sin(state(steeringAngleIdx)) + state(vxIdx) * std::cos(state(steeringAngleIdx));
+		double kappaf0 = (state(omegafIdx) * rDyn - vlf) / (std::max(1., vlf));
 
 		// slip ratio of the rear wheel
-		double kappar0 = (state(omegar) * rDyn - state(vx)) / (std::max(1., state(vx)));
+		double kappar0 = (state(omegarIdx) * rDyn - state(vxIdx)) / (std::max(1., state(vxIdx)));
 
 		auto [Ffy0, Ffx0] = calculateTireForces(saf0, kappaf0, Ffz, Dffz, fzNominal);
 		auto [Fry0, Frx0] = calculateTireForces(sar0, kappar0, Frz, Drfz, fzNominal);
@@ -68,23 +66,23 @@ namespace mpcc
 		double Fry = 2. * Fry0;
 		double Frx = 2. * Frx0;
 		// drag force
-		double Fdrag = d_car.cd * std::pow(state(vx), 2.);
+		double Fdrag = d_car.cd * std::pow(state(vxIdx), 2.);
 
-		return {state(vx) * cos(state(yaw)) - state(vy) * sin(state(yaw)),
-						vx * sin(state(yaw)) + state(vy) * cos(state(yaw)),
-						r,
+		return {state(vxIdx) * cos(state(yawIdx)) - state(vyIdx) * sin(state(yawIdx)),
+						state(vxIdx) * sin(state(yawIdx)) + state(vyIdx) * cos(state(yawIdx)),
+						state(rIdx),
 						1. / m *
-								(Frx + cos(state(steeringAngle)) * Ffx + Fdrag - sin(state(steeringAngle)) * Ffy +
-								 m * state(vy) * state(r)),
+								(Frx + cos(state(steeringAngleIdx)) * Ffx + Fdrag - sin(state(steeringAngleIdx)) * Ffy +
+								 m * state(vyIdx) * state(rIdx)),
 						1. / m *
-								(Fry + cos(state(steeringAngle)) * Ffy + sin(state(steeringAngle)) * Ffx - m * state(vx) * state(r)),
+								(Fry + cos(state(steeringAngleIdx)) * Ffy + sin(state(steeringAngleIdx)) * Ffx - m * state(vxIdx) * state(rIdx)),
 						1. / iz *
-								(-Fry * lr + (cos(state(steeringAngle)) * Ffy + sin(state(steeringAngle)) * Ffx) * lf),
-						state(vs),
-						input(dThrottle),
-						input(dSteeringAngle),
-						input(dBrakes),
-						input(dVs),
+								(-Fry * lr + (cos(state(steeringAngleIdx)) * Ffy + sin(state(steeringAngleIdx)) * Ffx) * lf),
+						state(vsIdx),
+						input(dThrottleIdx),
+						input(dSteeringAngleIdx),
+						input(dBrakesIdx),
+						input(dVsIdx),
 						-(Ffx - Fbf - Ffrr) / 2. * rDyn / iw,
 						(Fdrv + Fbr - Frx + Frrr) / 2. * rDyn / iw};
 	}
@@ -97,19 +95,19 @@ namespace mpcc
 
 		
 
-		double lambda = std::min(std::max((state(vx) - 3.) / 2., 0.), 1.);
+		double lambda = std::min(std::max((state(vxIdx) - 3.) / 2., 0.), 1.);
 
-		return {state(vx) * cos(state(yaw)) - state(vy) * sin(state(yaw)),
-						state(vx) * sin(state(yaw)) + state(vy) * cos(state(yaw)),
-						state(r),
-						lambda * dynamicDerivs(vx) + (1. - lambda) * kinematicDerivs(vx),
-						lambda * dynamicDerivs(vy) + (1. - lambda) * kinematicDerivs(vy),
-						lambda * dynamicDerivs(r) + (1. - lambda) * kinematicDerivs(r),
-						state(vs),
-						input(dThrottle),
-						input(dSteeringAngle),
-						input(dBrakes),
-						input(dVs)};
+		return {state(vxIdx) * cos(state(yawIdx)) - state(vyIdx) * sin(state(yawIdx)),
+						state(vxIdx) * sin(state(yawIdx)) + state(vyIdx) * cos(state(yawIdx)),
+						state(rIdx),
+						lambda * dynamicDerivs(vxIdx) + (1. - lambda) * kinematicDerivs(vxIdx),
+						lambda * dynamicDerivs(vyIdx) + (1. - lambda) * kinematicDerivs(vyIdx),
+						lambda * dynamicDerivs(rIdx) + (1. - lambda) * kinematicDerivs(rIdx),
+						state(vsIdx),
+						input(dThrottleIdx),
+						input(dSteeringAngleIdx),
+						input(dBrakesIdx),
+						input(dVsIdx)};
 	}
 
 	State Models::calculateSimpleDynamicModelDerivatives(const State &state, const Input &input) const
@@ -125,25 +123,25 @@ namespace mpcc
 		double rDyn = d_tire.R;
 
 		// normal load on the one front wheel
-		double Ffz = lr * m * gAcc / (2.0 * (lf + lr));
+		double Ffz = lr * m * gAcc / (2. * (lf + lr));
 
 		// normal load on the one rear wheel
-		double Frz = lf * m * gAcc / (2.0 * (lf + lr));
+		double Frz = lf * m * gAcc / (2. * (lf + lr));
 
 		// rolling resistance of the two front wheels
-		double Ffrr = 2 * d_tire.QSY1 * Ffz * tanh(state(vx));
+		double Ffrr = 2. * d_tire.QSY1 * Ffz * tanh(state(vxIdx));
 
 		// rolling resistance of the two rear wheels
-		double Frrr = 2 * d_tire.QSY1 * Frz * tanh(state(vx));
+		double Frrr = 2. * d_tire.QSY1 * Frz * tanh(state(vxIdx));
 
 		// brakes front force
-		double Fbf = (-state(brakes) * brakesRatio / (1 + brakesRatio)) / rDyn * tanh(state(vx));
+		double Fbf = (-state(brakesIdx) * brakesRatio / (1. + brakesRatio)) / rDyn * tanh(state(vxIdx));
 
 		// brakes rear force
-		double Fbr = (-state(brakes) * 1 / (1 + brakesRatio)) / rDyn * tanh(state(vx));
+		double Fbr = (-state(brakesIdx) * 1. / (1. + brakesRatio)) / rDyn * tanh(state(vxIdx));
 
 		// drivetrain force
-		double Fdrv = (gearRatio * state(throttle)) / rDyn;
+		double Fdrv = (gearRatio * state(throttleIdx)) / rDyn;
 
 		// longitudinal front force
 		double Ffx = Fbf + Ffrr;
@@ -152,10 +150,10 @@ namespace mpcc
 		double Frx = Fbr + Fdrv + Frrr;
 
 		// slip angle of the front wheel
-		double saf = atan2((state(vy) + state(r) * lf), state(vx)) - state(steeringAngle);
+		double saf = atan2((state(vyIdx) + state(rIdx) * lf), state(vxIdx)) - state(steeringAngleIdx);
 
 		// slip angle of the rear wheel
-		double sar = atan2((state(vy) - state(r) * lr), state(vx));
+		double sar = atan2((state(vyIdx) - state(rIdx) * lr), state(vxIdx));
 
 		// latteral front force
 		double Ffy = -saf * d_tire.Cy;
@@ -164,19 +162,19 @@ namespace mpcc
 		double Fry = -sar * d_tire.Cy;
 
 		// drag force
-		double Fdrag = d_car.cd * std::pow(state(vx), 2.0);
+		double Fdrag = d_car.cd * std::pow(state(vxIdx), 2.);
 
-		return {state(vx) * cos(state(yaw)) - state(vy) * sin(state(yaw)),
-						state(vx) * sin(state(yaw)) + state(vy) * cos(state(yaw)),
-						state(r),
-						1. / m * (Frx + cos(state(steeringAngle)) * Ffx + Fdrag - sin(state(steeringAngle)) * Ffy + m * state(vy) * state(r)),
-						1. / m * (Fry + cos(state(steeringAngle)) * Ffy + sin(state(steeringAngle)) * Ffx - m * state(vx) * state(r)),
-						1. / iz * (-Fry * lr + (cos(state(steeringAngle)) * Ffy + sin(state(steeringAngle)) * Ffx) * lf),
-						state(vs),
-						input(dThrottle),
-						input(dSteeringAngle),
-						input(dBrakes),
-						input(dVs)};
+		return {state(vxIdx) * cos(state(yawIdx)) - state(vyIdx) * sin(state(yawIdx)),
+						state(vxIdx) * sin(state(yawIdx)) + state(vyIdx) * cos(state(yawIdx)),
+						state(rIdx),
+						1. / m * (Frx + cos(state(steeringAngleIdx)) * Ffx + Fdrag - sin(state(steeringAngleIdx)) * Ffy + m * state(vyIdx) * state(rIdx)),
+						1. / m * (Fry + cos(state(steeringAngleIdx)) * Ffy + sin(state(steeringAngleIdx)) * Ffx - m * state(vxIdx) * state(rIdx)),
+						1. / iz * (-Fry * lr + (cos(state(steeringAngleIdx)) * Ffy + sin(state(steeringAngleIdx)) * Ffx) * lf),
+						state(vsIdx),
+						input(dThrottleIdx),
+						input(dSteeringAngleIdx),
+						input(dBrakesIdx),
+						input(dVsIdx)};
 	}
 
 	State Models::calculateKinematicModelDerivatives(const State &state, const Input &input) const
@@ -193,25 +191,25 @@ namespace mpcc
 		double gAcc = d_car.g;
 
 		// normal load on the one front wheel
-		double Ffz = lr * m * gAcc / (2.0 * (lf + lr));
+		double Ffz = lr * m * gAcc / (2. * (lf + lr));
 
 		// normal load on the one rear wheel
-		double Frz = lf * m * gAcc / (2.0 * (lf + lr));
+		double Frz = lf * m * gAcc / (2. * (lf + lr));
 
 		// rolling resistance of the two front wheels
-		double Ffrr = 2 * d_tire.QSY1 * Ffz * tanh(state(vx));
+		double Ffrr = 2. * d_tire.QSY1 * Ffz * tanh(state(vxIdx));
 
 		// rolling resistance of the two rear wheels
-		double Frrr = 2 * d_tire.QSY1 * Frz * tanh(state(vx));
+		double Frrr = 2. * d_tire.QSY1 * Frz * tanh(state(vxIdx));
 
 		// brakes front force
-		double Fbf = (-state(brakes) * brakesRatio / (1 + brakesRatio)) / rDyn * tanh(state(vx));
+		double Fbf = (-state(brakesIdx) * brakesRatio / (1. + brakesRatio)) / rDyn * tanh(state(vxIdx));
 
 		// brakes rear force
-		double Fbr = (-state(brakes) * 1 / (1 + brakesRatio)) / rDyn * tanh(state(vx));
+		double Fbr = (-state(brakesIdx) * 1. / (1. + brakesRatio)) / rDyn * tanh(state(vxIdx));
 
 		// drivetrain force
-		double Fdrv = (gearRatio * state(throttle)) / rDyn;
+		double Fdrv = (gearRatio * state(throttleIdx)) / rDyn;
 
 		// longitudinal front force
 		double Ffx = Fbf + Ffrr;
@@ -220,22 +218,22 @@ namespace mpcc
 		double Frx = Fbr + Fdrv + Frrr;
 
 		// drag force
-		double Fdrag = d_car.cd * std::pow(state(vx), 2.);
+		double Fdrag = d_car.cd * std::pow(state(vxIdx), 2.);
 
 		// dot vx
-		double vxDot = 1 / m * (Frx + cos(state(steeringAngle)) * Ffx + Fdrag);
+		double vxDot = 1. / m * (Frx + cos(state(steeringAngleIdx)) * Ffx + Fdrag);
 
-		return {state(vx) * cos(state(yaw)) - state(vy) * sin(state(yaw)),
-						state(vx) * sin(state(yaw)) + state(vy) * cos(state(yaw)),
-						state(r),
+		return {state(vxIdx) * cos(state(yawIdx)) - state(vyIdx) * sin(state(yawIdx)),
+						state(vxIdx) * sin(state(yawIdx)) + state(vyIdx) * cos(state(yawIdx)),
+						state(rIdx),
 						vxDot,
-						lr / (lr + lf) * (input(dSteeringAngle) * state(vx) + state(steeringAngle) * vxDot),
-						1. / (lr + lf) * (input(dSteeringAngle) * state(vx) + state(steeringAngle) * vxDot),
-						state(vs),
-						input(dThrottle),
-						input(dSteeringAngle),
-						input(dBrakes),
-						input(dVs)};
+						lr / (lr + lf) * (input(dSteeringAngleIdx) * state(vxIdx) + state(steeringAngleIdx) * vxDot),
+						1. / (lr + lf) * (input(dSteeringAngleIdx) * state(vxIdx) + state(steeringAngleIdx) * vxDot),
+						state(vsIdx),
+						input(dThrottleIdx),
+						input(dSteeringAngleIdx),
+						input(dBrakesIdx),
+						input(dVsIdx)};
 	}
 
 	std::pair<double, double> Models::calculateTireForces(double alpha, double kappa, double Fz, double Dfz, double fzNominal) const
@@ -244,7 +242,7 @@ namespace mpcc
 		double SHy = (d_tire.PHY1 + d_tire.PHY2 * Dfz) * d_tire.LHY;
 		double SVy = Fz * ((d_tire.PVY1 + d_tire.PVY2 * Dfz) * d_tire.LVY) * d_tire.LMUY;
 
-		double Ky = d_tire.PKY1 * fzNominal * std::sin(2.0 * std::atan2(Fz, (d_tire.PKY2 * fzNominal * d_tire.LFZO))) * d_tire.LFZO * d_tire.LKY;
+		double Ky = d_tire.PKY1 * fzNominal * std::sin(2. * std::atan2(Fz, (d_tire.PKY2 * fzNominal * d_tire.LFZO))) * d_tire.LFZO * d_tire.LKY;
 
 		double muy = (d_tire.PDY1 + d_tire.PDY2 * Dfz) * d_tire.LMUY;
 		double Dy = muy * Fz;
@@ -279,7 +277,7 @@ namespace mpcc
 		double Bx = Kx / (Cx * Dx);
 		// combined longitudinal force
 		double kappax = kappa + SHx;
-		double Ex = (d_tire.PEX1 + d_tire.PEX2 * Dfz + d_tire.PEX3 * Dfz * Dfz) * (1 - d_tire.PEX4 * sign(kappax)) * d_tire.LEX;
+		double Ex = (d_tire.PEX1 + d_tire.PEX2 * Dfz + d_tire.PEX3 * Dfz * Dfz) * (1. - d_tire.PEX4 * sign(kappax)) * d_tire.LEX;
 		double Fx0 = Dx * sin(Cx * atan(Bx * kappax - Ex * (Bx * kappax - atan(Bx * kappax)))) + SVx;
 
 		double Bxa = d_tire.RBX1 * cos(atan(d_tire.RBX2 * kappa)) * d_tire.LXAL;
@@ -295,6 +293,6 @@ namespace mpcc
 
 	double Models::sign(double value) const
 	{
-		return (value >= 0.) ? 1 : -1;
+		return (value >= 0.) ? 1. : -1.;
 	}
 } // namespace mpcc

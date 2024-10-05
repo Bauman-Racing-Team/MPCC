@@ -24,19 +24,19 @@ namespace mpcc
 {
 
 enum {
-  X = 0,
-  Y = 1,
-  yaw = 2,
-  vx = 3,
-  vy = 4,
-  r = 5,
-  s = 6,
-  throttle = 7,
-  steeringAngle = 8,
-  brakes = 9,
-  vs = 10,
-  omegaf = 11,
-  omegar = 12
+  xIdx = 0,
+  yIdx = 1,
+  yawIdx = 2,
+  vxIdx = 3,
+  vyIdx = 4,
+  rIdx = 5,
+  sIdx = 6,
+  throttleIdx = 7,
+  steeringAngleIdx = 8,
+  brakesIdx = 9,
+  vsIdx = 10,
+  omegafIdx = 11,
+  omegarIdx = 12
 };
 
 using State = Eigen::Matrix<double, NX, 1>;
@@ -44,27 +44,27 @@ using State13 = Eigen::Matrix<double, 13, 1>;
 
 template<typename S> 
 void unwrapState(S& state, double trackLength){
-  if (state(yaw) > M_PI) {
-    state(yaw) -= 2. * M_PI;
+  if (state(yawIdx) > M_PI) {
+    state(yawIdx) -= 2. * M_PI;
   }
-  if (state(yaw) < -M_PI) {
-    state(yaw) += 2. * M_PI;
+  if (state(yawIdx) < -M_PI) {
+    state(yawIdx) += 2. * M_PI;
   }
-  if (s > trackLength) {
-    state(s) -= trackLength;
+  if (state(sIdx) > trackLength) {
+    state(sIdx) -= trackLength;
   } 
-  if (s < 0.) {
-    state(s) += trackLength;
+  if (state(sIdx) < 0.) {
+    state(sIdx) += trackLength;
   }
 }
 
 void vxVsNonZero(State& state, double vxMin);
 
 enum {
-  dThrottle = 0,
-  dSteeringAngle = 1,
-  dBrakes = 2,
-  dVs = 3,
+  dThrottleIdx = 0,
+  dSteeringAngleIdx = 1,
+  dBrakesIdx = 2,
+  dVsIdx = 3,
 };
 
 using Input = Eigen::Matrix<double, NU, 1>;

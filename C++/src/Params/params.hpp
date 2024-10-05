@@ -47,14 +47,18 @@ public:
     double rdBrakes;
     double rdVs;
 
-    double scQuadTrack;
-    double scQuadTire;
-    double scQuadAlpha;
+    double scQuadAlphaFront;
+    double scQuadAlphaRear;
+    double scQuadROut;
+    double scQuadEllipseFront;
+    double scQuadEllipseRear;
     double scQuadLonControl;
 
-    double scLinTrack;
-    double scLinTire;
-    double scLinAlpha;
+    double scLinAlphaFront;
+    double scLinAlphaRear;
+    double scLinROut;
+    double scLinEllipseFront;
+    double scLinEllipseRear;
     double scLinLonControl;
 };
 
@@ -97,16 +101,16 @@ enum {
 
 enum {
     dThrottleL = 0,
-    dBrakesL = 1,
-    dSteeringAngleL = 2,
-    dVsL = 3,
+    dSteeringAngleL = 1,
+    dBrakesL = 2,
+    dVsL = 3
 };
 
 enum {
     dThrottleU = 0,
-    dBrakesU = 1,
-    dSteeringAngleU = 2,
-    dVsU = 3,
+    dSteeringAngleU = 1,
+    dBrakesU = 2,
+    dVsU = 3
 };
 
 enum {
@@ -115,7 +119,7 @@ enum {
     rOutL = 2,
     ellipseFrontL = 3,
     ellipseRearL = 4,
-    lonControlL = 5,
+    lonControlL = 5
 };
 
 enum {
@@ -124,7 +128,7 @@ enum {
     rOutU = 2,
     ellipseFrontU = 3,
     ellipseRearU = 4,
-    lonControlU = 5,
+    lonControlU = 5
 };
 
 class Bounds{

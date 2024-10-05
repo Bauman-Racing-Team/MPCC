@@ -19,27 +19,27 @@ namespace mpcc{
 
 void vxVsNonZero(State& state, double vxMin)
 {
-  if (state(vx) < vxMin) {
-    state(vx) = vxMin;
+  if (state(vxIdx) < vxMin) {
+    state(vxIdx) = vxMin;
   } 
-  if (state(vs) < vxMin) {
-    state(vs) = vxMin;
+  if (state(vsIdx) < vxMin) {
+    state(vsIdx) = vxMin;
   } 
 }
 State arrayToState(double *xk)
 {
     State x;
-    x(X)     = xk[X];
-    x(Y)     = xk[Y];
-    x(yaw)   = xk[yaw];
-    x(vx)    = xk[vx];
-    x(vy)    = xk[vy];
-    x(r)     = xk[r];
-    x(s)     = xk[s];
-    x(throttle) = xk[throttle];
-    x(steeringAngle) = xk[steeringAngle];
-    x(brakes)  = xk[brakes];
-    x(vs)  = xk[vs];
+    x(xIdx)     = xk[xIdx];
+    x(yIdx)     = xk[yIdx];
+    x(yawIdx)   = xk[yawIdx];
+    x(vxIdx)    = xk[vxIdx];
+    x(vyIdx)    = xk[vyIdx];
+    x(rIdx)     = xk[rIdx];
+    x(sIdx)     = xk[sIdx];
+    x(throttleIdx) = xk[throttleIdx];
+    x(steeringAngleIdx) = xk[steeringAngleIdx];
+    x(brakesIdx)  = xk[brakesIdx];
+    x(vsIdx)  = xk[vsIdx];
 
     return x;
 }
@@ -47,10 +47,10 @@ State arrayToState(double *xk)
 Input arrayToInput(double *uk)
 {
     Input u;
-    u(dThrottle)     = uk[dThrottle];
-    u(dSteeringAngle) = uk[dSteeringAngle];
-    u(dBrakes)     = uk[dBrakes];
-    u(dVs)    = uk[dVs];
+    u(dThrottleIdx)     = uk[dThrottleIdx];
+    u(dSteeringAngleIdx) = uk[dSteeringAngleIdx];
+    u(dBrakesIdx)     = uk[dBrakesIdx];
+    u(dVsIdx)    = uk[dVsIdx];
 
     return u;
 }
