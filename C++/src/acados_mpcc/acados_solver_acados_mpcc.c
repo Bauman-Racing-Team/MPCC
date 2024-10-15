@@ -1005,7 +1005,7 @@ int acados_mpcc_acados_update_params(acados_mpcc_solver_capsule* capsule, int st
 {
     int solver_status = 0;
 
-    int casadi_np = 11;
+    int casadi_np = 4;
     if (casadi_np != np) {
         printf("acados_update_params: trying to set %i parameters for external functions."
             " External function has %i parameters. Exiting.\n", np, casadi_np);

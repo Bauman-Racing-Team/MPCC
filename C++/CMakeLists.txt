@@ -25,11 +25,11 @@ add_executable(MPCC
 find_package(Python3 REQUIRED COMPONENTS Interpreter NumPy Development)
 find_package(acados REQUIRED)
 
-add_subdirectory(src/Acados_mpcc)
+add_subdirectory(src/acados_mpcc)
 
 target_include_directories(MPCC PRIVATE 
         src
-        src/Acados_mpcc
+        src/acados_mpcc
         ../External/matplotlib-cpp/
         ../External/json/include/
         ../External/eigen/

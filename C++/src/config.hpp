@@ -30,7 +30,7 @@ namespace mpcc
 
 #define NX 11
 #define NU 4
-#define NP 11
+#define NP 4
 
 #define NB 15  // max number of bounds
 #define NPC 3  // number of polytopic constraints

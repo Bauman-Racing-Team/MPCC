@@ -159,13 +159,6 @@ void AcadosInterface::setParam(AcadosParameters parameter_)
     p[1] = parameter_(yTrackP,i);
     p[2] = parameter_(yawTrackP,i);
     p[3] = parameter_(s0P,i);
-    p[4] = parameter_(qCP,i);
-    p[5] = parameter_(qLP,i);
-    p[6] = parameter_(qVsP,i);
-    p[7] = parameter_(rdThrottleP,i);
-    p[8] = parameter_(rdSteeringAngleP,i);
-    p[9] = parameter_(rdBrakesP,i);
-    p[10] = parameter_(rdVsP,i);
     acados_mpcc_acados_update_params(acados_ocp_capsule, i, p, NP);
   }
 

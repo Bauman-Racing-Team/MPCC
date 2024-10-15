@@ -36,34 +36,15 @@ namespace mpcc
 
   void MPC::fillParametersVector()
   {
-    parameter_ = AcadosParameters::Zero();
+    parameter_.setZero();
     for (int timeStep = 0; timeStep <= N; timeStep++)
     {
       Eigen::Vector2d trackPosI = track_.getPostion(initialGuess[timeStep].xk(sIdx));
       Eigen::Vector2d trackDposI = track_.getDerivative(initialGuess[timeStep].xk(sIdx));
       parameter_(xTrackP, timeStep) = trackPosI(0);
       parameter_(yTrackP, timeStep) = trackPosI(1);
-      parameter_(yawTrackP, timeStep) = atan2(trackDposI(1), trackDposI(0));
+      parameter_(yawTrackP, timeStep) = std::atan2(trackDposI(1), trackDposI(0));
       parameter_(s0P, timeStep) = initialGuess[timeStep].xk(sIdx);
-      parameter_(qCP, timeStep) = cost.qC;
-      parameter_(qLP, timeStep) = cost.qL;
-      parameter_(qVsP, timeStep) = cost.qVs;
-      parameter_(rdThrottleP, timeStep) = cost.rdThrottle;
-      parameter_(rdSteeringAngleP, timeStep) = cost.rdSteeringAngle;
-      parameter_(rdBrakesP, timeStep) = cost.rdBrakes;
-      parameter_(rdVsP, timeStep) = cost.rdVs;
-      parameter_(scQuadAlphaFrontP, timeStep) = cost.scQuadAlphaFront;
-      parameter_(scQuadAlphaRearP, timeStep) = cost.scQuadAlphaRear;
-      parameter_(scQuadROutP, timeStep) = cost.scQuadROut;
-      parameter_(scQuadEllipseFrontP, timeStep) = cost.scQuadEllipseFront;
-      parameter_(scQuadEllipseRearP, timeStep) = cost.scQuadEllipseRear;
-      parameter_(scQuadLonControlP, timeStep) = cost.scQuadLonControl;
-      parameter_(scLinAlphaFrontP, timeStep) = cost.scLinAlphaFront;
-      parameter_(scLinAlphaRearP, timeStep) = cost.scLinAlphaRear;
-      parameter_(scLinROutP, timeStep) = cost.scLinROut;
-      parameter_(scLinEllipseFrontP, timeStep) = cost.scLinEllipseFront;
-      parameter_(scLinEllipseRearP, timeStep) = cost.scLinEllipseRear;
-      parameter_(scLinLonControlP, timeStep) = cost.scLinLonControl;
     }
   }
 
