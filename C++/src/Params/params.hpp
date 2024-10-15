@@ -278,7 +278,7 @@ public:
   double Cy;
 };
 
-using AcadosParameters = Eigen::Matrix<double, 23, N + 1>;
+using AcadosParameters = Eigen::Matrix<double, NP, N + 1>;
 
 enum {
     xTrackP = 0,
