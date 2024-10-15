@@ -284,26 +284,7 @@ enum {
     xTrackP = 0,
     yTrackP = 1,
     yawTrackP = 2,
-    s0P = 3,
-    qCP = 4,
-    qLP = 5,
-    qVsP = 6,
-    rdThrottleP = 7,
-    rdSteeringAngleP = 8,
-    rdBrakesP = 9,
-    rdVsP = 10,
-    scQuadAlphaFrontP = 11,
-    scQuadAlphaRearP = 12,
-    scQuadROutP = 13,
-    scQuadEllipseFrontP = 14,
-    scQuadEllipseRearP = 15,
-    scQuadLonControlP = 16,
-    scLinAlphaFrontP = 17,
-    scLinAlphaRearP = 18,
-    scLinROutP = 19,
-    scLinEllipseFrontP = 20,
-    scLinEllipseRearP = 21,
-    scLinLonControlP = 22
+    s0P = 3
 };
 
 

@@ -59,7 +59,7 @@ void AcadosInterface::initMPC()
   nlp_opts = acados_mpcc_acados_get_nlp_opts(acados_ocp_capsule);
 }
 
-void AcadosInterface::setInit(const Bounds &bounds, std::array<OptVariables, N + 1> &initialGuess)
+void AcadosInterface::setInit(const Bounds &bounds, const Cost &cost, std::array<OptVariables, N + 1> &initialGuess)
 {
   // initial state x0
   idxbx0[0] = 0;
@@ -149,6 +149,49 @@ void AcadosInterface::setInit(const Bounds &bounds, std::array<OptVariables, N +
   ocp_nlp_out_set(nlp_config, nlp_dims, nlp_out, N, "x", x_init);
   delete[] lubu;
   delete[] idxbu;
+
+  // slacks
+  double *zlumem = new double[4 * NS];
+  double *Zl = zlumem + NS * 0;
+  double *Zu = zlumem + NS * 1;
+  double *zl = zlumem + NS * 2;
+  double *zu = zlumem + NS * 3;
+
+  Zl[0] = cost.scQuadAlphaFront;
+  Zl[1] = cost.scQuadAlphaRear;
+  Zl[2] = cost.scQuadROut;
+  Zl[3] = cost.scQuadEllipseFront;
+  Zl[4] = cost.scQuadEllipseRear;
+  Zl[5] = cost.scQuadLonControl;
+
+  Zu[0] = cost.scQuadAlphaFront;
+  Zu[1] = cost.scQuadAlphaRear;
+  Zu[2] = cost.scQuadROut;
+  Zu[3] = cost.scQuadEllipseFront;
+  Zu[4] = cost.scQuadEllipseRear;
+  Zu[5] = cost.scQuadLonControl;
+  
+  zl[0] = cost.scLinAlphaFront;
+  zl[1] = cost.scLinAlphaRear;
+  zl[2] = cost.scLinROut;
+  zl[3] = cost.scLinEllipseFront;
+  zl[4] = cost.scLinEllipseRear;
+  zl[5] = cost.scLinLonControl;
+  
+  zu[0] = cost.scLinAlphaFront;
+  zu[1] = cost.scLinAlphaRear;
+  zu[2] = cost.scLinROut;
+  zu[3] = cost.scLinEllipseFront;
+  zu[4] = cost.scLinEllipseRear;
+  zu[5] = cost.scLinLonControl;
+
+  for (int i = 1; i < N; i++) {
+    ocp_nlp_cost_model_set(nlp_config, nlp_dims, nlp_in, i, "Zl", Zl);
+    ocp_nlp_cost_model_set(nlp_config, nlp_dims, nlp_in, i, "Zu", Zu);
+    ocp_nlp_cost_model_set(nlp_config, nlp_dims, nlp_in, i, "zl", zl);
+    ocp_nlp_cost_model_set(nlp_config, nlp_dims, nlp_in, i, "zu", zu);
+  }
+  delete[] zlumem;
 }
 
 void AcadosInterface::setParam(AcadosParameters parameter_)
@@ -161,54 +204,14 @@ void AcadosInterface::setParam(AcadosParameters parameter_)
     p[3] = parameter_(s0P,i);
     acados_mpcc_acados_update_params(acados_ocp_capsule, i, p, NP);
   }
-
-  // slacks
-  double *zlumem = new double[4 * NS];
-  double *Zl = zlumem + NS * 0;
-  double *Zu = zlumem + NS * 1;
-  double *zl = zlumem + NS * 2;
-  double *zu = zlumem + NS * 3;
-
-  for (int i = 1; i < N; i++) {
-    Zl[0] = parameter_(scQuadAlphaFrontP,i);
-    Zl[1] = parameter_(scQuadAlphaRearP,i);
-    Zl[2] = parameter_(scQuadROutP,i);
-    Zl[3] = parameter_(scQuadEllipseFrontP,i);
-    Zl[4] = parameter_(scQuadEllipseRearP,i);
-    Zl[5] = parameter_(scQuadLonControlP,i);
-    Zu[0] = parameter_(scQuadAlphaFrontP,i);
-    Zu[1] = parameter_(scQuadAlphaRearP,i);
-    Zu[2] = parameter_(scQuadROutP,i);
-    Zu[3] = parameter_(scQuadEllipseFrontP,i);
-    Zu[4] = parameter_(scQuadEllipseRearP,i);
-    Zu[5] = parameter_(scQuadLonControlP,i);
-    zl[0] = parameter_(scLinAlphaFrontP,i);
-    zl[1] = parameter_(scLinAlphaRearP,i);
-    zl[2] = parameter_(scLinROutP,i);
-    zl[3] = parameter_(scLinEllipseFrontP,i);
-    zl[4] = parameter_(scLinEllipseRearP,i);
-    zl[5] = parameter_(scLinLonControlP,i);
-    zu[0] = parameter_(scLinAlphaFrontP,i);
-    zu[1] = parameter_(scLinAlphaRearP,i);
-    zu[2] = parameter_(scLinROutP,i);
-    zu[3] = parameter_(scLinEllipseFrontP,i);
-    zu[4] = parameter_(scLinEllipseRearP,i);
-    zu[5] = parameter_(scLinLonControlP,i);
-
-    ocp_nlp_cost_model_set(nlp_config, nlp_dims, nlp_in, i, "Zl", Zl);
-    ocp_nlp_cost_model_set(nlp_config, nlp_dims, nlp_in, i, "Zu", Zu);
-    ocp_nlp_cost_model_set(nlp_config, nlp_dims, nlp_in, i, "zl", zl);
-    ocp_nlp_cost_model_set(nlp_config, nlp_dims, nlp_in, i, "zu", zu);
-  }
-  free(zlumem);
 }
 
 solverReturn AcadosInterface::solveMPC(
   std::array<OptVariables, N + 1> &initialGuess, AcadosParameters parameter_,
-  const Bounds &bounds)
+  const Bounds &bounds, const Cost &cost)
 {
   initMPC();
-  setInit(bounds, initialGuess);
+  setInit(bounds, cost, initialGuess);
   setParam(parameter_);
   return Solve();
 };

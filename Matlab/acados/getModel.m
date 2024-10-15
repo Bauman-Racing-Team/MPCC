@@ -72,9 +72,6 @@ function model = getModel(parameters)
     qL = parameters.costs.qL;
     Q = diag([qC,qL]);
 
-%     qVs = parameters.costs.qVs;
-    vRef = parameters.mpcModel.vRef;
-
     % Costs for control inputs penalization
     rdThrottle = parameters.costs.rdThrottle;
     rdSteeringAngle = parameters.costs.rdSteeringAngle;
@@ -94,6 +91,7 @@ function model = getModel(parameters)
               rdVs / dVsU.^2]);
     
     qVs = parameters.costs.qVs;
+    vRef = parameters.mpcModel.vRef;
     
     cost_expr_ext_cost = error'*Q*error+input'*R*input+qVs*(vRef-vs)^2;
     cost_expr_ext_cost_e = error'*Q*error+qVs*(vRef-vs)^2; 
@@ -121,8 +119,11 @@ function model = getModel(parameters)
     constrR = (Frx/parameters.tire.muxFz)^2+(Fry/parameters.tire.muyFz)^2;
     constr_expr_h = [constr_expr_h;constrF;constrR];
     
-    % longitudinal control constraint
-    constr_expr_h = [constr_expr_h;throttle*brakes];
+    % longitudinal normalized control constraint
+    throttleU = parameters.bounds.upperStateBounds.throttleU;
+    brakesU = parameters.bounds.upperStateBounds.brakesU;
+
+    constr_expr_h = [constr_expr_h;throttle/throttleU*brakes/brakesU];
 
     % model filling
     model.f_expl_expr = f_expl;

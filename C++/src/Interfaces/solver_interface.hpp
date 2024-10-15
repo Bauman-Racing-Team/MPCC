@@ -32,7 +32,7 @@ class SolverInterface
 public:
   virtual solverReturn solveMPC(
     std::array<OptVariables, N + 1> &initialGuess, AcadosParameters parameter_,
-    const Bounds &bounds) = 0;
+    const Bounds &bounds, const Cost &cost) = 0;
   virtual ~SolverInterface() { std::cout << "Deleting Solver Interface" << std::endl; }
 };
 }  // namespace mpcc

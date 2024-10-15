@@ -65,7 +65,7 @@ int main()
   for (int i = 0; i < jsonConfig["n_sim"]; i++) {
     MPCReturn mpcSol = mpc.runMPC(x0.head<NX>());
 
-    std::cout << "MPC compute time: " << mpcSol.time_total;
+    std::cout << "MPC compute time: " << mpcSol.time_total << " ";
 
     // Use ODE integrator
     x0 = simulator.simTimeStep(x0, mpcSol.u0, jsonConfig["Ts"]);

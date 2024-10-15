@@ -26,19 +26,14 @@
 namespace mpcc
 {
 
-// #define MAX(a,b) (a < b) ? b : a
+#define NX 11 // number of state variables
+#define NU 4 // number of control inputs 
+#define NP 4 // number of parameters
+#define NS 6 // number of soft constraints
 
-#define NX 11
-#define NU 4
-#define NP 4
-
-#define NB 15  // max number of bounds
-#define NPC 3  // number of polytopic constraints
-#define NS 6
-
-static constexpr int N = 100;
+static constexpr int N = 100; // horizon length
 static constexpr double INF = 1E5;
-static constexpr int N_SPLINE = 2500;
+static constexpr int N_SPLINE = 2500; // number of points in a spline
 
 }  // namespace mpcc
 #endif  // MPCC_CONFIG_H

@@ -133,7 +133,7 @@ namespace mpcc
 
       fillParametersVector();
 
-      solverReturn mpcSol = solverInterface->solveMPC(initialGuess, parameter_, bounds);
+      solverReturn mpcSol = solverInterface->solveMPC(initialGuess, parameter_, bounds, cost);
 
       solver_status = mpcSol.status;
 
