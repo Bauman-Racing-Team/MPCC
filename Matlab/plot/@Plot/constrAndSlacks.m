@@ -167,8 +167,8 @@ function constrAndSlacks(obj)
     carModel = Model(obj.parameters.car,obj.parameters.tire);
     for i = 1:length(states)
         [Ffx,Ffy,Frx,Fry] = carModel.initSimpleFrictionEllipseConstraint(states(:,i));
-        constrF(i) = (Ffx/obj.parameters.car.muxFz)^2+(Ffy/obj.parameters.car.muyFz)^2;
-        constrR(i) = (Frx/obj.parameters.car.muxFz)^2+(Fry/obj.parameters.car.muyFz)^2;
+        constrF(i) = (Ffx/obj.parameters.tire.muxFz)^2+(Ffy/obj.parameters.tire.muyFz)^2;
+        constrR(i) = (Frx/obj.parameters.tire.muxFz)^2+(Fry/obj.parameters.tire.muyFz)^2;
     end
 
     figure;

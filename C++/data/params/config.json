@@ -1,0 +1,16 @@
+
+{
+  "n_sqp": 5,
+  "n_reset": 2,
+  "sqp_mixing": 0.9,
+  "n_sim": 600,
+  "Ts": 0.05,
+  "v0": 0.0,
+  
+  "model_path": "params/model.json",
+  "costs_path": "params/costs.json",
+  "bounds_path": "params/bounds.json",
+  "track_path": "tracks/FSG.json",
+  "car_path": "params/car.json",
+  "tire_path": "params/tire.json"
+}

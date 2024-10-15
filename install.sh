@@ -14,9 +14,9 @@ mkdir build
 cd build && cmake ..
 make -j$(nproc) && make install
 cd ../external
-wget -q -nc --show-progress https://github.com/casadi/casadi/releases/download/3.5.0/casadi-linux-matlabR2014b-v3.5.0.tar.gz
+wget -q -nc --show-progress https://github.com/casadi/casadi/releases/download/3.6.6/casadi-linux-matlabR2014b-v3.6.6.tar.gz
 mkdir -p casadi-matlab
-tar -xf casadi-linux-matlabR2014b-v3.5.0.tar.gz -C casadi-matlab
+tar -xf casadi-linux-matlabR2014b-v3.6.6.tar.gz -C casadi-matlab
 cd ../../
 
 

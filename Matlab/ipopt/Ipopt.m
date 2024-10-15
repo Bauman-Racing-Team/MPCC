@@ -155,10 +155,10 @@ classdef Ipopt < handle
             
             % Coeffs for control inputs penalization
             obj.R = zeros(obj.config.NU,obj.config.NU);
-            obj.R(1,1) = obj.parameters.costs.rThrottle;
-            obj.R(2,2) = obj.parameters.costs.rSteeringAngle;
-            obj.R(3,3) = obj.parameters.costs.rBrakes;
-            obj.R(4,4) = obj.parameters.costs.rVs;
+            obj.R(1,1) = obj.parameters.costs.rdThrottle;
+            obj.R(2,2) = obj.parameters.costs.rdSteeringAngle;
+            obj.R(3,3) = obj.parameters.costs.rdBrakes;
+            obj.R(4,4) = obj.parameters.costs.rdVs;
 
             % Coeffs for soft constraints penalization
             obj.Z = zeros(obj.config.NS,obj.config.NS);

@@ -43,53 +43,56 @@ function model = getModel(parameters)
     z = [];
 
     % parameters
-    qC = SX.sym('qC');
-    qL = SX.sym('qL');
-    qVs = SX.sym('qVs');
-
-    rdThrottle = SX.sym('rdThrottle');
-    rdSteeringAngle = SX.sym('rdSteeringAngle');
-    rdBrakes = SX.sym('rdBrakes');
-    rdVs = SX.sym('rdVs');
-
     xTrack = SX.sym('xTrack');
     yTrack = SX.sym('yTrack');
     phiTrack = SX.sym('phiTrack');
     s0 = SX.sym('s0');
 
-    p = [xTrack;yTrack;phiTrack;s0;qC;qL;qVs;rdThrottle;rdSteeringAngle;rdBrakes;rdVs];
+    p = [xTrack;yTrack;phiTrack;s0];
 
     % dynamics
     carModel = Model(parameters.car,parameters.tire);
     f_expl = carModel.initSimpleCombinedModel(state,input);
-    %f_expl = carModel.initKinematicModel(state,input);
     f_impl = f_expl - xdot;
 
     f = Function('f',{state,input},{f_expl});
 
     % cost
-
     xRef = xTrack + (s-s0)*cos(phiTrack);
     yRef = yTrack + (s-s0)*sin(phiTrack);
     % contouring error
     ec = -cos(phiTrack)*(yRef-y)+sin(phiTrack)*(xRef-x);
     % lag error
     el = cos(phiTrack)*(xRef-x)+sin(phiTrack)*(yRef-y);
-   
+    % overall error
     error = [ec;el];
 
     % Coeffs for laf and contouring errors penallization
+    qC = parameters.costs.qC;
+    qL = parameters.costs.qL;
     Q = diag([qC,qL]);
 
-%     qVs = parameters.costs.qVs;
+    % Costs for control inputs penalization
+    rdThrottle = parameters.costs.rdThrottle;
+    rdSteeringAngle = parameters.costs.rdSteeringAngle;
+    rdBrakes = parameters.costs.rdBrakes;
+    rdVs = parameters.costs.rdVs;
+    
+    % Absolute max values for control inputs
+    dThrottleU = parameters.bounds.upperInputBounds.dThrottleU;
+    dSteeringAngleU = parameters.bounds.upperInputBounds.dSteeringAngleU;
+    dBrakesU = parameters.bounds.upperInputBounds.dBrakesU;
+    dVsU = parameters.bounds.upperInputBounds.dVsU;
+
+    % R cost matrix normalized with max absolute values of control inputs 
+    R = diag([rdThrottle / dThrottleU.^2, ...
+              rdSteeringAngle / dSteeringAngleU.^2, ...
+              rdBrakes / dBrakesU.^2, ...
+              rdVs / dVsU.^2]);
+    
+    qVs = parameters.costs.qVs;
     vRef = parameters.mpcModel.vRef;
-
-    % Coeffs for control inputs penalization
-    R = diag([rdThrottle, ...
-              rdSteeringAngle, ...
-              rdBrakes, ...
-              rdVs]);
-
+    
     cost_expr_ext_cost = error'*Q*error+input'*R*input+qVs*(vRef-vs)^2;
     cost_expr_ext_cost_e = error'*Q*error+qVs*(vRef-vs)^2; 
 
@@ -112,11 +115,15 @@ function model = getModel(parameters)
 
     % friction ellipse constraint
     [Ffx,Ffy,Frx,Fry] = carModel.initFrictionEllipseConstraint(state);
-    constrF = (Ffx/parameters.car.muxFz)^2+(Ffy/parameters.car.muyFz)^2;
-    constrR = (Frx/parameters.car.muxFz)^2+(Fry/parameters.car.muyFz)^2;
+    constrF = (Ffx/parameters.tire.muxFz)^2+(Ffy/parameters.tire.muyFz)^2;
+    constrR = (Frx/parameters.tire.muxFz)^2+(Fry/parameters.tire.muyFz)^2;
     constr_expr_h = [constr_expr_h;constrF;constrR];
+    
+    % longitudinal normalized control constraint
+    throttleU = parameters.bounds.upperStateBounds.throttleU;
+    brakesU = parameters.bounds.upperStateBounds.brakesU;
 
-    constr_expr_h = [constr_expr_h;throttle*brakes];
+    constr_expr_h = [constr_expr_h;throttle/throttleU*brakes/brakesU];
 
     % model filling
     model.f_expl_expr = f_expl;

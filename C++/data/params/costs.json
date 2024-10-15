@@ -1,0 +1,25 @@
+
+{
+  "qC" : 0.1,
+  "qL" : 100.0,
+  "qVs" : 0.2,
+
+  "rdThrottle" : 1E2,
+  "rdSteeringAngle" : 5E2,
+  "rdBrakes" : 1E2,
+  "rdVs" : 25E-4,
+
+  "scQuadAlphaFront": 1E4,
+  "scQuadAlphaRear": 1E4,
+  "scQuadROut": 1E3,
+  "scQuadEllipseFront": 1E2,
+  "scQuadEllipseRear": 1E2,
+  "scQuadLonControl": 1E7,
+
+  "scLinAlphaFront": 1E2,
+  "scLinAlphaRear": 1E2,
+  "scLinROut": 1E2,
+  "scLinEllipseFront": 1E2,
+  "scLinEllipseRear": 1E2,
+  "scLinLonControl": 1E6
+}
