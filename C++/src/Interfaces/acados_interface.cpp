@@ -202,6 +202,7 @@ void AcadosInterface::setParam(AcadosParameters parameter_)
     p[1] = parameter_(yTrackP,i);
     p[2] = parameter_(yawTrackP,i);
     p[3] = parameter_(s0P,i);
+    p[4] = parameter_(vRef,i);
     acados_mpcc_acados_update_params(acados_ocp_capsule, i, p, NP);
   }
 }

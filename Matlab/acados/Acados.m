@@ -16,7 +16,7 @@ classdef Acados < handle
         ocpOpts
         ocp
 
-        p % parameters vector: [Xcen, Ycen, xRef, yRef, thetaRef];
+        p % parameters vector: [xTrack, yTrack, phiTrack, s0, vRef];
 
         state
         input
@@ -49,7 +49,7 @@ classdef Acados < handle
             obj.track.outerBorder = ArcLengthSpline(config,parameters.mpcModel);
             obj.track.innerBorder = ArcLengthSpline(config,parameters.mpcModel);
 
-            obj.paramVec = zeros(4,obj.config.N+1);
+            obj.paramVec = zeros(5,obj.config.N+1);
         end
 
         function setTrack(obj,track)
@@ -368,9 +368,11 @@ classdef Acados < handle
                 yTrack = full(obj.track.centerLineInterpolation.y(s0));
 
                 phiTrack = full(atan2(obj.track.centerLineDerivativesInterpolation.y(s0),obj.track.centerLineDerivativesInterpolation.x(s0)));
-
-                obj.ocp.set('p',[xTrack;yTrack;phiTrack;s0],i-1);
-                obj.paramVec(:,i) = [xTrack;yTrack;phiTrack;s0];
+                
+                vRef = obj.parameters.mpcModel.vRef;
+                
+                obj.ocp.set('p',[xTrack;yTrack;phiTrack;s0;vRef],i-1);
+                obj.paramVec(:,i) = [xTrack;yTrack;phiTrack;s0;vRef];
                                                                     
             end            
         end

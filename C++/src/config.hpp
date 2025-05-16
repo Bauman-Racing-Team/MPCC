@@ -28,7 +28,7 @@ namespace mpcc
 
 #define NX 11 // number of state variables
 #define NU 4 // number of control inputs 
-#define NP 4 // number of parameters
+#define NP 5 // number of parameters
 #define NS 6 // number of soft constraints
 
 static constexpr int N = 100; // horizon length

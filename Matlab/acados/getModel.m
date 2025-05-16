@@ -47,8 +47,9 @@ function model = getModel(parameters)
     yTrack = SX.sym('yTrack');
     phiTrack = SX.sym('phiTrack');
     s0 = SX.sym('s0');
+    vRef = SX.sym('vRef');
 
-    p = [xTrack;yTrack;phiTrack;s0];
+    p = [xTrack;yTrack;phiTrack;s0;vRef];
 
     % dynamics
     carModel = Model(parameters.car,parameters.tire);
@@ -91,7 +92,6 @@ function model = getModel(parameters)
               rdVs / dVsU.^2]);
     
     qVs = parameters.costs.qVs;
-    vRef = parameters.mpcModel.vRef;
     
     cost_expr_ext_cost = error'*Q*error+input'*R*input+qVs*(vRef-vs)^2;
     cost_expr_ext_cost_e = error'*Q*error+qVs*(vRef-vs)^2; 

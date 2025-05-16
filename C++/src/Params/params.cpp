@@ -31,6 +31,7 @@ Model::Model(const std::string& file)
 
   maxDistProj = jsonModel["maxDistProj"];
   vxMin = jsonModel["vxMin"];
+  vRef = jsonModel["vRef"];
 }
 
 Cost::Cost(const std::string& file)

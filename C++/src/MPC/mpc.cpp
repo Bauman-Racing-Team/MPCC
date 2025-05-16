@@ -45,6 +45,7 @@ namespace mpcc
       parameter_(yTrackP, timeStep) = trackPosI(1);
       parameter_(yawTrackP, timeStep) = std::atan2(trackDposI(1), trackDposI(0));
       parameter_(s0P, timeStep) = initialGuess[timeStep].xk(sIdx);
+      parameter_(vRef, timeStep) = model.vRef;
     }
   }
 

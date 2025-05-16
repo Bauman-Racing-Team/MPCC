@@ -32,6 +32,7 @@ public:
     
     double maxDistProj;
     double vxMin;
+    double vRef;
 };
 
 class Cost{
@@ -284,7 +285,8 @@ enum {
     xTrackP = 0,
     yTrackP = 1,
     yawTrackP = 2,
-    s0P = 3
+    s0P = 3,
+    vRef = 4
 };
 
 
