@@ -45,7 +45,14 @@ namespace mpcc
       parameter_(yTrackP, timeStep) = trackPosI(1);
       parameter_(yawTrackP, timeStep) = std::atan2(trackDposI(1), trackDposI(0));
       parameter_(s0P, timeStep) = initialGuess[timeStep].xk(sIdx);
-      parameter_(vRef, timeStep) = model.vRef;
+      parameter_(vRefP, timeStep) = model.vRef;
+      parameter_(qCP, timeStep) = cost.qC;
+      parameter_(qLP, timeStep) = cost.qL;
+      parameter_(qVsP, timeStep) = cost.qVs;
+      parameter_(rdThrottleP, timeStep) = cost.rdThrottle;
+      parameter_(rdSteeringAngleP, timeStep) = cost.rdSteeringAngle;
+      parameter_(rdBrakesP, timeStep) = cost.rdBrakes;
+      parameter_(rdVsP, timeStep) = cost.rdVs;
     }
   }
 

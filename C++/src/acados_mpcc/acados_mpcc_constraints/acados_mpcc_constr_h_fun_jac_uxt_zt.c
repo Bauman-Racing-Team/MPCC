@@ -79,12 +79,12 @@ casadi_real casadi_sq(casadi_real x) { return x*x;}
 static const casadi_int casadi_s0[15] = {11, 1, 0, 11, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 static const casadi_int casadi_s1[8] = {4, 1, 0, 4, 0, 1, 2, 3};
 static const casadi_int casadi_s2[3] = {0, 0, 0};
-static const casadi_int casadi_s3[9] = {5, 1, 0, 5, 0, 1, 2, 3, 4};
+static const casadi_int casadi_s3[16] = {12, 1, 0, 12, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11};
 static const casadi_int casadi_s4[10] = {6, 1, 0, 6, 0, 1, 2, 3, 4, 5};
 static const casadi_int casadi_s5[30] = {15, 6, 0, 4, 7, 9, 14, 19, 21, 7, 8, 9, 12, 7, 8, 9, 4, 5, 7, 8, 9, 12, 13, 7, 8, 9, 11, 13, 11, 13};
 static const casadi_int casadi_s6[9] = {0, 6, 0, 0, 0, 0, 0, 0, 0};
 
-/* acados_mpcc_constr_h_fun_jac_uxt_zt:(i0[11],i1[4],i2[],i3[5])->(o0[6],o1[15x6,21nz],o2[0x6]) */
+/* acados_mpcc_constr_h_fun_jac_uxt_zt:(i0[11],i1[4],i2[],i3[12])->(o0[6],o1[15x6,21nz],o2[0x6]) */
 static int casadi_f0(const casadi_real** arg, casadi_real** res, casadi_int* iw, casadi_real* w, int mem) {
   casadi_real a0, a1, a10, a11, a12, a13, a14, a15, a16, a17, a18, a19, a2, a20, a21, a22, a23, a24, a25, a26, a27, a28, a29, a3, a30, a31, a32, a33, a34, a4, a5, a6, a7, a8, a9;
   a0=arg[0]? arg[0][4] : 0;

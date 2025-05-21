@@ -286,7 +286,14 @@ enum {
     yTrackP = 1,
     yawTrackP = 2,
     s0P = 3,
-    vRef = 4
+    vRefP = 4,
+    qCP = 5,
+    qLP = 6,
+    qVsP = 7,
+    rdThrottleP = 8,
+    rdSteeringAngleP = 9,
+    rdBrakesP = 10,
+    rdVsP = 11
 };
 
 
