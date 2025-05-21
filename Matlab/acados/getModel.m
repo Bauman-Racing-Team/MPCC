@@ -48,8 +48,19 @@ function model = getModel(parameters)
     phiTrack = SX.sym('phiTrack');
     s0 = SX.sym('s0');
     vRef = SX.sym('vRef');
+    
+    qC = SX.sym('qC');
+    qL = SX.sym('qL');
+    qVs = SX.sym('qVs');
 
-    p = [xTrack;yTrack;phiTrack;s0;vRef];
+    rdThrottle = SX.sym('rdThrottle');
+    rdSteeringAngle = SX.sym('rdSteeringAngle');
+    rdBrakes = SX.sym('rdBrakes');
+    rdVs = SX.sym('rdVs');
+
+    p = [xTrack;yTrack;phiTrack;s0;vRef; ...
+        qC;qL;qVs;rdThrottle;rdSteeringAngle; ...
+        rdBrakes;rdVs];
 
     % dynamics
     carModel = Model(parameters.car,parameters.tire);
@@ -69,15 +80,7 @@ function model = getModel(parameters)
     error = [ec;el];
 
     % Coeffs for laf and contouring errors penallization
-    qC = parameters.costs.qC;
-    qL = parameters.costs.qL;
     Q = diag([qC,qL]);
-
-    % Costs for control inputs penalization
-    rdThrottle = parameters.costs.rdThrottle;
-    rdSteeringAngle = parameters.costs.rdSteeringAngle;
-    rdBrakes = parameters.costs.rdBrakes;
-    rdVs = parameters.costs.rdVs;
     
     % Absolute max values for control inputs
     dThrottleU = parameters.bounds.upperInputBounds.dThrottleU;
@@ -91,10 +94,29 @@ function model = getModel(parameters)
               rdBrakes / dBrakesU.^2, ...
               rdVs / dVsU.^2]);
     
-    qVs = parameters.costs.qVs;
-    
     cost_expr_ext_cost = error'*Q*error+input'*R*input+qVs*(vRef-vs)^2;
-    cost_expr_ext_cost_e = error'*Q*error+qVs*(vRef-vs)^2; 
+    cost_expr_ext_cost_e = error'*Q*error+qVs*(vRef-vs)^2;
+
+    % Coeffs for soft constraints penalization
+
+    scQuadAlphaFront = parameters.costs.scQuadAlphaFront;
+    scQuadAlphaRear = parameters.costs.scQuadAlphaRear;
+    scQuadROut = parameters.costs.scQuadROut;
+    scQuadEllipseFront = parameters.costs.scQuadEllipseFront;
+    scQuadEllipseRear = parameters.costs.scQuadEllipseRear;
+    scQuadLonControl = parameters.costs.scQuadLonControl;
+
+    scLinAlphaFront = parameters.costs.scLinAlphaFront;
+    scLinAlphaRear = parameters.costs.scLinAlphaRear;
+    scLinROut = parameters.costs.scLinROut;
+    scLinEllipseFront = parameters.costs.scLinEllipseFront;
+    scLinEllipseRear = parameters.costs.scLinEllipseRear;
+    scLinLonControl = parameters.costs.scLinLonControl;
+                        
+    % quadratic part
+    cost_Z = diag([scQuadAlphaFront,scQuadAlphaRear,scQuadROut,scQuadEllipseFront,scQuadEllipseRear,scQuadLonControl]);
+    % linear part
+    cost_z = [scLinAlphaFront; scLinAlphaRear; scLinROut;scLinEllipseFront;scLinEllipseRear;scLinLonControl];
 
     % constraints 
     lf = parameters.car.lf;
@@ -136,6 +158,9 @@ function model = getModel(parameters)
     model.z = z;
     model.cost_expr_ext_cost = cost_expr_ext_cost;
     model.cost_expr_ext_cost_e = cost_expr_ext_cost_e;
+    model.cost_Z = cost_Z;
+    model.cost_z = cost_z;
+
     model.constr_expr_h = constr_expr_h;
 end
 
