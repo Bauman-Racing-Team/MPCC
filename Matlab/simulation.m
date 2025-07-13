@@ -19,6 +19,8 @@ clc
 addpath('model');
 addpath('mpc');
 addpath('parameters');
+addpath('parameters/brt8d');
+addpath('parameters/brtminid');
 addpath('simulator');
 addpath('spline');
 addpath('tracks');
@@ -28,7 +30,7 @@ addpath('types');
 %% add subdirectories for the chosen solver
 
 config = config();
-parameters = Parameters(config);
+parameters = Parameters('brtminid', config);
 
 if strcmp(config.solver,'ipopt')
     addpath('ipopt');
