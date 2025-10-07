@@ -20,6 +20,7 @@ addpath('model');
 addpath('mpc');
 addpath('parameters');
 addpath('parameters/brt8d');
+addpath('parameters/brt9d');
 addpath('parameters/brtminid');
 addpath('simulator');
 addpath('spline');
@@ -30,7 +31,7 @@ addpath('types');
 %% add subdirectories for the chosen solver
 
 config = config();
-parameters = Parameters('brtminid', config);
+parameters = Parameters('brt8d', config);
 
 if strcmp(config.solver,'ipopt')
     addpath('ipopt');

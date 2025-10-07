@@ -58,9 +58,13 @@ function model = getModel(parameters)
     rdBrakes = SX.sym('rdBrakes');
     rdVs = SX.sym('rdVs');
 
+    distFromRightToLeftBorder = SX.sym('distFromRightToLeftBorder');
+    distFromRightBorderToCarCenter = SX.sym('distFromRightBorderToCarCenter');
+
     p = [xTrack;yTrack;phiTrack;s0;vRef; ...
         qC;qL;qVs;rdThrottle;rdSteeringAngle; ...
-        rdBrakes;rdVs];
+        rdBrakes;rdVs; ...
+        distFromRightToLeftBorder;distFromRightBorderToCarCenter];
 
     % dynamics
     carModel = Model(parameters.car,parameters.tire);
@@ -114,9 +118,9 @@ function model = getModel(parameters)
     scLinLonControl = parameters.costs.scLinLonControl;
                         
     % quadratic part
-    cost_Z = diag([scQuadAlphaFront,scQuadAlphaRear,scQuadROut,scQuadEllipseFront,scQuadEllipseRear,scQuadLonControl]);
+    cost_Z = diag([scQuadAlphaFront,scQuadAlphaRear,scQuadROut, scQuadROut, scQuadEllipseFront,scQuadEllipseRear,scQuadLonControl]);
     % linear part
-    cost_z = [scLinAlphaFront; scLinAlphaRear; scLinROut;scLinEllipseFront;scLinEllipseRear;scLinLonControl];
+    cost_z = [scLinAlphaFront; scLinAlphaRear; scLinROut; scLinROut; scLinEllipseFront;scLinEllipseRear;scLinLonControl];
 
     % constraints 
     lf = parameters.car.lf;
@@ -133,7 +137,11 @@ function model = getModel(parameters)
     constr_expr_h = [constr_expr_h;(atan2((vy - r*lr),vx))*lambda];
 
     % track constraint
-    constr_expr_h = [constr_expr_h;(x-xTrack)^2 + (y-yTrack)^2];
+
+    trackConstraintLeft = distFromRightToLeftBorder - distFromRightBorderToCarCenter;
+    trackConstraintRight = -distFromRightBorderToCarCenter;
+
+    constr_expr_h = [constr_expr_h; trackConstraintLeft; trackConstraintRight];
 
     % friction ellipse constraint
     [Ffx,Ffy,Frx,Fry] = carModel.initFrictionEllipseConstraint(state);

@@ -50,7 +50,7 @@ classdef Acados < handle
             obj.track.outerBorder = ArcLengthSpline(config,parameters.mpcModel);
             obj.track.innerBorder = ArcLengthSpline(config,parameters.mpcModel);
 
-            obj.paramVec = zeros(12,obj.config.N+1);
+            obj.paramVec = zeros(14,obj.config.N+1);
         end
 
         function setTrack(obj,track)
@@ -211,18 +211,18 @@ classdef Acados < handle
             constr_uh = [constr_uh,obj.parameters.mpcModel.maxAlpha];
 
             % track constraint bounds
-            constr_lh = [constr_lh,0];
-            
-            constr_uh = [constr_uh,obj.parameters.mpcModel.rOut^2];
+            constr_lh = [constr_lh, obj.parameters.car.carW/2];
+            constr_uh = [constr_uh, 1e9];
+
+            constr_lh = [constr_lh, -1e9];
+            constr_uh = [constr_uh, -obj.parameters.car.carW/2];
 
             % friction ellipse constraint bounds
             constr_lh = [constr_lh,0,0];
-            
             constr_uh = [constr_uh,1,1];
             
             % longitudinal control constraint bounds
             constr_lh = [constr_lh,0];
-
             constr_uh = [constr_uh,0];
            
             obj.ocpModel.set('constr_lh',constr_lh);
@@ -359,14 +359,28 @@ classdef Acados < handle
                 rdSteeringAngle = obj.parameters.costs.rdSteeringAngle;
                 rdBrakes = obj.parameters.costs.rdBrakes;
                 rdVs = obj.parameters.costs.rdVs;
-                
+
+                leftBorderX = full(obj.track.outerBorderInterpolation.x(s0));
+                leftBorderY = full(obj.track.outerBorderInterpolation.y(s0));
+
+                rightBorderX = full(obj.track.innerBorderInterpolation.x(s0));
+                rightBorderY = full(obj.track.innerBorderInterpolation.y(s0));
+
+                carX = obj.initialStateGuess(1,i);
+                carY = obj.initialStateGuess(2,i);
+
+                distFromRightToLeftBorder = sqrt((leftBorderX - rightBorderX)^2 + (leftBorderY - rightBorderY)^2);
+                distFromRightBorderToCarCenter = sqrt((carX - rightBorderX)^2 + (carY - rightBorderY)^2);
+
                 obj.ocp.set('p',[xTrack;yTrack;phiTrack;s0;vRef; ...
                                  qC;qL;qVs;rdThrottle;rdSteeringAngle; ...
-                                 rdBrakes;rdVs],i-1);
+                                 rdBrakes;rdVs;distFromRightToLeftBorder; ...
+                                 distFromRightBorderToCarCenter],i-1);
 
                 obj.paramVec(:,i) = [xTrack;yTrack;phiTrack;s0;vRef; ...
                                      qC;qL;qVs;rdThrottle;rdSteeringAngle; ...
-                                     rdBrakes;rdVs];
+                                     rdBrakes;rdVs;distFromRightToLeftBorder; ...
+                                     distFromRightBorderToCarCenter];
                                                                     
             end            
         end
