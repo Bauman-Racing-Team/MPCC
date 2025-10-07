@@ -31,7 +31,7 @@ addpath('types');
 %% add subdirectories for the chosen solver
 
 config = config();
-parameters = Parameters('brt8d', config);
+parameters = Parameters('brt9d', config);
 
 if strcmp(config.solver,'ipopt')
     addpath('ipopt');

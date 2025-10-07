@@ -38,35 +38,35 @@ function constrAndSlacks(obj)
       slacks4(i)=slacks(obj.config.NS+2,1,i);
     end
 
-    % Track R slack for upper bound
+    % Track left slack for upper bound
 
     slacks5 = zeros(1,length(obj.log));
     for i = 1:length(obj.log)
       slacks5(i)=slacks(3,1,i);
     end
 
-    % Track R slack for lower bound
+    % Track left slack for lower bound
 
     slacks6 = zeros(1,length(obj.log));
     for i = 1:length(obj.log)
       slacks6(i)=slacks(obj.config.NS+3,1,i);
     end
 
-    % front Friction ellipse slack for upper bound
+    % Track right slack for upper bound
 
     slacks7 = zeros(1,length(obj.log));
     for i = 1:length(obj.log)
       slacks7(i)=slacks(4,1,i);
     end
 
-    % front Friction ellipse slack for upper bound
+    % Track right slack for lower bound
 
     slacks8 = zeros(1,length(obj.log));
     for i = 1:length(obj.log)
       slacks8(i)=slacks(obj.config.NS+4,1,i);
     end
 
-    % rear Friction ellipse slack for upper bound
+    % front Friction ellipse slack for upper bound
 
     slacks9 = zeros(1,length(obj.log));
     for i = 1:length(obj.log)
@@ -78,6 +78,20 @@ function constrAndSlacks(obj)
     slacks10 = zeros(1,length(obj.log));
     for i = 1:length(obj.log)
       slacks10(i)=slacks(obj.config.NS+5,1,i);
+    end
+
+    % rear Friction ellipse slack for upper bound
+
+    slacks11 = zeros(1,length(obj.log));
+    for i = 1:length(obj.log)
+      slacks11(i)=slacks(6,1,i);
+    end
+
+    % front Friction ellipse slack for upper bound
+
+    slacks12 = zeros(1,length(obj.log));
+    for i = 1:length(obj.log)
+      slacks12(i)=slacks(obj.config.NS+6,1,i);
     end
 
 %% constraints plus slacks

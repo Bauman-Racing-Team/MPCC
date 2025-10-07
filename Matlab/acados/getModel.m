@@ -68,7 +68,7 @@ function model = getModel(parameters)
 
     % dynamics
     carModel = Model(parameters.car,parameters.tire);
-    f_expl = carModel.initKinematicModel(state,input);
+    f_expl = carModel.initSimpleCombinedModel(state,input);
     f_impl = f_expl - xdot;
 
     f = Function('f',{state,input},{f_expl});

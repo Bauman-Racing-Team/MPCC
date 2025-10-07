@@ -19,7 +19,7 @@ classdef Parameters
         function obj = Parameters(vehicle, config)
             obj.d_config = config;
             %load bounds
-            fname = 'bounds.json';
+            fname = vehicle + "/bounds.json";
             fid = fopen(fname);
             raw = fread(fid,inf);
             str = char(raw');
