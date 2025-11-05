@@ -50,7 +50,7 @@ classdef Acados < handle
             obj.track.outerBorder = ArcLengthSpline(config,parameters.mpcModel);
             obj.track.innerBorder = ArcLengthSpline(config,parameters.mpcModel);
 
-            obj.paramVec = zeros(17,obj.config.N+1);
+            obj.paramVec = zeros(18,obj.config.N+1);
         end
 
         function setTrack(obj,track)
@@ -353,7 +353,8 @@ classdef Acados < handle
                 sol.solverStatus = status;
                 sol.cost = obj.ocp.get_cost;
                 sol.circlesCenters = obj.getConstraintsCirclesCenters();
-                sol.bordersCoordinates = [obj.paramVec(14), obj.paramVec(15), obj.paramVec(16), obj.paramVec(17)];
+                sol.minDistsFromBorderToCarCenter = obj.paramVec(18,:);
+                sol.bordersCoordinates = [obj.paramVec(14,1), obj.paramVec(15,1), obj.paramVec(16,1), obj.paramVec(17,1)];
             end
         end
 
@@ -426,7 +427,8 @@ classdef Acados < handle
                                      leftBorderX; ...
                                      leftBorderY; ...
                                      rightBorderX; ...
-                                     rightBorderY];                              
+                                     rightBorderY; ...
+                                     minDistFromBorderToCarCenter];                              
             end            
         end
 

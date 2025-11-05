@@ -170,8 +170,6 @@ function constrAndSlacks(obj)
     hold on;
     yline(trackError,-obj.parameters.mpcModel.maxDistProj,'--red','minDistProj'); % lower bound
     yline(trackError,obj.parameters.mpcModel.maxDistProj,'--red','maxDistProj'); % upper bound
-    yline(trackError,-obj.parameters.mpcModel.rOut,'--red','minROut'); % lower bound
-    yline(trackError,obj.parameters.mpcModel.rOut,'--red','maxROut'); % upper bound
     plot(trackError,slacks5+1)
     plot(trackError,-slacks6-1)   
         
