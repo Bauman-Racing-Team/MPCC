@@ -5,8 +5,8 @@ function race(obj)
 
     hold on;
     axis equal;
-    plot(obj.track.xOuter,obj.track.yOuter,'black');
-    plot(obj.track.xInner,obj.track.yInner,'black');
+    plot(obj.track.xOuter,obj.track.yOuter,'blue');
+    plot(obj.track.xInner,obj.track.yInner,'blue');
     
     states = zeros(obj.config.NX,length(obj.log));
 
@@ -26,13 +26,23 @@ function race(obj)
         circlesCenters(:,:,i) = obj.log(i).circlesCenters(1:2,:);
     end
 
+    bordersCoordinates = zeros(length(obj.log), 4);
+
+    for i = 1:length(obj.log)
+       bordersCoordinates(i,:) = obj.log(i).bordersCoordinates;
+    end
+
+    colors = ["red", "green", "cyan", "magenta", "yellow", "white"];
+    
     for i = 1:length(obj.log)
         carBox = plotCarBox(states(:,i),obj.parameters.car.carW,obj.parameters.car.carL);
         horizonPositions = plotHorizonPositions(horizonsPositions(:,:,i));
         %circles = plotCircleConstraint(circlesCenters(:,:,i),obj.parameters.mpcModel.rOut);
         pause(0.05)
         %exportgraphics(gca,"race_FSG_track.gif","Append",true);
-        delete(carBox);
+        color = colors(mod(i,length(colors))+1);
+        circle1 = plotCircle([bordersCoordinates(i, 1), bordersCoordinates(i, 2)], 0.1, color);
+        circle2 = plotCircle([bordersCoordinates(i, 3), bordersCoordinates(i, 4)], 0.1, color);
         delete(horizonPositions);
         %delete(circles);
     end
@@ -72,5 +82,14 @@ function circles = plotCircleConstraint(circleCenters,r)
 
         circles(1,i) = plot(x,y,'magenta');
     end
+end
+
+function circle = plotCircle(circleCenter, r, color)
+    theta = linspace(0,2*pi);
+    xc = circleCenter(1);
+    yc = circleCenter(2);
+    x = r*cos(theta)+xc;
+    y = r*sin(theta)+yc;
+    circle = plot(x,y, color);
 end
 

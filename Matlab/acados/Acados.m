@@ -50,7 +50,7 @@ classdef Acados < handle
             obj.track.outerBorder = ArcLengthSpline(config,parameters.mpcModel);
             obj.track.innerBorder = ArcLengthSpline(config,parameters.mpcModel);
 
-            obj.paramVec = zeros(14,obj.config.N+1);
+            obj.paramVec = zeros(17,obj.config.N+1);
         end
 
         function setTrack(obj,track)
@@ -61,9 +61,6 @@ classdef Acados < handle
             obj.track.innerBorder.gen2DSpline([track.xInner;track.xInner],[track.yInner;track.yInner]);
 
             centerLine = obj.track.centerLine.getPath();
-            outerBoredr = obj.track.outerBorder.getPath();
-            innerBorder = obj.track.innerBorder.getPath();
-
             centerLineDerivatives = zeros(2,length(centerLine.s));
             
             for i = 1:length(centerLine.s)
@@ -75,11 +72,60 @@ classdef Acados < handle
             obj.track.centerLineDerivativesInterpolation.x = interpolant('center_line_derivative_interpolation_x','bspline',{centerLine.s},centerLineDerivatives(1,:));
             obj.track.centerLineDerivativesInterpolation.y = interpolant('center_line_derivative_interpolation_y','bspline',{centerLine.s},centerLineDerivatives(2,:));
 
-            obj.track.outerBorderInterpolation.x = interpolant('outerBorder_interpolation_x','bspline',{outerBoredr.s},outerBoredr.x);
-            obj.track.outerBorderInterpolation.y = interpolant('outerBorder_interpolation_y','bspline',{outerBoredr.s},outerBoredr.y);
+            [obj.track.outerBorderInterpolation, obj.track.innerBorderInterpolation] = obj.calculateBordersInterpolations(centerLine, centerLineDerivatives);
+        end
 
-            obj.track.innerBorderInterpolation.x = interpolant('innerBorder_interpolation_x','bspline',{innerBorder.s},innerBorder.x);
-            obj.track.innerBorderInterpolation.y = interpolant('innerBorder_interpolation_y','bspline',{innerBorder.s},innerBorder.y);
+        function [outerBorderInterpolation, innerBorderInterpolation] = calculateBordersInterpolations(obj, centerLine, centerLineDerivatives)
+            import casadi.*;
+            % Build perpendicular-offset border interpolations w.r.t. centerline normals
+            nPts = length(centerLine.s);
+            outerPerpX = zeros(nPts,1);
+            outerPerpY = zeros(nPts,1);
+            innerPerpX = zeros(nPts,1);
+            innerPerpY = zeros(nPts,1);
+
+            % Use resampled border paths for nearest-neighbor search
+            outerBorder = obj.track.outerBorder.getPath();
+            innerBorder = obj.track.innerBorder.getPath();
+
+            outerXY = [outerBorder.x, outerBorder.y];
+            innerXY = [innerBorder.x, innerBorder.y];
+
+            for i = 1:nPts
+                % Center point and tangent/normal
+                cx = centerLine.x(i);
+                cy = centerLine.y(i);
+                tx = centerLineDerivatives(1,i);
+                ty = centerLineDerivatives(2,i);
+                tnorm = hypot(tx,ty);
+                if tnorm > 0
+                    tx = tx/tnorm; ty = ty/tnorm;
+                end
+                nx = -ty; ny = tx; % left-hand normal
+
+                % Nearest outer and inner points
+                dxo = outerXY(:,1) - cx; dyo = outerXY(:,2) - cy;
+                [~, idxO] = min(dxo.*dxo + dyo.*dyo);
+                pxo = outerXY(idxO,1); pyo = outerXY(idxO,2);
+
+                dxi = innerXY(:,1) - cx; dyi = innerXY(:,2) - cy;
+                [~, idxI] = min(dxi.*dxi + dyi.*dyi);
+                pxi = innerXY(idxI,1); pyi = innerXY(idxI,2);
+
+                % Perpendicular distances along normal
+                wLeft = (pxo - cx)*nx + (pyo - cy)*ny;   % signed along +N
+                wRight = -((pxi - cx)*nx + (pyi - cy)*ny); % make positive to the right
+
+                outerPerpX(i) = cx + wLeft*nx;
+                outerPerpY(i) = cy + wLeft*ny;
+                innerPerpX(i) = cx - wRight*nx;
+                innerPerpY(i) = cy - wRight*ny;
+            end
+
+            outerBorderInterpolation.x = interpolant('outerBorder_interpolation_x','bspline',{centerLine.s},outerPerpX);
+            outerBorderInterpolation.y = interpolant('outerBorder_interpolation_y','bspline',{centerLine.s},outerPerpY);
+            innerBorderInterpolation.x = interpolant('innerBorder_interpolation_x','bspline',{centerLine.s},innerPerpX);
+            innerBorderInterpolation.y = interpolant('innerBorder_interpolation_y','bspline',{centerLine.s},innerPerpY);
         end
 
         function track = getTrack(obj)
@@ -211,11 +257,8 @@ classdef Acados < handle
             constr_uh = [constr_uh,obj.parameters.mpcModel.maxAlpha];
 
             % track constraint bounds
-            constr_lh = [constr_lh, obj.parameters.car.carW/2];
-            constr_uh = [constr_uh, 1e9];
-
-            constr_lh = [constr_lh, -1e9];
-            constr_uh = [constr_uh, -obj.parameters.car.carW/2];
+            constr_lh = [constr_lh, -9]; %(9 is 3^2 if max track width is 6 [m])
+            constr_uh = [constr_uh, 0];
 
             % friction ellipse constraint bounds
             constr_lh = [constr_lh,0,0];
@@ -310,6 +353,7 @@ classdef Acados < handle
                 sol.solverStatus = status;
                 sol.cost = obj.ocp.get_cost;
                 sol.circlesCenters = obj.getConstraintsCirclesCenters();
+                sol.bordersCoordinates = [obj.paramVec(14), obj.paramVec(15), obj.paramVec(16), obj.paramVec(17)];
             end
         end
 
@@ -366,22 +410,23 @@ classdef Acados < handle
                 rightBorderX = full(obj.track.innerBorderInterpolation.x(s0));
                 rightBorderY = full(obj.track.innerBorderInterpolation.y(s0));
 
-                carX = obj.initialStateGuess(1,i);
-                carY = obj.initialStateGuess(2,i);
-
-                distFromRightToLeftBorder = sqrt((leftBorderX - rightBorderX)^2 + (leftBorderY - rightBorderY)^2);
-                distFromRightBorderToCarCenter = sqrt((carX - rightBorderX)^2 + (carY - rightBorderY)^2);
-
+                minDistFromBorderToCarCenter = sqrt(min((leftBorderX - xTrack)^2 + (leftBorderY - yTrack)^2, ...
+                                                (rightBorderX - xTrack)^2 + (rightBorderY - yTrack)^2));
+                
+                sqareOfMinDistFromBorderToCar = (minDistFromBorderToCarCenter - obj.parameters.mpcModel.safetyDistance - obj.parameters.car.carW/2)^2;               
                 obj.ocp.set('p',[xTrack;yTrack;phiTrack;s0;vRef; ...
                                  qC;qL;qVs;rdThrottle;rdSteeringAngle; ...
-                                 rdBrakes;rdVs;distFromRightToLeftBorder; ...
-                                 distFromRightBorderToCarCenter],i-1);
+                                 rdBrakes;rdVs; ...
+                                 sqareOfMinDistFromBorderToCar],i-1);
 
                 obj.paramVec(:,i) = [xTrack;yTrack;phiTrack;s0;vRef; ...
                                      qC;qL;qVs;rdThrottle;rdSteeringAngle; ...
-                                     rdBrakes;rdVs;distFromRightToLeftBorder; ...
-                                     distFromRightBorderToCarCenter];
-                                                                    
+                                     rdBrakes;rdVs; ...
+                                     sqareOfMinDistFromBorderToCar; ...
+                                     leftBorderX; ...
+                                     leftBorderY; ...
+                                     rightBorderX; ...
+                                     rightBorderY];                              
             end            
         end
 
