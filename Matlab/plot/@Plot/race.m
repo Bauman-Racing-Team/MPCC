@@ -39,14 +39,14 @@ function race(obj)
     for i = 1:length(obj.log)
         carBox = plotCarBox(states(:,i),obj.parameters.car.carW,obj.parameters.car.carL);
         horizonPositions = plotHorizonPositions(horizonsPositions(:,:,i));
-        %circles = plotCircleConstraint(circlesCenters(:,:,i),circlesRadiuses(:,i));
+        circles = plotCircleConstraint(circlesCenters(:,:,i),circlesRadiuses(:,i));
         pause(0.05)
         %exportgraphics(gca,"race_FSG_track.gif","Append",true);
         color = colors(mod(i,length(colors))+1);
         circle1 = plotCircle([bordersCoordinates(i, 1), bordersCoordinates(i, 2)], 0.1, color);
         circle2 = plotCircle([bordersCoordinates(i, 3), bordersCoordinates(i, 4)], 0.1, color);
         delete(horizonPositions);
-        %delete(circles);
+        delete(circles);
     end
 
     plot(states(1,:),states(2,:),"green");

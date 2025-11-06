@@ -359,19 +359,10 @@ classdef Acados < handle
         end
 
         function centers = getConstraintsCirclesCenters(obj)
-            centers = zeros(4,obj.config.N+1);
-            newStateGuess = obj.ocp.get('x');
-            for i = 1:obj.config.N+1
-                
-                xTrack = obj.paramVec(1,i);
-                yTrack = obj.paramVec(2,i);
-                phiTrack = obj.paramVec(3,i);
-                s0 = obj.paramVec(4,i);
-
-                centers(1,i) = xTrack;
-                centers(2,i) = yTrack;
-                centers(3,i) = phiTrack;
-                centers(4,i) = s0;
+            centers = zeros(2,obj.config.N+1);
+            for i = 1:obj.config.N+1                
+                centers(1,i) = obj.initialStateGuess(1,i);
+                centers(2,i) = obj.initialStateGuess(2,i);
             end
         end
 
@@ -411,8 +402,13 @@ classdef Acados < handle
                 rightBorderX = full(obj.track.innerBorderInterpolation.x(s0));
                 rightBorderY = full(obj.track.innerBorderInterpolation.y(s0));
 
-                minDistFromBorderToCarCenter = sqrt(min((leftBorderX - xTrack)^2 + (leftBorderY - yTrack)^2, ...
-                                                (rightBorderX - xTrack)^2 + (rightBorderY - yTrack)^2));
+                carX = obj.initialStateGuess(1,i);
+                carY = obj.initialStateGuess(2,i);
+
+                minDistFromBorderToCarCenter = sqrt(min([(leftBorderX - carX)^2 + (leftBorderY - carY)^2, ...
+                                                (rightBorderX - carX)^2 + (rightBorderY - carY)^2, ...
+                                                (leftBorderX - xTrack)^2 + (leftBorderY - yTrack)^2, ...
+                                                (rightBorderX - xTrack)^2 + (rightBorderY - yTrack)^2]));
                 
                 sqareOfMinDistFromBorderToCar = (minDistFromBorderToCarCenter - obj.parameters.mpcModel.safetyDistance - obj.parameters.car.carW/2)^2;               
                 obj.ocp.set('p',[xTrack;yTrack;phiTrack;s0;vRef; ...
