@@ -95,7 +95,12 @@ classdef ArcLengthSpline < handle
       function path = getPath(obj)
           path = obj.d_pathData;
       end
-        
+
+      function updateSpline(obj,x,y,s)
+        obj.setRegularData(x,y,s);
+        obj.d_splineX.genSpline(obj.d_pathData.s, obj.d_pathData.x, true);
+        obj.d_splineY.genSpline(obj.d_pathData.s, obj.d_pathData.y, true);
+      end
     end
 
     methods (Access = private)

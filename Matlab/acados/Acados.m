@@ -56,9 +56,9 @@ classdef Acados < handle
         function setTrack(obj,track)
             import casadi.*;
 
-            obj.track.centerLine.gen2DSpline([track.x;track.x],[track.y;track.y]);
-            obj.track.outerBorder.gen2DSpline([track.xOuter;track.xOuter],[track.yOuter;track.yOuter]);
-            obj.track.innerBorder.gen2DSpline([track.xInner;track.xInner],[track.yInner;track.yInner]);
+            obj.track.centerLine.gen2DSpline(track.x,track.y);
+            obj.track.outerBorder.gen2DSpline(track.xOuter,track.yOuter);
+            obj.track.innerBorder.gen2DSpline(track.xInner,track.yInner);
 
             centerLine = obj.track.centerLine.getPath();
             centerLineDerivatives = zeros(2,length(centerLine.s));
@@ -66,16 +66,10 @@ classdef Acados < handle
             for i = 1:length(centerLine.s)
                 centerLineDerivatives(:,i) = obj.track.centerLine.getDerivative(centerLine.s(i));
             end
-            
-            obj.track.centerLineInterpolation.x = interpolant('center_line_interpolation_x','bspline',{centerLine.s},centerLine.x);
-            obj.track.centerLineInterpolation.y = interpolant('center_line_interpolation_y','bspline',{centerLine.s},centerLine.y);
-            obj.track.centerLineDerivativesInterpolation.x = interpolant('center_line_derivative_interpolation_x','bspline',{centerLine.s},centerLineDerivatives(1,:));
-            obj.track.centerLineDerivativesInterpolation.y = interpolant('center_line_derivative_interpolation_y','bspline',{centerLine.s},centerLineDerivatives(2,:));
-
-            [obj.track.outerBorderInterpolation, obj.track.innerBorderInterpolation] = obj.calculateBordersInterpolations(centerLine, centerLineDerivatives);
+            obj.calculateBordersInterpolations(centerLine, centerLineDerivatives);
         end
 
-        function [outerBorderInterpolation, innerBorderInterpolation] = calculateBordersInterpolations(obj, centerLine, centerLineDerivatives)
+        function calculateBordersInterpolations(obj, centerLine, centerLineDerivatives)
             import casadi.*;
             % Build perpendicular-offset border interpolations w.r.t. centerline normals
             nPts = length(centerLine.s);
@@ -122,10 +116,8 @@ classdef Acados < handle
                 innerPerpY(i) = cy - wRight*ny;
             end
 
-            outerBorderInterpolation.x = interpolant('outerBorder_interpolation_x','bspline',{centerLine.s},outerPerpX);
-            outerBorderInterpolation.y = interpolant('outerBorder_interpolation_y','bspline',{centerLine.s},outerPerpY);
-            innerBorderInterpolation.x = interpolant('innerBorder_interpolation_x','bspline',{centerLine.s},innerPerpX);
-            innerBorderInterpolation.y = interpolant('innerBorder_interpolation_y','bspline',{centerLine.s},innerPerpY);
+            obj.track.outerBorder.updateSpline(outerPerpX,outerPerpY,centerLine.s);
+            obj.track.innerBorder.updateSpline(innerPerpX,innerPerpY,centerLine.s);
         end
 
         function track = getTrack(obj)
@@ -379,11 +371,13 @@ classdef Acados < handle
         function fillParametersVector(obj)
             for i = 1:obj.config.N+1
                 s0 = obj.initialStateGuess(7,i);
-                
-                xTrack = full(obj.track.centerLineInterpolation.x(s0));
-                yTrack = full(obj.track.centerLineInterpolation.y(s0));
 
-                phiTrack = full(atan2(obj.track.centerLineDerivativesInterpolation.y(s0),obj.track.centerLineDerivativesInterpolation.x(s0)));
+                pos = obj.track.centerLine.getPosition(s0);
+                xTrack = pos(1);
+                yTrack = pos(2);
+                
+                derivs = obj.track.centerLine.getDerivative(s0);
+                phiTrack = atan2(derivs(2), derivs(1));
                 
                 vRef = obj.parameters.mpcModel.vRef;
 
@@ -396,11 +390,13 @@ classdef Acados < handle
                 rdBrakes = obj.parameters.costs.rdBrakes;
                 rdVs = obj.parameters.costs.rdVs;
 
-                leftBorderX = full(obj.track.outerBorderInterpolation.x(s0));
-                leftBorderY = full(obj.track.outerBorderInterpolation.y(s0));
+                leftBorder = obj.track.outerBorder.getPosition(s0);
+                leftBorderX = leftBorder(1);
+                leftBorderY = leftBorder(2);
 
-                rightBorderX = full(obj.track.innerBorderInterpolation.x(s0));
-                rightBorderY = full(obj.track.innerBorderInterpolation.y(s0));
+                rightBorder = obj.track.innerBorder.getPosition(s0);
+                rightBorderX = rightBorder(1);
+                rightBorderY = rightBorder(2);
 
                 carX = obj.initialStateGuess(1,i);
                 carY = obj.initialStateGuess(2,i);
