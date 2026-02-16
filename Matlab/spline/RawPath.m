@@ -1,5 +1,5 @@
 classdef RawPath
-    properties
+    properties (Access = public)
         x
         y
     end

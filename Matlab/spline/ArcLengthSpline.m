@@ -2,7 +2,7 @@ classdef ArcLengthSpline < handle
     %ARC_LENGTH_SPLINE Summary of this class goes here
     %   Detailed explanation goes here
     
-    properties (Access = private)
+    properties (Access = public)
         d_config
         d_pathData
         d_splineX

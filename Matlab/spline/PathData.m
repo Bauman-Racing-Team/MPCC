@@ -1,5 +1,5 @@
 classdef PathData
-    properties
+    properties (Access = public)
         x
         y
         s

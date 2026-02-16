@@ -2,7 +2,7 @@ classdef CubicSpline < handle
     %CUBIC_SPLINE Summary of this class goes here
     %   Detailed explanation goes here
     
-    properties (Access = private)
+    properties (Access = public)
         d_dataSet
         d_splineParameters
         d_splineData
