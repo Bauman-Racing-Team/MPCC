@@ -86,10 +86,8 @@ classdef Simulator < handle
             if x0(obj.config.siIndex.yaw) < -pi
               x0(obj.config.siIndex.yaw) = x0(obj.config.siIndex.yaw) + 2.0 * pi;
             end
-            trackLength = obj.centerLine.getLength();
-            lapLength = trackLength/2;
             x0(obj.config.siIndex.s) = obj.centerLine.projectOnSpline(vectorToState(x0));
-            x0(obj.config.siIndex.s) = rem(x0(obj.config.siIndex.s),lapLength);
+            x0(obj.config.siIndex.s) = rem(x0(obj.config.siIndex.s), obj.centerLine.getLength());
         end
     end
 end
