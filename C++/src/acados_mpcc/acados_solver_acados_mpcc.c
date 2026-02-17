@@ -692,11 +692,11 @@ void acados_mpcc_acados_setup_nlp_in(acados_mpcc_solver_capsule* capsule, const 
     
     lh[0] = -0.06;
     lh[1] = -0.06;
+    lh[2] = -9;
 
     
     uh[0] = 0.06;
     uh[1] = 0.06;
-    uh[2] = 1;
     uh[3] = 1;
     uh[4] = 1;
 
@@ -1005,7 +1005,7 @@ int acados_mpcc_acados_update_params(acados_mpcc_solver_capsule* capsule, int st
 {
     int solver_status = 0;
 
-    int casadi_np = 12;
+    int casadi_np = 13;
     if (casadi_np != np) {
         printf("acados_update_params: trying to set %i parameters for external functions."
             " External function has %i parameters. Exiting.\n", np, casadi_np);
