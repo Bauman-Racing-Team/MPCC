@@ -40,6 +40,8 @@ classdef Plot < handle
 
         lonInputs(obj) % plot longitudinal inputs
 
+        stateVecs(obj) % plot state on the race
+
         function stateVec = getStateVec(obj)
             stateVec = zeros(length(obj.log(1).x0),length(obj.log));
             for i = 1:length(obj.log)

@@ -42,3 +42,7 @@ plotObj.velocities();
 %% Plot throttle and brakes
 plotObj = Plot(config,parameters,track,log,carModel);
 plotObj.lonInputs();
+
+%% Plot state on a race
+plotObj = Plot(config,parameters,track,log,carModel);
+plotObj.stateVecs();
