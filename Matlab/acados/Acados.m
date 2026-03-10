@@ -54,8 +54,6 @@ classdef Acados < handle
         end
 
         function setTrack(obj,track)
-            import casadi.*;
-
             obj.track.centerLine.gen2DSpline(track.x,track.y);
             obj.track.outerBorder.gen2DSpline(track.xOuter,track.yOuter);
             obj.track.innerBorder.gen2DSpline(track.xInner,track.yInner);
@@ -70,7 +68,6 @@ classdef Acados < handle
         end
 
         function calculateBordersInterpolations(obj, centerLine, centerLineDerivatives)
-            import casadi.*;
             % Build perpendicular-offset border interpolations w.r.t. centerline normals
             nPts = length(centerLine.s);
             outerPerpX = zeros(nPts,1);
@@ -131,8 +128,6 @@ classdef Acados < handle
         end
 
         function initOcpModel(obj)
-            import casadi.*;
-
             obj.ocpModel.set('name','acados_mpcc');
             obj.ocpModel.set('T', obj.config.N*obj.ts);
 
