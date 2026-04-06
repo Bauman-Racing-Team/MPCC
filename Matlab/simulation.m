@@ -27,7 +27,6 @@ addpath('spline');
 addpath('tracks');
 addpath('types');
 
-%addpath('/opt/casadi/')
 %% add subdirectories for the chosen solver
 
 config = config();
