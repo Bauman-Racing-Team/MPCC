@@ -48,7 +48,9 @@ public:
   
   MPCReturn runMPC(const State &x0);
 
-  void setTrack(const Eigen::VectorXd &X, const Eigen::VectorXd &Y);
+  void setTrack(const Eigen::VectorXd &X, const Eigen::VectorXd &Y, 
+    const Eigen::VectorXd &XOuter, const Eigen::VectorXd &YOuter, 
+    const Eigen::VectorXd &XInner, const Eigen::VectorXd &YInner);
 
   ArcLengthSpline getTrack() const;
 
@@ -58,6 +60,7 @@ private:
   void updateInitialGuess(const State &x0);
   void generateNewInitialGuess(const State &x0);
   void unwrapInitialGuess();
+  void calculateBordersInterpolations();
 
 private:
   bool validInitialGuess;
@@ -77,11 +80,14 @@ private:
   double bounds_x[2 * NX];
   const double Ts_;
 
-  ArcLengthSpline track_;
+  ArcLengthSpline centerLine_;
+  ArcLengthSpline outerBorder_;
+  ArcLengthSpline innerBorder_;
 
   Bounds bounds;
   Model model;
   Cost cost;
+  Car d_car;
   Models models;
 
   std::unique_ptr<AcadosInterface> solverInterface;

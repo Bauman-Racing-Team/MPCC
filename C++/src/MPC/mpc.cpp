@@ -24,9 +24,12 @@ namespace mpcc
         solverInterface(new AcadosInterface()),
         model(Model(path.modelPath)),
         cost(Cost(path.costsPath)),
+        d_car(Car(path.carPath)),
         models(Models(path)),
         bounds(Bounds(path.boundsPath)),
-        track_(ArcLengthSpline(path))
+        centerLine_(ArcLengthSpline(path)),
+        outerBorder_(ArcLengthSpline(path)),
+        innerBorder_(ArcLengthSpline(path))
   {
     nSqp = n_sqp;
     sqpMixing = sqp_mixing;
@@ -39,12 +42,26 @@ namespace mpcc
     parameter_.setZero();
     for (int timeStep = 0; timeStep <= N; timeStep++)
     {
-      Eigen::Vector2d trackPosI = track_.getPostion(initialGuess[timeStep].xk(sIdx));
-      Eigen::Vector2d trackDposI = track_.getDerivative(initialGuess[timeStep].xk(sIdx));
+      double carX = initialGuess[timeStep].xk(xIdx);
+      double carY = initialGuess[timeStep].xk(yIdx);
+      double carS = initialGuess[timeStep].xk(sIdx);
+            
+      Eigen::Vector2d trackPosI = centerLine_.getPostion(carS);
+      Eigen::Vector2d outerBorderPosI = outerBorder_.getPostion(carS);
+      Eigen::Vector2d innerBorderPosI = innerBorder_.getPostion(carS);
+      Eigen::Vector2d trackDposI = centerLine_.getDerivative(carS);
+
+      double minDistFromBorderToCarCenter = std::sqrt(std::min({std::pow((outerBorderPosI(0) - carX),2) + std::pow((outerBorderPosI(1) - carY),2),
+                                                               std::pow((innerBorderPosI(0) - carX),2) + std::pow((innerBorderPosI(1) - carY),2),
+                                                               std::pow((outerBorderPosI(0) - trackPosI(0)),2) + std::pow((innerBorderPosI(1) - trackPosI(1)),2),
+                                                               std::pow((innerBorderPosI(0) - trackPosI(0)),2) + std::pow((innerBorderPosI(1) - trackPosI(1)),2)}));
+     
+      double sqareOfMinDistFromBorderToCar = std::pow((minDistFromBorderToCarCenter - model.safetyDistance - d_car.carW/2),2); 
+
       parameter_(xTrackP, timeStep) = trackPosI(0);
       parameter_(yTrackP, timeStep) = trackPosI(1);
       parameter_(yawTrackP, timeStep) = std::atan2(trackDposI(1), trackDposI(0));
-      parameter_(s0P, timeStep) = initialGuess[timeStep].xk(sIdx);
+      parameter_(s0P, timeStep) = carS;
       parameter_(vRefP, timeStep) = model.vRef;
       parameter_(qCP, timeStep) = cost.qC;
       parameter_(qLP, timeStep) = cost.qL;
@@ -53,12 +70,12 @@ namespace mpcc
       parameter_(rdSteeringAngleP, timeStep) = cost.rdSteeringAngle;
       parameter_(rdBrakesP, timeStep) = cost.rdBrakes;
       parameter_(rdVsP, timeStep) = cost.rdVs;
+      parameter_(sqareOfMinDistFromBorderToCarP, timeStep) = sqareOfMinDistFromBorderToCar;
     }
   }
 
   void MPC::updateInitialGuess(const State &x0)
   {
-    
     for (int i = 1; i < N; i++)
       initialGuess[i - 1].uk = initialGuess[i].uk;
     initialGuess[N - 1].uk = initialGuess[N - 2].uk;
@@ -79,21 +96,21 @@ namespace mpcc
 
   void MPC::unwrapInitialGuess()
   {
-    double L = track_.getLength();
+    double centerLineLength = centerLine_.getLength();
     for (int i = 1; i <= N; i++)
     {
       if ((initialGuess[i].xk(yawIdx) - initialGuess[i - 1].xk(yawIdx)) < -M_PI)
       {
         initialGuess[i].xk(yawIdx) += 2. * M_PI;
       }
-      if ((initialGuess[i].xk(yawIdx) - initialGuess[i - 1].xk(yawIdx)) > M_PI)
+      else if ((initialGuess[i].xk(yawIdx) - initialGuess[i - 1].xk(yawIdx)) > M_PI)
       {
         initialGuess[i].xk(yawIdx) -= 2. * M_PI;
       }
 
-      if ((initialGuess[i].xk(sIdx) - initialGuess[i - 1].xk(sIdx)) > L / 2.)
+      if ((initialGuess[i].xk(sIdx) - initialGuess[i - 1].xk(sIdx)) > centerLineLength / 2.)
       {
-        initialGuess[i].xk(sIdx) -= L;
+        initialGuess[i].xk(sIdx) -= centerLineLength;
       }
     }
   }
@@ -111,8 +128,8 @@ namespace mpcc
       vxVsNonZero(initialGuess[i].xk, model.vxMin);
 
       initialGuess[i].xk(sIdx) = initialGuess[i - 1].xk(sIdx) + Ts_ * initialGuess[i - 1].xk(vsIdx);
-      Eigen::Vector2d trackPosI = track_.getPostion(initialGuess[i].xk(sIdx));
-      Eigen::Vector2d trackDposI = track_.getDerivative(initialGuess[i].xk(sIdx));
+      Eigen::Vector2d trackPosI = centerLine_.getPostion(initialGuess[i].xk(sIdx));
+      Eigen::Vector2d trackDposI = centerLine_.getDerivative(initialGuess[i].xk(sIdx));
       initialGuess[i].xk(xIdx) = trackPosI(0);
       initialGuess[i].xk(yIdx) = trackPosI(1);
       initialGuess[i].xk(yawIdx) = atan2(trackDposI(1), trackDposI(0));
@@ -126,8 +143,7 @@ namespace mpcc
     State x = x0;
     auto t1 = std::chrono::high_resolution_clock::now();
     int solver_status = -1;
-    x(sIdx) = track_.porjectOnSpline(x);
-    unwrapState(x, track_.getLength());
+    x(sIdx) = centerLine_.porjectOnSpline(x);
 
     nNoSolvesSqp = 0;
     nNoSolvesSqpMax = 0;
@@ -178,13 +194,108 @@ namespace mpcc
     return {initialGuess[0].uk, initialGuess, time_nmpc, solver_status};
   }
 
-  void MPC::setTrack(const Eigen::VectorXd &X, const Eigen::VectorXd &Y)
+  void MPC::setTrack(const Eigen::VectorXd &X, const Eigen::VectorXd &Y, 
+                     const Eigen::VectorXd &XOuter, const Eigen::VectorXd &YOuter, 
+                     const Eigen::VectorXd &XInner, const Eigen::VectorXd &YInner)
   {
-    track_.gen2DSpline(X, Y);
+    centerLine_.gen2DSpline(X, Y);
+    outerBorder_.gen2DSpline(XOuter, YOuter);
+    innerBorder_.gen2DSpline(XInner, YInner);
+    
+    calculateBordersInterpolations();
   }
 
-  ArcLengthSpline MPC::getTrack() const {
-    return track_;
+  void MPC::calculateBordersInterpolations(){
+    // Build perpendicular-offset border interpolations w.r.t. centerline normals
+    auto centerLinePath = centerLine_.getPath();
+    int nPts = centerLinePath.n_points;
+
+    Eigen::VectorXd outerPerpX(nPts);
+    Eigen::VectorXd outerPerpY(nPts);
+    Eigen::VectorXd innerPerpX(nPts);
+    Eigen::VectorXd innerPerpY(nPts);
+
+    outerPerpX.setZero();
+    outerPerpY.setZero();
+    innerPerpX.setZero();
+    innerPerpY.setZero();
+
+    // Use resampled border paths for nearest-neighbor search
+    const PathData& outerBorderPath = outerBorder_.getPath();
+    const PathData& innerBorderPath = innerBorder_.getPath();
+
+    const Eigen::VectorXd& outerX = outerBorderPath.X;
+    const Eigen::VectorXd& outerY = outerBorderPath.Y;
+    const Eigen::VectorXd& innerX = innerBorderPath.X;
+    const Eigen::VectorXd& innerY = innerBorderPath.Y;
+
+    for (int i = 0; i < nPts; i++) {
+        // Center point and tangent/normal
+        double s = centerLinePath.s(i);
+        Eigen::Vector2d centerPos = centerLine_.getPostion(s);
+        Eigen::Vector2d tangent = centerLine_.getDerivative(s);
+        
+        double cx = centerPos(0);
+        double cy = centerPos(1);
+        double tx = tangent(0);
+        double ty = tangent(1);
+        
+        double tnorm = std::sqrt(tx * tx + ty * ty);
+        if (tnorm > 0) {
+            tx /= tnorm;
+            ty /= tnorm;
+        }
+        // Left-hand normal (rotate tangent 90 degrees counterclockwise)
+        double nx = -ty;
+        double ny = tx;
+
+        // Nearest outer point
+        Eigen::ArrayXd dxo = outerX.array() - cx;
+        Eigen::ArrayXd dyo = outerY.array() - cy;
+        Eigen::ArrayXd distSqOuter = dxo.square() + dyo.square();
+        int idxO = 0;
+        double minDistOuter = distSqOuter(0);
+        for (int j = 1; j < outerX.size(); j++) {
+            if (distSqOuter(j) < minDistOuter) {
+                minDistOuter = distSqOuter(j);
+                idxO = j;
+            }
+        }
+        double pxo = outerX(idxO);
+        double pyo = outerY(idxO);
+
+        // Nearest inner point
+        Eigen::ArrayXd dxi = innerX.array() - cx;
+        Eigen::ArrayXd dyi = innerY.array() - cy;
+        Eigen::ArrayXd distSqInner = dxi.square() + dyi.square();
+        int idxI = 0;
+        double minDistInner = distSqInner(0);
+        for (int j = 1; j < innerX.size(); j++) {
+            if (distSqInner(j) < minDistInner) {
+                minDistInner = distSqInner(j);
+                idxI = j;
+            }
+        }
+        double pxi = innerX(idxI);
+        double pyi = innerY(idxI);
+
+        // Perpendicular distances along normal
+        double wLeft = (pxo - cx) * nx + (pyo - cy) * ny;   // signed along +N
+        double wRight = -((pxi - cx) * nx + (pyi - cy) * ny); // make positive to the right
+
+        outerPerpX(i) = cx + wLeft * nx;
+        outerPerpY(i) = cy + wLeft * ny;
+        innerPerpX(i) = cx - wRight * nx;
+        innerPerpY(i) = cy - wRight * ny;
+    }
+
+    outerBorder_.updateSpline(outerPerpX, outerPerpY, centerLinePath.s);
+    innerBorder_.updateSpline(innerPerpX, innerPerpY, centerLinePath.s);
+  }
+
+  ArcLengthSpline MPC::getTrack() const
+  {
+    return centerLine_;
   }
 
 } // namespace mpcc

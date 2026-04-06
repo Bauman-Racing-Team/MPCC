@@ -53,7 +53,7 @@ int main()
     jsonConfig["n_sqp"], jsonConfig["n_reset"], jsonConfig["sqp_mixing"], jsonConfig["Ts"],
     jsonPaths);
   
-  mpc.setTrack(trackXY.X, trackXY.Y);
+  mpc.setTrack(trackXY.X, trackXY.Y, trackXY.X_outer, trackXY.Y_outer, trackXY.X_inner, trackXY.Y_inner);
   
   double yaw0 = std::atan2(trackXY.Y(1) - trackXY.Y(0), trackXY.X(1) - trackXY.X(0));
   
