@@ -234,26 +234,28 @@ classdef Acados < handle
             constr_uh = [];
 
             % front slip angle constraint
-            constr_lh = [constr_lh,-obj.parameters.mpcModel.maxAlpha];
-            %
-            constr_uh = [constr_uh,obj.parameters.mpcModel.maxAlpha];
+            constr_lh = [constr_lh,obj.parameters.bounds.lowerConstraintBounds.maxAlphaFrontL];
+            constr_uh = [constr_uh,obj.parameters.bounds.upperConstraintBounds.maxAlphaFrontU];
 
             % rear slip angle constraint
-            constr_lh = [constr_lh,-obj.parameters.mpcModel.maxAlpha];
-            %
-            constr_uh = [constr_uh,obj.parameters.mpcModel.maxAlpha];
+            constr_lh = [constr_lh,obj.parameters.bounds.lowerConstraintBounds.maxAlphaRearL];
+            constr_uh = [constr_uh,obj.parameters.bounds.upperConstraintBounds.maxAlphaRearU];
 
             % track constraint bounds
-            constr_lh = [constr_lh, -9]; %(9 is 3^2 if max track width is 6 [m])
-            constr_uh = [constr_uh, 0];
+            constr_lh = [constr_lh, obj.parameters.bounds.lowerConstraintBounds.rOutL]; %(9 is 3^2 if max track width is 6 [m])
+            constr_uh = [constr_uh, obj.parameters.bounds.upperConstraintBounds.rOutU];
 
-            % friction ellipse constraint bounds
-            constr_lh = [constr_lh,0,0];
-            constr_uh = [constr_uh,1,1];
+            % front wheels friction ellipse constraint bounds
+            constr_lh = [constr_lh, obj.parameters.bounds.lowerConstraintBounds.ellipseFrontL];
+            constr_uh = [constr_uh, obj.parameters.bounds.upperConstraintBounds.ellipseFrontU];
+
+            % rear wheels friction ellipse constraint bounds
+            constr_lh = [constr_lh, obj.parameters.bounds.lowerConstraintBounds.ellipseRearL];
+            constr_uh = [constr_uh, obj.parameters.bounds.upperConstraintBounds.ellipseRearU];
             
             % longitudinal control constraint bounds
-            constr_lh = [constr_lh,0];
-            constr_uh = [constr_uh,0];
+            constr_lh = [constr_lh, obj.parameters.bounds.lowerConstraintBounds.lonControlL];
+            constr_uh = [constr_uh, obj.parameters.bounds.upperConstraintBounds.lonControlU];
            
             obj.ocpModel.set('constr_lh',constr_lh);
             obj.ocpModel.set('constr_uh',constr_uh);

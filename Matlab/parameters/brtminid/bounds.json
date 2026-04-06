@@ -39,5 +39,23 @@
       "dSteeringAngleU": 1.0,
       "dBrakesU": 1.6,
       "dVsU": 5.0
+    },
+
+    "lowerConstraintBounds":{
+      "maxAlphaFrontL": -0.06,
+      "maxAlphaRearL": -0.06,
+      "rOutL": -9.0,
+      "ellipseFrontL": 0,
+      "ellipseRearL": 0,
+      "lonControlL": 0
+    },
+
+    "upperConstraintBounds":{
+      "maxAlphaFrontU": 0.06,
+      "maxAlphaRearU": 0.06,
+      "rOutU": 0.0,
+      "ellipseFrontU": 1,
+      "ellipseRearU": 1,
+      "lonControlU": 0
     }
 }

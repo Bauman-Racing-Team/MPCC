@@ -210,6 +210,7 @@ void AcadosInterface::setParam(AcadosParameters parameter_)
     p[9] = parameter_(rdSteeringAngleP,i);
     p[10] = parameter_(rdBrakesP,i);
     p[11] = parameter_(rdVsP,i);
+    p[12] = parameter_(sqareOfMinDistFromBorderToCarP,i);
     acados_mpcc_acados_update_params(acados_ocp_capsule, i, p, NP);
   }
 }

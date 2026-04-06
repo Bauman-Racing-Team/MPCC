@@ -30,6 +30,7 @@ Model::Model(const std::string& file)
   // Model Parameters
 
   maxDistProj = jsonModel["maxDistProj"];
+  safetyDistance = jsonModel["safetyDistance"];
   vxMin = jsonModel["vxMin"];
   vRef = jsonModel["vRef"];
 }

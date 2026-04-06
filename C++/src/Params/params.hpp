@@ -31,6 +31,7 @@ public:
     Model(const std::string& file);
     
     double maxDistProj;
+    double safetyDistance;
     double vxMin;
     double vRef;
 };
@@ -293,7 +294,8 @@ enum {
     rdThrottleP = 8,
     rdSteeringAngleP = 9,
     rdBrakesP = 10,
-    rdVsP = 11
+    rdVsP = 11,
+    sqareOfMinDistFromBorderToCarP = 12
 };
 
 
