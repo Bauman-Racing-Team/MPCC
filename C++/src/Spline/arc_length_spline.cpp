@@ -305,4 +305,11 @@ double ArcLengthSpline::porjectOnSpline(const State &x) const
     // something is strange if it did not converge within 20 iterations, give back the initial guess
     return s_guess;
 }
+
+void ArcLengthSpline::updateSpline(const Eigen::VectorXd &X_in,const Eigen::VectorXd &Y_in,const Eigen::VectorXd &s_in){
+    setRegularData(X_in, Y_in, s_in);
+    splineX.genSpline(pathData.s, pathData.X, true);
+    splineY.genSpline(pathData.s, pathData.Y, true);
+}
+
 }

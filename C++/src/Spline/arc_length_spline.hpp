@@ -45,6 +45,8 @@ public:
     Eigen::Vector2d getSecondDerivative(double) const;
     double getLength() const;
     double porjectOnSpline(const State &x) const;
+    const PathData& getPath() const { return pathData; }
+    void updateSpline(const Eigen::VectorXd &X_in,const Eigen::VectorXd &Y_in,const Eigen::VectorXd &s_in);
 
     ArcLengthSpline();
     ArcLengthSpline(const PathToJson &path);
@@ -59,7 +61,6 @@ private:
     double unwrapInput(double x) const;
 
     PathData pathData;      // initial data and data used for successive fitting
-//    PathData pathDataFinal; // final data
     CubicSpline splineX;
     CubicSpline splineY;
     Model model;
