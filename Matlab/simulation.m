@@ -32,10 +32,7 @@ addpath('types');
 config = config();
 parameters = Parameters('brt9d', config);
 
-if strcmp(config.solver,'ipopt')
-    addpath('ipopt');
-    mpc = Ipopt(config,parameters);
-elseif strcmp(config.solver,'acados')
+if strcmp(config.solver,'acados')
     addpath('acados/');
     mpc = Acados(config,parameters);
 else

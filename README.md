@@ -5,7 +5,7 @@ Here is a fork of original [**MPCC**](https://github.com/alexliniger/MPCC) from 
 
 In this fork **MPCC** has **Matlab** and **C++** implementations. **Matlab** implementation is developed for creating one of the control approaches for the Formula Student Driverless car of **Bauman Racing Team**.
 
-In the current **Matlab** and **C++** version new cost function, constraints functions were suggested. Moreover **Matlab** version does not use [**hpipm**](https://github.com/giaf/hpipm) solver anymore, [**acados**](https://github.com/acados/acados) with [**CasADi**](https://web.casadi.org/) interface for automatic equations differentiation are used instead.[**Ipopt**](https://coin-or.github.io/Ipopt/) solver is no longer supported.
+In the current **Matlab** and **C++** version new cost function, constraints functions were suggested. Moreover **Matlab** version does not use [**hpipm**](https://github.com/giaf/hpipm) solver anymore, [**acados**](https://github.com/acados/acados) with [**CasADi**](https://web.casadi.org/) interface for automatic equations differentiation are used instead.
 
 Now a primary version uses **acados**, because it has lots of benefits for solving OCPs in a real time applications. 
 
@@ -42,7 +42,7 @@ git clone https://github.com/Bauman-Racing-Team/MPCC.git
 ```bash
 cd MPCC
 ```
-2. run **install.sh** script to install **acados** and **CasADi** with **ipopt** for the **Matlab** version and **acados**,**matplotlib-cpp**,**eigen** and **nlohmann/json** for the **C++** version:
+1. run **install.sh** script to install **acados** and **CasADi** for the **Matlab** version and **acados**,**matplotlib-cpp**,**eigen** and **nlohmann/json** for the **C++** version:
 ```bash
 ./install.sh
 ```

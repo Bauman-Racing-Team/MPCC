@@ -4,7 +4,7 @@
 ```bash
 cd MPCC/Matlab
 ```
-2. source **env.sh** for **acados** and **casadi** with **ipopt** solver with command:
+1. source **env.sh** for **acados** and **casadi** with command:
 ```bash
 source env.sh
 ```
