@@ -47,21 +47,6 @@ classdef State < matlab.mixin.Copyable
             obj.vs = 0.0;
         end
 
-        function unwrap(obj,trackLength)
-            if obj.yaw > pi
-              obj.yaw = obj.yaw - 2.0 * pi;
-            end
-            if obj.yaw < -pi
-              obj.yaw = obj.yaw + 2.0 * pi;
-            end
-            if obj.s > trackLength
-              obj.s = obj.s - trackLength;
-            end
-            if obj.s < 0.0
-              obj.s = obj.s + trackLength;
-            end
-        end
-
         function vxNonZero(obj,vxZero)
             if obj.vx < vxZero
               obj.vx = vxZero;

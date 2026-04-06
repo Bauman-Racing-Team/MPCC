@@ -237,7 +237,6 @@ classdef ArcLengthSpline < handle
               sApproximation = obj.compArcLength(x, y);
               %    std::cout << sApproximation << std::endl;
               totalArcLength = sApproximation(size(sApproximation,1));
-            
               firstSplineX = CubicSpline();
               firstSplineY = CubicSpline();
               secondSplineX = CubicSpline();

@@ -421,17 +421,6 @@ classdef Acados < handle
             end            
         end
 
-        function x0 = unwrapState(obj,x0)
-            if x0(obj.config.siIndex.yaw) > pi
-              x0(obj.config.siIndex.yaw) = x0(obj.config.siIndex.yaw) - 2.0 * pi;
-            end
-            if x0(obj.config.siIndex.yaw) < -pi
-              x0(obj.config.siIndex.yaw) = x0(obj.config.siIndex.yaw) + 2.0 * pi;
-            end
-            lapLength = obj.track.centerLine.getLength()/2;
-            x0(obj.config.siIndex.s) = rem(x0(obj.config.siIndex.s),lapLength);
-        end
-
         function updateInitialGuess(obj,x0)
             obj.initialControlGuess(:,1:obj.config.N-1) = obj.initialControlGuess(:,2:obj.config.N);
             obj.initialControlGuess(:,obj.config.N) = obj.initialControlGuess(:,obj.config.N-1);
