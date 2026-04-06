@@ -69,45 +69,43 @@ namespace mpcc
 		double Fdrag = d_car.cd * std::pow(state(vxIdx), 2.);
 
 		return {state(vxIdx) * cos(state(yawIdx)) - state(vyIdx) * sin(state(yawIdx)),
-						state(vxIdx) * sin(state(yawIdx)) + state(vyIdx) * cos(state(yawIdx)),
-						state(rIdx),
-						1. / m *
-								(Frx + cos(state(steeringAngleIdx)) * Ffx + Fdrag - sin(state(steeringAngleIdx)) * Ffy +
-								 m * state(vyIdx) * state(rIdx)),
-						1. / m *
-								(Fry + cos(state(steeringAngleIdx)) * Ffy + sin(state(steeringAngleIdx)) * Ffx - m * state(vxIdx) * state(rIdx)),
-						1. / iz *
-								(-Fry * lr + (cos(state(steeringAngleIdx)) * Ffy + sin(state(steeringAngleIdx)) * Ffx) * lf),
-						state(vsIdx),
-						input(dThrottleIdx),
-						input(dSteeringAngleIdx),
-						input(dBrakesIdx),
-						input(dVsIdx),
-						-(Ffx - Fbf - Ffrr) / 2. * rDyn / iw,
-						(Fdrv + Fbr - Frx + Frrr) / 2. * rDyn / iw};
+				state(vxIdx) * sin(state(yawIdx)) + state(vyIdx) * cos(state(yawIdx)),
+				state(rIdx),
+				1. / m *
+					(Frx + cos(state(steeringAngleIdx)) * Ffx + Fdrag - sin(state(steeringAngleIdx)) * Ffy +
+					 m * state(vyIdx) * state(rIdx)),
+				1. / m *
+					(Fry + cos(state(steeringAngleIdx)) * Ffy + sin(state(steeringAngleIdx)) * Ffx - m * state(vxIdx) * state(rIdx)),
+				1. / iz *
+					(-Fry * lr + (cos(state(steeringAngleIdx)) * Ffy + sin(state(steeringAngleIdx)) * Ffx) * lf),
+				state(vsIdx),
+				input(dThrottleIdx),
+				input(dSteeringAngleIdx),
+				input(dBrakesIdx),
+				input(dVsIdx),
+				-(Ffx - Fbf - Ffrr) / 2. * rDyn / iw,
+				(Fdrv + Fbr - Frx + Frrr) / 2. * rDyn / iw};
 	}
 
 	State Models::calculateSimpleCombinedModelDerivatives(const State &state, const Input &input) const
 	{
 		State dynamicDerivs = calculateSimpleDynamicModelDerivatives(state, input);
-		
-		State kinematicDerivs = calculateKinematicModelDerivatives(state, input);
 
-		
+		State kinematicDerivs = calculateKinematicModelDerivatives(state, input);
 
 		double lambda = std::min(std::max((state(vxIdx) - 3.) / 2., 0.), 1.);
 
 		return {state(vxIdx) * cos(state(yawIdx)) - state(vyIdx) * sin(state(yawIdx)),
-						state(vxIdx) * sin(state(yawIdx)) + state(vyIdx) * cos(state(yawIdx)),
-						state(rIdx),
-						lambda * dynamicDerivs(vxIdx) + (1. - lambda) * kinematicDerivs(vxIdx),
-						lambda * dynamicDerivs(vyIdx) + (1. - lambda) * kinematicDerivs(vyIdx),
-						lambda * dynamicDerivs(rIdx) + (1. - lambda) * kinematicDerivs(rIdx),
-						state(vsIdx),
-						input(dThrottleIdx),
-						input(dSteeringAngleIdx),
-						input(dBrakesIdx),
-						input(dVsIdx)};
+				state(vxIdx) * sin(state(yawIdx)) + state(vyIdx) * cos(state(yawIdx)),
+				state(rIdx),
+				lambda * dynamicDerivs(vxIdx) + (1. - lambda) * kinematicDerivs(vxIdx),
+				lambda * dynamicDerivs(vyIdx) + (1. - lambda) * kinematicDerivs(vyIdx),
+				lambda * dynamicDerivs(rIdx) + (1. - lambda) * kinematicDerivs(rIdx),
+				state(vsIdx),
+				input(dThrottleIdx),
+				input(dSteeringAngleIdx),
+				input(dBrakesIdx),
+				input(dVsIdx)};
 	}
 
 	State Models::calculateSimpleDynamicModelDerivatives(const State &state, const Input &input) const
@@ -165,16 +163,16 @@ namespace mpcc
 		double Fdrag = d_car.cd * std::pow(state(vxIdx), 2.);
 
 		return {state(vxIdx) * cos(state(yawIdx)) - state(vyIdx) * sin(state(yawIdx)),
-						state(vxIdx) * sin(state(yawIdx)) + state(vyIdx) * cos(state(yawIdx)),
-						state(rIdx),
-						1. / m * (Frx + cos(state(steeringAngleIdx)) * Ffx + Fdrag - sin(state(steeringAngleIdx)) * Ffy + m * state(vyIdx) * state(rIdx)),
-						1. / m * (Fry + cos(state(steeringAngleIdx)) * Ffy + sin(state(steeringAngleIdx)) * Ffx - m * state(vxIdx) * state(rIdx)),
-						1. / iz * (-Fry * lr + (cos(state(steeringAngleIdx)) * Ffy + sin(state(steeringAngleIdx)) * Ffx) * lf),
-						state(vsIdx),
-						input(dThrottleIdx),
-						input(dSteeringAngleIdx),
-						input(dBrakesIdx),
-						input(dVsIdx)};
+				state(vxIdx) * sin(state(yawIdx)) + state(vyIdx) * cos(state(yawIdx)),
+				state(rIdx),
+				1. / m * (Frx + cos(state(steeringAngleIdx)) * Ffx + Fdrag - sin(state(steeringAngleIdx)) * Ffy + m * state(vyIdx) * state(rIdx)),
+				1. / m * (Fry + cos(state(steeringAngleIdx)) * Ffy + sin(state(steeringAngleIdx)) * Ffx - m * state(vxIdx) * state(rIdx)),
+				1. / iz * (-Fry * lr + (cos(state(steeringAngleIdx)) * Ffy + sin(state(steeringAngleIdx)) * Ffx) * lf),
+				state(vsIdx),
+				input(dThrottleIdx),
+				input(dSteeringAngleIdx),
+				input(dBrakesIdx),
+				input(dVsIdx)};
 	}
 
 	State Models::calculateKinematicModelDerivatives(const State &state, const Input &input) const
@@ -224,16 +222,16 @@ namespace mpcc
 		double vxDot = 1. / m * (Frx + cos(state(steeringAngleIdx)) * Ffx + Fdrag);
 
 		return {state(vxIdx) * cos(state(yawIdx)) - state(vyIdx) * sin(state(yawIdx)),
-						state(vxIdx) * sin(state(yawIdx)) + state(vyIdx) * cos(state(yawIdx)),
-						state(rIdx),
-						vxDot,
-						lr / (lr + lf) * (input(dSteeringAngleIdx) * state(vxIdx) + state(steeringAngleIdx) * vxDot),
-						1. / (lr + lf) * (input(dSteeringAngleIdx) * state(vxIdx) + state(steeringAngleIdx) * vxDot),
-						state(vsIdx),
-						input(dThrottleIdx),
-						input(dSteeringAngleIdx),
-						input(dBrakesIdx),
-						input(dVsIdx)};
+				state(vxIdx) * sin(state(yawIdx)) + state(vyIdx) * cos(state(yawIdx)),
+				state(rIdx),
+				vxDot,
+				lr / (lr + lf) * (input(dSteeringAngleIdx) * state(vxIdx) + state(steeringAngleIdx) * vxDot),
+				1. / (lr + lf) * (input(dSteeringAngleIdx) * state(vxIdx) + state(steeringAngleIdx) * vxDot),
+				state(vsIdx),
+				input(dThrottleIdx),
+				input(dSteeringAngleIdx),
+				input(dBrakesIdx),
+				input(dVsIdx)};
 	}
 
 	std::pair<double, double> Models::calculateTireForces(double alpha, double kappa, double Fz, double Dfz, double fzNominal) const
