@@ -72,22 +72,26 @@ classdef Simulator < handle
         function xNext = simTimeStep(obj,x,u,ts)
             xNext = x;
             integrationSteps = cast(ts/0.001,'int64');
+
+            centerLineLength = obj.centerLine.getLength();
             
             for i = 1:integrationSteps
                 xNext = obj.ode4(xNext,u,0.001).full();
+                xNext = obj.unwrapState(xNext, centerLineLength);
             end
-            xNext = obj.unwrapState(xNext);
         end
 
-        function x0 = unwrapState(obj,x0)
-            if x0(obj.config.siIndex.yaw) > pi
-              x0(obj.config.siIndex.yaw) = x0(obj.config.siIndex.yaw) - 2.0 * pi;
+        function x = unwrapState(obj, x, centerLineLength)
+            if x(obj.config.siIndex.yaw) > pi
+              x(obj.config.siIndex.yaw) = x(obj.config.siIndex.yaw) - 2.0 * pi;
+            elseif x(obj.config.siIndex.yaw) < -pi
+              x(obj.config.siIndex.yaw) = x(obj.config.siIndex.yaw) + 2.0 * pi;
             end
-            if x0(obj.config.siIndex.yaw) < -pi
-              x0(obj.config.siIndex.yaw) = x0(obj.config.siIndex.yaw) + 2.0 * pi;
+            if x(obj.config.siIndex.s) > centerLineLength
+              x(obj.config.siIndex.s) = x(obj.config.siIndex.s) - centerLineLength;
+            elseif x(obj.config.siIndex.s) < 0.0
+              x(obj.config.siIndex.s) = x(obj.config.siIndex.s) + centerLineLength;
             end
-            x0(obj.config.siIndex.s) = obj.centerLine.projectOnSpline(vectorToState(x0));
-            x0(obj.config.siIndex.s) = rem(x0(obj.config.siIndex.s), obj.centerLine.getLength());
         end
     end
 end

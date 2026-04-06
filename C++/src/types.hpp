@@ -43,18 +43,16 @@ using State = Eigen::Matrix<double, NX, 1>;
 using State13 = Eigen::Matrix<double, 13, 1>;
 
 template<typename S> 
-void unwrapState(S& state, double trackLength){
+void unwrapState(S& state, double centerLineLength){
   if (state(yawIdx) > M_PI) {
     state(yawIdx) -= 2. * M_PI;
-  }
-  if (state(yawIdx) < -M_PI) {
+  } else if (state(yawIdx) < -M_PI) {
     state(yawIdx) += 2. * M_PI;
   }
-  if (state(sIdx) > trackLength) {
-    state(sIdx) -= trackLength;
-  } 
-  if (state(sIdx) < 0.) {
-    state(sIdx) += trackLength;
+  if (state(sIdx) > centerLineLength) {
+    state(sIdx) -= centerLineLength;
+  } else if (state(sIdx) < 0.) {
+    state(sIdx) += centerLineLength;
   }
 }
 
