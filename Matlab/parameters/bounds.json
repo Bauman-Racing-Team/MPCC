@@ -21,23 +21,23 @@
       "vyU": 10.0,
       "rU": 2.5,
       "sU": 2500.0,
-      "throttleU": 1.0,
+      "throttleU": 240.0,
       "steeringAngleU": 0.37,
-      "brakesU": 1.0,
+      "brakesU": 1862.0,
       "vsU": 30.0
     },
 
     "lowerInputBounds":{
-      "dThrottleL": -1.0,
+      "dThrottleL": -240.0,
       "dSteeringAngleL": -1.0,
-      "dBrakesL": -1.0,
+      "dBrakesL": -1862.0,
       "dVsL": -5.0
     },
 
     "upperInputBounds":{
-      "dThrottleU": 1.0,
+      "dThrottleU": 240.0,
       "dSteeringAngleU": 1.0,
-      "dBrakesU": 1.0,
+      "dBrakesU": 1862.0,
       "dVsU": 5.0
     }
 }
