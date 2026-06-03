@@ -16,10 +16,10 @@ classdef Parameters
     end
     
     methods
-        function obj = Parameters(config)
+        function obj = Parameters(vehicle, config)
             obj.d_config = config;
             %load bounds
-            fname = 'bounds.json';
+            fname = vehicle + "/bounds.json";
             fid = fopen(fname);
             raw = fread(fid,inf);
             str = char(raw');
@@ -27,7 +27,7 @@ classdef Parameters
             obj.bounds = jsondecode(str);
 
             %load mpcmodelparameters
-            fname = 'model.json';
+            fname = vehicle + "/model.json";
             fid = fopen(fname);
             raw = fread(fid,inf);
             str = char(raw');
@@ -35,7 +35,7 @@ classdef Parameters
             obj.mpcModel = jsondecode(str);
 
             %load costs
-            fname = 'cost.json';
+            fname = vehicle + "/cost.json";
             fid = fopen(fname);
             raw = fread(fid,inf);
             str = char(raw');
@@ -43,7 +43,7 @@ classdef Parameters
             obj.costs = jsondecode(str);
 
             %load car parameters
-            fname = 'car.json';
+            fname = vehicle + "/car.json";
             fid = fopen(fname);
             raw = fread(fid,inf);
             str = char(raw');
@@ -51,7 +51,7 @@ classdef Parameters
             obj.car = jsondecode(str);
 
             %load tire coefficients
-            fname = 'tire.json';
+            fname = vehicle + "/tire.json";
             fid = fopen(fname);
             raw = fread(fid,inf);
             str = char(raw');
@@ -59,7 +59,7 @@ classdef Parameters
             obj.tire = jsondecode(str);
 
             %load config
-            fname = 'config.json';
+            fname = vehicle + "/config.json";
             fid = fopen(fname);
             raw = fread(fid,inf);
             str = char(raw');
