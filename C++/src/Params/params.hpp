@@ -26,14 +26,18 @@ namespace mpcc{
 //used namespace
 using json = nlohmann::json;
 
-class Model{
+class Config{
 public:
-    Model(const std::string& file);
+    Config(const std::string& file);
     
+    int n;
     double maxDistProj;
     double safetyDistance;
     double vxMin;
     double vRef;
+    double nSqp;
+    double nReset;
+    double sqpMixing;
 };
 
 class Cost{

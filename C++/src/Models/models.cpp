@@ -3,7 +3,7 @@
 namespace mpcc
 {
 
-	Models::Models(const PathToJson &jsonPath) : d_car(jsonPath.carPath), d_tire(jsonPath.tirePath)
+	Models::Models(const Car& car, const Tire& tire) : d_car(car), d_tire(tire)
 	{
 	}
 

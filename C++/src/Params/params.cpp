@@ -18,21 +18,24 @@
 namespace mpcc
 {
 
-Model::Model(const std::string& file)
+Config::Config(const std::string& file)
 {
   /////////////////////////////////////////////////////
-  // Loading Model Parameters //////////
+  // Loading Config //////////
   /////////////////////////////////////////////////////
 
-  std::ifstream iModel(file);
-  json jsonModel;
-  iModel >> jsonModel;
-  // Model Parameters
+  std::ifstream iConfig(file);
+  json jsonConfig;
+  iConfig >> jsonConfig;
 
-  maxDistProj = jsonModel["maxDistProj"];
-  safetyDistance = jsonModel["safetyDistance"];
-  vxMin = jsonModel["vxMin"];
-  vRef = jsonModel["vRef"];
+  n = jsonConfig["n"];
+  maxDistProj = jsonConfig["maxDistProj"];
+  safetyDistance = jsonConfig["safetyDistance"];
+  vxMin = jsonConfig["vxMin"];
+  vRef = jsonConfig["vRef"];
+  nSqp = jsonConfig["nSqp"];
+  nReset = jsonConfig["nReset"];
+  sqpMixing = jsonConfig["sqpMixing"];
 }
 
 Cost::Cost(const std::string& file)

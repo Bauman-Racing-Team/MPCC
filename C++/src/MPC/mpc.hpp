@@ -44,7 +44,7 @@ struct MPCReturn {
 class MPC
 {
 public:
-  MPC(int n_sqp, int n_reset, double sqp_mixing, double Ts, const PathToJson &path);
+  MPC(const std::string &autonomousVehicle, const Bounds &bounds, const Config &config, const Cost &cost, const Car &car, const Tire &tire, double ts);
   
   MPCReturn runMPC(const State &x0);
 
@@ -63,34 +63,28 @@ private:
   void calculateBordersInterpolations();
 
 private:
-  bool validInitialGuess;
+  const double d_ts;
 
-  AcadosParameters parameter_;
+  const Bounds d_bounds;
+  const Config d_config;
+  const Cost d_cost;
 
-  std::array<OptVariables, N + 1> initialGuess;
-  std::array<OptVariables, N + 1> tempGuess;
-  std::array<OptVariables, N + 1> optimalSolution;
+  const Car d_car;
 
-  int nSqp;
-  double sqpMixing;
-  int nNoSolvesSqp;
-  int nNoSolvesSqpMax;
-  int nReset;
+  bool d_validInitialGuess;
 
-  double bounds_x[2 * NX];
-  const double Ts_;
+  AcadosParameters d_parameters;
 
-  ArcLengthSpline centerLine_;
-  ArcLengthSpline outerBorder_;
-  ArcLengthSpline innerBorder_;
+  std::array<OptVariables, N + 1> d_initialGuess;
+  std::array<OptVariables, N + 1> d_tempGuess;
 
-  Bounds bounds;
-  Model model;
-  Cost cost;
-  Car d_car;
-  Models models;
+  ArcLengthSpline d_centerLine;
+  ArcLengthSpline d_outerBorder;
+  ArcLengthSpline d_innerBorder;
 
-  std::unique_ptr<AcadosInterface> solverInterface;
+  Models d_models;
+
+  std::unique_ptr<AcadosInterface> d_solverInterfacePtr;
 };
 
 }  // namespace mpcc

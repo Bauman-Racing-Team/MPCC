@@ -21,7 +21,7 @@
 namespace mpcc
 {
 
-Plotting::Plotting(double Ts, const PathToJson& path) : car(Car(path.carPath)) {}
+Plotting::Plotting(double Ts, const Car& car) : d_car(car) {}
 void Plotting::plotRun(const std::vector<MPCReturn> &log, const TrackPos &track_xy) const
 {
   std::vector<double> plot_xc(track_xy.X.data(), track_xy.X.data() + track_xy.X.size());
@@ -196,10 +196,10 @@ void Plotting::plotBox(const State &x0) const
 {
   std::vector<double> corner_x;
   std::vector<double> corner_y;
-  double body_xl = std::cos(x0(yawIdx)) * car.carL / 2.;
-  double body_xw = std::sin(x0(yawIdx)) * car.carW / 2.;
-  double body_yl = std::sin(x0(yawIdx)) * car.carL / 2.;
-  double body_yw = -std::cos(x0(yawIdx)) * car.carW / 2.;
+  double body_xl = std::cos(x0(yawIdx)) * d_car.carL / 2.;
+  double body_xw = std::sin(x0(yawIdx)) * d_car.carW / 2.;
+  double body_yl = std::sin(x0(yawIdx)) * d_car.carL / 2.;
+  double body_yw = -std::cos(x0(yawIdx)) * d_car.carW / 2.;
 
   corner_x.push_back(x0(xIdx) + body_xl + body_xw);
   corner_x.push_back(x0(xIdx) + body_xl - body_xw);

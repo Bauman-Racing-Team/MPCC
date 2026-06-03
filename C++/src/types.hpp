@@ -77,12 +77,9 @@ struct solverReturn {
 };
 
 struct PathToJson {
-  std::string modelPath;
+  std::string mpccPath;
   std::string costsPath;
   std::string boundsPath;
-  std::string trackPath;
-  std::string carPath;
-  std::string tirePath;
 };
 
 State arrayToState(double *xk);

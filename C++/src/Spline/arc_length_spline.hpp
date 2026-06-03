@@ -49,7 +49,7 @@ public:
     void updateSpline(const Eigen::VectorXd &X_in,const Eigen::VectorXd &Y_in,const Eigen::VectorXd &s_in);
 
     ArcLengthSpline();
-    ArcLengthSpline(const PathToJson &path);
+    ArcLengthSpline(const Config& config);
 
 private:
     void setData(const Eigen::VectorXd &X_in,const Eigen::VectorXd &Y_in);
@@ -63,7 +63,7 @@ private:
     PathData pathData;      // initial data and data used for successive fitting
     CubicSpline splineX;
     CubicSpline splineY;
-    Model model;
+    Config d_config;
 };
 }
 #endif //MPCC_ARC_LENGTH_SPLINE_H

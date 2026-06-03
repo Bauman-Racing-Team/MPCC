@@ -26,32 +26,41 @@
 
 using json = nlohmann::json;
 
+static const std::string AUTONOMOUS_VEHICLE = "brt9d"; // brt8d, brt9d, brtminid
+static const std::string TRACK = "FSG";
+
+static constexpr int SIM_ITERATIONS = 600; // [i] simulation iterations number
+static constexpr double Ts = 0.05; // [s] MPCC computation dt
+
 int main()
 {
   using namespace mpcc;
-  std::string goToPath = "../data/";
-  std::ifstream iConfig(goToPath + "params/config.json");
-  json jsonConfig;
-  iConfig >> jsonConfig;
 
-  PathToJson jsonPaths{
-    goToPath + std::string(jsonConfig["model_path"]),
-    goToPath + std::string(jsonConfig["costs_path"]),
-    goToPath + std::string(jsonConfig["bounds_path"]),
-    goToPath + std::string(jsonConfig["track_path"]),
-    goToPath + std::string(jsonConfig["car_path"]),
-    goToPath + std::string(jsonConfig["tire_path"])};
+  std::string dataPath = "../../data";
+  std::string trackPath = dataPath + "/tracks/" + TRACK + ".json";
+  std::string carPath = dataPath + "/cars/" + AUTONOMOUS_VEHICLE + "/car.json";
+  std::string paramsPath = dataPath + "/params/" + AUTONOMOUS_VEHICLE;
+  std::string tirePath = dataPath + "/cars/" + AUTONOMOUS_VEHICLE + "/tire.json";
 
-  Plotting plotter = Plotting(jsonConfig["Ts"], jsonPaths);
+  std::string boundsPath = paramsPath + "/bounds.json";
+  std::string configPath = paramsPath + "/mpcc.json";
+  std::string costPath = paramsPath + "/cost.json";
 
-  Track track = Track(jsonPaths.trackPath);
+  Car car(carPath);
+  Tire tire(tirePath);
+
+  Plotting plotter = Plotting(Ts, carPath);
+
+  Track track = Track(trackPath);
   TrackPos trackXY = track.getTrack();
 
   std::vector<MPCReturn> log;
   
-  MPC mpc(
-    jsonConfig["n_sqp"], jsonConfig["n_reset"], jsonConfig["sqp_mixing"], jsonConfig["Ts"],
-    jsonPaths);
+  Bounds bounds(boundsPath);
+  Config config(configPath);
+  Cost cost(costPath);
+
+  MPC mpc(AUTONOMOUS_VEHICLE, bounds, config, cost, car, Ts, tire)
   
   mpc.setTrack(trackXY.X, trackXY.Y, trackXY.X_outer, trackXY.Y_outer, trackXY.X_inner, trackXY.Y_inner);
   
@@ -60,9 +69,9 @@ int main()
   State13 x0 = {trackXY.X(0),   trackXY.Y(0), yaw0, jsonConfig["v0"], 0., 0., 0., 0., 0., 0.,
               jsonConfig["v0"], 0., 0.};
   
-  Simulator simulator(jsonPaths, mpc.getTrack());
+  Simulator simulator(car, tire, mpc.getTrack());
   
-  for (int i = 0; i < jsonConfig["n_sim"]; i++) {
+  for (int i = 0; i < SIM_ITERATIONS; i++) {
     MPCReturn mpcSol = mpc.runMPC(x0.head<NX>());
 
     std::cout << "MPC compute time: " << mpcSol.time_total << " ";

@@ -35,12 +35,12 @@ public:
     void plotRun(const std::vector<MPCReturn> &log, const TrackPos &track_xy) const;
     void plotSim(const std::vector<MPCReturn> &log, const TrackPos &track_xy) const;
 
-    Plotting(double Ts, const PathToJson& path);
+    Plotting(double Ts, const Car& car);
 
 private:
     void plotBox(const State &x0) const;
 
-    Car car;
+    Car d_car;
 };
 }
 

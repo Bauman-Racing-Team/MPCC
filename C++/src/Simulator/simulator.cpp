@@ -4,7 +4,7 @@
 namespace mpcc
 {
 
-  Simulator::Simulator(const PathToJson &jsonPath, const ArcLengthSpline &centerLine) : d_centerLine(centerLine), d_models(jsonPath)
+  Simulator::Simulator(const Car& car, const Tire& tire, const ArcLengthSpline &centerLine) : d_centerLine(centerLine), d_models(car, tire)
   {
   }
 

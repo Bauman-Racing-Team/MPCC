@@ -18,124 +18,117 @@
 
 namespace mpcc
 {
-  MPC::MPC(int n_sqp, int n_reset, double sqp_mixing, double Ts, const PathToJson &path)
-      : Ts_(Ts),
-        validInitialGuess(false),
-        solverInterface(new AcadosInterface()),
-        model(Model(path.modelPath)),
-        cost(Cost(path.costsPath)),
-        d_car(Car(path.carPath)),
-        models(Models(path)),
-        bounds(Bounds(path.boundsPath)),
-        centerLine_(ArcLengthSpline(path)),
-        outerBorder_(ArcLengthSpline(path)),
-        innerBorder_(ArcLengthSpline(path))
+  MPC::MPC(const std::string &autonomousVehicle, const Bounds &bounds, const Config &config, const Cost &cost, const Car &car, const Tire &tire, double ts)
+      : d_ts(ts),
+        d_validInitialGuess(false),
+        d_solverInterfacePtr(std::make_unique<AcadosInterface>()),
+        d_bounds(bounds),
+        d_config(config),
+        d_cost(cost),
+        d_car(car),
+        d_models(car, tire)
   {
-    nSqp = n_sqp;
-    sqpMixing = sqp_mixing;
-    nNoSolvesSqp = 0;
-    nReset = n_reset;
   }
 
   void MPC::fillParametersVector()
   {
-    parameter_.setZero();
+    d_parameters.setZero();
     for (int timeStep = 0; timeStep <= N; timeStep++)
     {
-      double carX = initialGuess[timeStep].xk(xIdx);
-      double carY = initialGuess[timeStep].xk(yIdx);
-      double carS = initialGuess[timeStep].xk(sIdx);
+      double carX = d_initialGuess[timeStep].xk(xIdx);
+      double carY = d_initialGuess[timeStep].xk(yIdx);
+      double carS = d_initialGuess[timeStep].xk(sIdx);
             
-      Eigen::Vector2d trackPosI = centerLine_.getPostion(carS);
-      Eigen::Vector2d outerBorderPosI = outerBorder_.getPostion(carS);
-      Eigen::Vector2d innerBorderPosI = innerBorder_.getPostion(carS);
-      Eigen::Vector2d trackDposI = centerLine_.getDerivative(carS);
+      Eigen::Vector2d trackPosI = d_centerLine.getPostion(carS);
+      Eigen::Vector2d outerBorderPosI = d_outerBorder.getPostion(carS);
+      Eigen::Vector2d innerBorderPosI = d_innerBorder.getPostion(carS);
+      Eigen::Vector2d trackDposI = d_centerLine.getDerivative(carS);
 
       double minDistFromBorderToCarCenter = std::sqrt(std::min({std::pow((outerBorderPosI(0) - carX),2) + std::pow((outerBorderPosI(1) - carY),2),
                                                                std::pow((innerBorderPosI(0) - carX),2) + std::pow((innerBorderPosI(1) - carY),2),
                                                                std::pow((outerBorderPosI(0) - trackPosI(0)),2) + std::pow((innerBorderPosI(1) - trackPosI(1)),2),
                                                                std::pow((innerBorderPosI(0) - trackPosI(0)),2) + std::pow((innerBorderPosI(1) - trackPosI(1)),2)}));
      
-      double sqareOfMinDistFromBorderToCar = std::pow((minDistFromBorderToCarCenter - model.safetyDistance - d_car.carW/2),2); 
+      double sqareOfMinDistFromBorderToCar = std::pow((minDistFromBorderToCarCenter - d_config.safetyDistance - d_car.carW/2),2); 
 
-      parameter_(xTrackP, timeStep) = trackPosI(0);
-      parameter_(yTrackP, timeStep) = trackPosI(1);
-      parameter_(yawTrackP, timeStep) = std::atan2(trackDposI(1), trackDposI(0));
-      parameter_(s0P, timeStep) = carS;
-      parameter_(vRefP, timeStep) = model.vRef;
-      parameter_(qCP, timeStep) = cost.qC;
-      parameter_(qLP, timeStep) = cost.qL;
-      parameter_(qVsP, timeStep) = cost.qVs;
-      parameter_(rdThrottleP, timeStep) = cost.rdThrottle;
-      parameter_(rdSteeringAngleP, timeStep) = cost.rdSteeringAngle;
-      parameter_(rdBrakesP, timeStep) = cost.rdBrakes;
-      parameter_(rdVsP, timeStep) = cost.rdVs;
-      parameter_(sqareOfMinDistFromBorderToCarP, timeStep) = sqareOfMinDistFromBorderToCar;
+      d_parameters(xTrackP, timeStep) = trackPosI(0);
+      d_parameters(yTrackP, timeStep) = trackPosI(1);
+      d_parameters(yawTrackP, timeStep) = std::atan2(trackDposI(1), trackDposI(0));
+      d_parameters(s0P, timeStep) = carS;
+      d_parameters(vRefP, timeStep) = d_config.vRef;
+      d_parameters(qCP, timeStep) = d_cost.qC;
+      d_parameters(qLP, timeStep) = d_cost.qL;
+      d_parameters(qVsP, timeStep) = d_cost.qVs;
+      d_parameters(rdThrottleP, timeStep) = d_cost.rdThrottle;
+      d_parameters(rdSteeringAngleP, timeStep) = d_cost.rdSteeringAngle;
+      d_parameters(rdBrakesP, timeStep) = d_cost.rdBrakes;
+      d_parameters(rdVsP, timeStep) = d_cost.rdVs;
+      d_parameters(sqareOfMinDistFromBorderToCarP, timeStep) = sqareOfMinDistFromBorderToCar;
     }
   }
 
   void MPC::updateInitialGuess(const State &x0)
   {
     for (int i = 1; i < N; i++)
-      initialGuess[i - 1].uk = initialGuess[i].uk;
-    initialGuess[N - 1].uk = initialGuess[N - 2].uk;
+      d_initialGuess[i - 1].uk = d_initialGuess[i].uk;
+    d_initialGuess[N - 1].uk = d_initialGuess[N - 2].uk;
 
-    initialGuess[0].xk = x0;
+    d_initialGuess[0].xk = x0;
     for (int i = 1; i < N; i++)
-      initialGuess[i].xk = initialGuess[i + 1].xk;
+      d_initialGuess[i].xk = d_initialGuess[i + 1].xk;
 
-    initialGuess[N].xk = models.ode4(initialGuess[N - 1].xk, initialGuess[N - 1].uk, Ts_, std::bind(&Models::calculateSimpleCombinedModelDerivatives, &models, std::placeholders::_1, std::placeholders::_2));
-    initialGuess[N].uk = Input::Zero();
+    d_initialGuess[N].xk = d_models.ode4(d_initialGuess[N - 1].xk, d_initialGuess[N - 1].uk, d_ts, std::bind(&Models::calculateSimpleCombinedModelDerivatives, &d_models, std::placeholders::_1, std::placeholders::_2));
+    d_initialGuess[N].uk = Input::Zero();
 
     for (int i = 0; i < N + 1; i++)
     {
-      vxVsNonZero(initialGuess[i].xk, model.vxMin);
+      vxVsNonZero(d_initialGuess[i].xk, d_config.vxMin);
     }
     unwrapInitialGuess();
   }
 
   void MPC::unwrapInitialGuess()
   {
-    double centerLineLength = centerLine_.getLength();
+    double centerLineLength = d_centerLine.getLength();
     for (int i = 1; i <= N; i++)
     {
-      if ((initialGuess[i].xk(yawIdx) - initialGuess[i - 1].xk(yawIdx)) < -M_PI)
+      if ((d_initialGuess[i].xk(yawIdx) - d_initialGuess[i - 1].xk(yawIdx)) < -M_PI)
       {
-        initialGuess[i].xk(yawIdx) += 2. * M_PI;
+        d_initialGuess[i].xk(yawIdx) += 2. * M_PI;
       }
-      else if ((initialGuess[i].xk(yawIdx) - initialGuess[i - 1].xk(yawIdx)) > M_PI)
+      else if ((d_initialGuess[i].xk(yawIdx) - d_initialGuess[i - 1].xk(yawIdx)) > M_PI)
       {
-        initialGuess[i].xk(yawIdx) -= 2. * M_PI;
+        d_initialGuess[i].xk(yawIdx) -= 2. * M_PI;
       }
 
-      if ((initialGuess[i].xk(sIdx) - initialGuess[i - 1].xk(sIdx)) > centerLineLength / 2.)
+      if ((d_initialGuess[i].xk(sIdx) - d_initialGuess[i - 1].xk(sIdx)) > centerLineLength / 2.)
       {
-        initialGuess[i].xk(sIdx) -= centerLineLength;
+        d_initialGuess[i].xk(sIdx) -= centerLineLength;
       }
     }
   }
 
   void MPC::generateNewInitialGuess(const State &x0)
   {
-    initialGuess[0].xk = x0;
-    vxVsNonZero(initialGuess[0].xk, model.vxMin);
-    initialGuess[0].uk.setZero();
+    d_initialGuess[0].xk = x0;
+    vxVsNonZero(d_initialGuess[0].xk, d_config.vxMin);
+    d_initialGuess[0].uk.setZero();
 
     for (int i = 1; i <= N; i++)
     {
-      initialGuess[i].xk = State::Zero();
-      initialGuess[i].uk = Input::Zero();
-      vxVsNonZero(initialGuess[i].xk, model.vxMin);
+      d_initialGuess[i].xk = State::Zero();
+      d_initialGuess[i].uk = Input::Zero();
+      vxVsNonZero(d_initialGuess[i].xk, d_config.vxMin);
 
-      initialGuess[i].xk(sIdx) = initialGuess[i - 1].xk(sIdx) + Ts_ * initialGuess[i - 1].xk(vsIdx);
-      Eigen::Vector2d trackPosI = centerLine_.getPostion(initialGuess[i].xk(sIdx));
-      Eigen::Vector2d trackDposI = centerLine_.getDerivative(initialGuess[i].xk(sIdx));
-      initialGuess[i].xk(xIdx) = trackPosI(0);
-      initialGuess[i].xk(yIdx) = trackPosI(1);
-      initialGuess[i].xk(yawIdx) = atan2(trackDposI(1), trackDposI(0));
+      d_initialGuess[i].xk(sIdx) = d_initialGuess[i - 1].xk(sIdx) + d_ts * d_initialGuess[i - 1].xk(vsIdx);
+      Eigen::Vector2d trackPosI = d_centerLine.getPostion(d_initialGuess[i].xk(sIdx));
+      Eigen::Vector2d trackDposI = d_centerLine.getDerivative(d_initialGuess[i].xk(sIdx));
+      d_initialGuess[i].xk(xIdx) = trackPosI(0);
+      d_initialGuess[i].xk(yIdx) = trackPosI(1);
+      d_initialGuess[i].xk(yawIdx) = atan2(trackDposI(1), trackDposI(0));
     }
     unwrapInitialGuess();
-    validInitialGuess = true;
+    d_validInitialGuess = true;
   }
 
   MPCReturn MPC::runMPC(const State &x0)
@@ -143,71 +136,71 @@ namespace mpcc
     State x = x0;
     auto t1 = std::chrono::high_resolution_clock::now();
     int solver_status = -1;
-    x(sIdx) = centerLine_.porjectOnSpline(x);
+    x(sIdx) = d_centerLine.porjectOnSpline(x);
 
-    nNoSolvesSqp = 0;
-    nNoSolvesSqpMax = 0;
+    int nNoSolvesSqp = 0;
+    int nNoSolvesSqpMax = 0;
 
-    while (nNoSolvesSqpMax < nSqp)
+    while (nNoSolvesSqpMax < d_config.nSqp)
     {
-      if (validInitialGuess)
+      if (d_validInitialGuess)
         updateInitialGuess(x);
       else
         generateNewInitialGuess(x);
 
       fillParametersVector();
 
-      solverReturn mpcSol = solverInterface->solveMPC(initialGuess, parameter_, bounds, cost);
+      solverReturn mpcSol = d_solverInterfacePtr->solveMPC(d_initialGuess, d_parameters, d_bounds, d_cost);
 
       solver_status = mpcSol.status;
 
       if (solver_status == 0)
       {
-        tempGuess = mpcSol.mpcHorizon;
+        d_tempGuess = mpcSol.mpcHorizon;
         break;
       }
       if (solver_status == 2 || solver_status == 3)
       {
-        tempGuess = mpcSol.mpcHorizon;
+        d_tempGuess = mpcSol.mpcHorizon;
       }
       if (solver_status != 0)
       {
         // std::cout << "Solved" << std::endl;
         nNoSolvesSqp++;
-        if (nNoSolvesSqp >= nReset)
+        if (nNoSolvesSqp >= d_config.nReset)
         {
-          validInitialGuess = false;
+          d_validInitialGuess = false;
           nNoSolvesSqp = 0;
         }
       }
       nNoSolvesSqpMax++;
     }
 
-    if (nNoSolvesSqpMax < nSqp)
-      initialGuess = tempGuess;
+    if (nNoSolvesSqpMax < d_config.nSqp)
+      d_initialGuess = d_tempGuess;
 
     auto t2 = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> time_span =
         std::chrono::duration_cast<std::chrono::duration<double>>(t2 - t1);
     double time_nmpc = time_span.count();
 
-    return {initialGuess[0].uk, initialGuess, time_nmpc, solver_status};
+    return {d_initialGuess[0].uk, d_initialGuess, time_nmpc, solver_status};
   }
 
   void MPC::setTrack(const Eigen::VectorXd &X, const Eigen::VectorXd &Y, 
                      const Eigen::VectorXd &XOuter, const Eigen::VectorXd &YOuter, 
                      const Eigen::VectorXd &XInner, const Eigen::VectorXd &YInner)
   {
-    centerLine_.gen2DSpline(X, Y);
-    outerBorder_.gen2DSpline(XOuter, YOuter);
-    innerBorder_.gen2DSpline(XInner, YInner);
+    d_centerLine.gen2DSpline(X, Y);
+    d_outerBorder.gen2DSpline(XOuter, YOuter);
+    d_innerBorder.gen2DSpline(XInner, YInner);
     
     calculateBordersInterpolations();
   }
 
   void MPC::calculateBordersInterpolations(){
     // Build perpendicular-offset border interpolations w.r.t. centerline normals
-    auto centerLinePath = centerLine_.getPath();
+    auto centerLinePath = d_centerLine.getPath();
     int nPts = centerLinePath.n_points;
 
     Eigen::VectorXd outerPerpX(nPts);
@@ -221,8 +214,8 @@ namespace mpcc
     innerPerpY.setZero();
 
     // Use resampled border paths for nearest-neighbor search
-    const PathData& outerBorderPath = outerBorder_.getPath();
-    const PathData& innerBorderPath = innerBorder_.getPath();
+    const PathData& outerBorderPath = d_outerBorder.getPath();
+    const PathData& innerBorderPath = d_innerBorder.getPath();
 
     const Eigen::VectorXd& outerX = outerBorderPath.X;
     const Eigen::VectorXd& outerY = outerBorderPath.Y;
@@ -232,8 +225,8 @@ namespace mpcc
     for (int i = 0; i < nPts; i++) {
         // Center point and tangent/normal
         double s = centerLinePath.s(i);
-        Eigen::Vector2d centerPos = centerLine_.getPostion(s);
-        Eigen::Vector2d tangent = centerLine_.getDerivative(s);
+        Eigen::Vector2d centerPos = d_centerLine.getPostion(s);
+        Eigen::Vector2d tangent = d_centerLine.getDerivative(s);
         
         double cx = centerPos(0);
         double cy = centerPos(1);
@@ -289,13 +282,13 @@ namespace mpcc
         innerPerpY(i) = cy - wRight * ny;
     }
 
-    outerBorder_.updateSpline(outerPerpX, outerPerpY, centerLinePath.s);
-    innerBorder_.updateSpline(innerPerpX, innerPerpY, centerLinePath.s);
+    d_outerBorder.updateSpline(outerPerpX, outerPerpY, centerLinePath.s);
+    d_innerBorder.updateSpline(innerPerpX, innerPerpY, centerLinePath.s);
   }
 
   ArcLengthSpline MPC::getTrack() const
   {
-    return centerLine_;
+    return d_centerLine;
   }
 
 } // namespace mpcc

@@ -9,7 +9,7 @@ namespace mpcc
 	class Models
 	{
 	public:
-		Models(const PathToJson &jsonPath);
+		Models(const Car& car, const Tire& tire);
 
 		State13 calculateCombinedSlipDynamicModelDerivatives(const State13 &state, const Input &input) const;
 		State calculateSimpleCombinedModelDerivatives(const State &state, const Input &input) const;

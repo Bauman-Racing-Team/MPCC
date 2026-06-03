@@ -18,8 +18,8 @@
 
 namespace mpcc{
 
-ArcLengthSpline::ArcLengthSpline(const PathToJson &path)
-:model(Model(path.modelPath))
+ArcLengthSpline::ArcLengthSpline(const Config& config)
+:d_config(config)
 {
 }
 
@@ -273,7 +273,7 @@ double ArcLengthSpline::porjectOnSpline(const State &x) const
     double s_opt = s_guess;
     double dist = (pos-pos_path).norm();
 
-    if (dist >= model.maxDistProj)
+    if (dist >= d_config.maxDistProj)
     {
         std::cout << "dist too large" << std::endl;
         Eigen::ArrayXd diff_x_all = pathData.X.array() - pos(0);

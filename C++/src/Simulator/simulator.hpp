@@ -12,7 +12,7 @@ namespace mpcc
   {
 
   public:
-    Simulator(const PathToJson &jsonPath, const ArcLengthSpline &centerLine);
+    Simulator(const Car& car, const Tire& tire, const ArcLengthSpline &centerLine);
     State13 simTimeStep(const State13 &state, const Input &input, double ts) const;
 
   private:
