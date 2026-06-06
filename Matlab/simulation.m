@@ -19,9 +19,6 @@ clc
 addpath('model');
 addpath('mpc');
 addpath('parameters');
-addpath('parameters/brt8d');
-addpath('parameters/brt9d');
-addpath('parameters/brtminid');
 addpath('simulator');
 addpath('spline');
 addpath('tracks');
@@ -30,7 +27,7 @@ addpath('types');
 %% add subdirectories for the chosen solver
 
 config = config();
-parameters = Parameters('brt9d', config);
+parameters = Parameters('brt9d'); % brt8d, brt9d, brtminid
 
 if strcmp(config.solver,'acados')
     addpath('acados/');
@@ -66,9 +63,9 @@ mpc.initMPC();
 log = MpcReturn.empty(1, 0);
 x00 = zeros(13,0);
 
-for i = 1:parameters.config.nSim
+for i = 1:config.SIM_ITERATIONS
         mpcSol = mpc.runMPC(x0(1:11));
-        x0 = simulator.simTimeStep(x0,mpcSol.u0,parameters.config.ts);
+        x0 = simulator.simTimeStep(x0,mpcSol.u0,config.Ts);
         if ~isempty(mpcSol.x0)
             log(end+1) = mpcSol;
         end

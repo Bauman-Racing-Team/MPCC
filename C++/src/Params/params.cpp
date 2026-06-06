@@ -35,7 +35,6 @@ Config::Config(const std::string& file)
   vRef = jsonConfig["vRef"];
   nSqp = jsonConfig["nSqp"];
   nReset = jsonConfig["nReset"];
-  sqpMixing = jsonConfig["sqpMixing"];
 }
 
 Cost::Cost(const std::string& file)
@@ -82,53 +81,60 @@ Bounds::Bounds(const std::string& file)
   json jsonBounds;
   iBounds >> jsonBounds;
 
-  stateLowerBounds(xL) = jsonBounds["xL"];
-  stateLowerBounds(yL) = jsonBounds["yL"];
-  stateLowerBounds(yawL) = jsonBounds["yawL"];
-  stateLowerBounds(vxL) = jsonBounds["vxL"];
-  stateLowerBounds(vyL) = jsonBounds["vyL"];
-  stateLowerBounds(rL) = jsonBounds["rL"];
-  stateLowerBounds(sL) = jsonBounds["sL"];
-  stateLowerBounds(throttleL) = jsonBounds["throttleL"];
-  stateLowerBounds(steeringAngleL) = jsonBounds["steeringAngleL"];
-  stateLowerBounds(brakesL) = jsonBounds["brakesL"];
-  stateLowerBounds(vsL) = jsonBounds["vsL"];
+  auto lowerStateBounds = jsonBounds["lowerStateBounds"];
+  auto upperStateBounds = jsonBounds["upperStateBounds"];
+  auto lowerInputBounds = jsonBounds["lowerInputBounds"];
+  auto upperInputBounds = jsonBounds["upperInputBounds"];
+  auto lowerConstraintBounds = jsonBounds["lowerConstraintBounds"];
+  auto upperConstraintBounds = jsonBounds["upperConstraintBounds"];
 
-  stateUpperBounds(xU) = jsonBounds["xU"];
-  stateUpperBounds(yU) = jsonBounds["yU"];
-  stateUpperBounds(yawU) = jsonBounds["yawU"];
-  stateUpperBounds(vxU) = jsonBounds["vxU"];
-  stateUpperBounds(vyU) = jsonBounds["vyU"];
-  stateUpperBounds(rU) = jsonBounds["rU"];
-  stateUpperBounds(sU) = jsonBounds["sU"];
-  stateUpperBounds(throttleU) = jsonBounds["throttleU"];
-  stateUpperBounds(steeringAngleU) = jsonBounds["steeringAngleU"];
-  stateUpperBounds(brakesU) = jsonBounds["brakesU"];
-  stateUpperBounds(vsU) = jsonBounds["vsU"];
+  stateLowerBounds(xL) = lowerStateBounds["xL"];
+  stateLowerBounds(yL) = lowerStateBounds["yL"];
+  stateLowerBounds(yawL) = lowerStateBounds["yawL"];
+  stateLowerBounds(vxL) = lowerStateBounds["vxL"];
+  stateLowerBounds(vyL) = lowerStateBounds["vyL"];
+  stateLowerBounds(rL) = lowerStateBounds["rL"];
+  stateLowerBounds(sL) = lowerStateBounds["sL"];
+  stateLowerBounds(throttleL) = lowerStateBounds["throttleL"];
+  stateLowerBounds(steeringAngleL) = lowerStateBounds["steeringAngleL"];
+  stateLowerBounds(brakesL) = lowerStateBounds["brakesL"];
+  stateLowerBounds(vsL) = lowerStateBounds["vsL"];
 
-  inputLowerBounds(dThrottleL) = jsonBounds["dThrottleL"];
-  inputLowerBounds(dBrakesL) = jsonBounds["dBrakesL"];
-  inputLowerBounds(dSteeringAngleL) = jsonBounds["dSteeringAngleL"];
-  inputLowerBounds(dVsL) = jsonBounds["dVsL"];
+  stateUpperBounds(xU) = upperStateBounds["xU"];
+  stateUpperBounds(yU) = upperStateBounds["yU"];
+  stateUpperBounds(yawU) = upperStateBounds["yawU"];
+  stateUpperBounds(vxU) = upperStateBounds["vxU"];
+  stateUpperBounds(vyU) = upperStateBounds["vyU"];
+  stateUpperBounds(rU) = upperStateBounds["rU"];
+  stateUpperBounds(sU) = upperStateBounds["sU"];
+  stateUpperBounds(throttleU) = upperStateBounds["throttleU"];
+  stateUpperBounds(steeringAngleU) = upperStateBounds["steeringAngleU"];
+  stateUpperBounds(brakesU) = upperStateBounds["brakesU"];
+  stateUpperBounds(vsU) = upperStateBounds["vsU"];
 
-  inputUpperBounds(dThrottleU) = jsonBounds["dThrottleU"];
-  inputUpperBounds(dBrakesU) = jsonBounds["dBrakesU"];
-  inputUpperBounds(dSteeringAngleU) = jsonBounds["dSteeringAngleU"];
-  inputUpperBounds(dVsU) = jsonBounds["dVsU"];
+  inputLowerBounds(dThrottleL) = lowerInputBounds["dThrottleL"];
+  inputLowerBounds(dBrakesL) = lowerInputBounds["dBrakesL"];
+  inputLowerBounds(dSteeringAngleL) = lowerInputBounds["dSteeringAngleL"];
+  inputLowerBounds(dVsL) = lowerInputBounds["dVsL"];
 
-  constraintsLowerBounds(maxAlphaFrontL) = jsonBounds["maxAlphaFrontL"];
-  constraintsLowerBounds(maxAlphaRearL) = jsonBounds["maxAlphaRearL"];
-  constraintsLowerBounds(rOutL) = jsonBounds["rOutL"];
-  constraintsLowerBounds(ellipseFrontL) = jsonBounds["ellipseFrontL"];
-  constraintsLowerBounds(ellipseRearL) = jsonBounds["ellipseRearL"];
-  constraintsLowerBounds(lonControlL) = jsonBounds["lonControlL"];
+  inputUpperBounds(dThrottleU) = upperInputBounds["dThrottleU"];
+  inputUpperBounds(dBrakesU) = upperInputBounds["dBrakesU"];
+  inputUpperBounds(dSteeringAngleU) = upperInputBounds["dSteeringAngleU"];
+  inputUpperBounds(dVsU) = upperInputBounds["dVsU"];
 
-  constraintsUpperBounds(maxAlphaFrontU) = jsonBounds["maxAlphaFrontU"];
-  constraintsUpperBounds(maxAlphaRearU) = jsonBounds["maxAlphaRearU"];
-  constraintsUpperBounds(rOutU) = jsonBounds["rOutU"];
-  constraintsUpperBounds(ellipseFrontU) = jsonBounds["ellipseFrontU"];
-  constraintsUpperBounds(ellipseRearU) = jsonBounds["ellipseRearU"];
-  constraintsUpperBounds(lonControlU) = jsonBounds["lonControlU"];
+  constraintsLowerBounds(maxAlphaFrontL) = lowerConstraintBounds["maxAlphaFrontL"];
+  constraintsLowerBounds(maxAlphaRearL) = lowerConstraintBounds["maxAlphaRearL"];
+  constraintsLowerBounds(rOutL) = lowerConstraintBounds["rOutL"];
+  constraintsLowerBounds(ellipseFrontL) = lowerConstraintBounds["ellipseFrontL"];
+  constraintsLowerBounds(ellipseRearL) = lowerConstraintBounds["ellipseRearL"];
+  constraintsLowerBounds(lonControlL) = lowerConstraintBounds["lonControlL"];
+
+  constraintsUpperBounds(maxAlphaFrontU) = upperConstraintBounds["maxAlphaFrontU"];
+  constraintsUpperBounds(maxAlphaRearU) = upperConstraintBounds["maxAlphaRearU"];
+  constraintsUpperBounds(rOutU) = upperConstraintBounds["rOutU"];
+  constraintsUpperBounds(ellipseFrontU) = upperConstraintBounds["ellipseFrontU"];
+  constraintsUpperBounds(ellipseRearU) = upperConstraintBounds["ellipseRearU"];
+  constraintsUpperBounds(lonControlU) = upperConstraintBounds["lonControlU"];
 }
 
 Car::Car(const std::string& file){

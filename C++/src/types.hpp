@@ -72,7 +72,7 @@ struct OptVariables {
 };
 
 struct solverReturn {
-  std::array<OptVariables, N + 1> mpcHorizon;
+  std::vector<OptVariables> mpcHorizon;
   int status;
 };
 

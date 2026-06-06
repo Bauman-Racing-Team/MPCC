@@ -31,7 +31,6 @@ namespace mpcc
 #define NP 13 // number of parameters
 #define NS 6 // number of soft constraints
 
-static constexpr int N = 100; // horizon length
 static constexpr double INF = 1E5;
 static constexpr int N_SPLINE = 5000; // number of points in a spline
 

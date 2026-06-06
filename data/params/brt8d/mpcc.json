@@ -5,6 +5,5 @@
     "vxMin": 1.0,
     "vRef": 30.0,
     "nSqp": 5,
-    "nReset": 2,
-    "sqpMixing": 0.9
+    "nReset": 2
 }

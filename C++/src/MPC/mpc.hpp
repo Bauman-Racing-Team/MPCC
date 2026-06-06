@@ -36,7 +36,7 @@ namespace mpcc
 
 struct MPCReturn {
   const Input u0;
-  const std::array<OptVariables, N + 1> mpc_horizon;
+  const std::vector<OptVariables> mpc_horizon;
   const double time_total;
   const int solverStatus;
 };
@@ -70,19 +70,17 @@ private:
   const Cost d_cost;
 
   const Car d_car;
+  const Models d_models;
 
   bool d_validInitialGuess;
 
   AcadosParameters d_parameters;
 
-  std::array<OptVariables, N + 1> d_initialGuess;
-  std::array<OptVariables, N + 1> d_tempGuess;
+  std::vector<OptVariables> d_initialGuess;
 
   ArcLengthSpline d_centerLine;
   ArcLengthSpline d_outerBorder;
   ArcLengthSpline d_innerBorder;
-
-  Models d_models;
 
   std::unique_ptr<AcadosInterface> d_solverInterfacePtr;
 };

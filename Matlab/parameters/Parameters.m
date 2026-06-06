@@ -4,38 +4,33 @@ classdef Parameters
     
     properties (Access = public)
         bounds
-        mpcModel
         costs
         car
         tire
         config
     end
-
-    properties (Access = private)
-        d_config
-    end
     
     methods
-        function obj = Parameters(vehicle, config)
-            obj.d_config = config;
+        function obj = Parameters(vehicle)
             %load bounds
-            fname = vehicle + "/bounds.json";
+            fname = "../data/params/" + vehicle + "/bounds.json";
+            disp(fname);
             fid = fopen(fname);
             raw = fread(fid,inf);
             str = char(raw');
             fclose(fid);
             obj.bounds = jsondecode(str);
 
-            %load mpcmodelparameters
-            fname = vehicle + "/model.json";
+            %load config
+            fname = "../data/params/" + vehicle + "/mpcc.json";
             fid = fopen(fname);
             raw = fread(fid,inf);
             str = char(raw');
             fclose(fid);
-            obj.mpcModel = jsondecode(str);
+            obj.config = jsondecode(str);
 
             %load costs
-            fname = vehicle + "/cost.json";
+            fname = "../data/params/" + vehicle + "/cost.json";
             fid = fopen(fname);
             raw = fread(fid,inf);
             str = char(raw');
@@ -43,7 +38,7 @@ classdef Parameters
             obj.costs = jsondecode(str);
 
             %load car parameters
-            fname = vehicle + "/car.json";
+            fname = "../data/cars/" + vehicle + "/car.json";
             fid = fopen(fname);
             raw = fread(fid,inf);
             str = char(raw');
@@ -51,20 +46,12 @@ classdef Parameters
             obj.car = jsondecode(str);
 
             %load tire coefficients
-            fname = vehicle + "/tire.json";
+            fname = "../data/cars/" + vehicle + "/tire.json";
             fid = fopen(fname);
             raw = fread(fid,inf);
             str = char(raw');
             fclose(fid);
             obj.tire = jsondecode(str);
-
-            %load config
-            fname = vehicle + "/config.json";
-            fid = fopen(fname);
-            raw = fread(fid,inf);
-            str = char(raw');
-            fclose(fid);
-            obj.config = jsondecode(str);
         end
     end
 end

@@ -12,8 +12,8 @@ function accelerationsDistribution(obj)
     mat = zeros(length(obj.log)-1,2);
     
     for i = 1:length(obj.log)-1
-        mat(i,1) = (obj.log(i+1).mpcHorizon.states(4) - obj.log(i).mpcHorizon.states(4))/obj.parameters.config.ts;
-        mat(i,2) = (obj.log(i+1).mpcHorizon.states(5) - obj.log(i).mpcHorizon.states(5))/obj.parameters.config.ts;
+        mat(i,1) = (obj.log(i+1).mpcHorizon.states(4) - obj.log(i).mpcHorizon.states(4))/obj.config.Ts;
+        mat(i,2) = (obj.log(i+1).mpcHorizon.states(5) - obj.log(i).mpcHorizon.states(5))/obj.config.Ts;
     end
 
     plot(mat(:,1),mat(:,2),'.red','Marker','.');

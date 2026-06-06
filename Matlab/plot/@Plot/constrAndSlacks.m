@@ -168,13 +168,13 @@ function constrAndSlacks(obj)
 
     plot(1:length(obj.log),trackErr);
     hold on;
-    yline(trackError,-obj.parameters.mpcModel.maxDistProj,'--red','minDistProj'); % lower bound
-    yline(trackError,obj.parameters.mpcModel.maxDistProj,'--red','maxDistProj'); % upper bound
+    yline(trackError,-obj.parameters.config.maxDistProj,'--red','minDistProj'); % lower bound
+    yline(trackError,obj.parameters.config.maxDistProj,'--red','maxDistProj'); % upper bound
     plot(trackError,slacks5+1)
     plot(trackError,-slacks6-1)   
         
     title(trackError,'trackError');
-    axis ([0 length(obj.log) -obj.parameters.mpcModel.maxDistProj-0.5 obj.parameters.mpcModel.maxDistProj+0.5]);
+    axis ([0 length(obj.log) -obj.parameters.config.maxDistProj-0.5 obj.parameters.config.maxDistProj+0.5]);
 
     carModel = Model(obj.parameters.car,obj.parameters.tire);
     for i = 1:length(states)

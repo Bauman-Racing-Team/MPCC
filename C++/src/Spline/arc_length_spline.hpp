@@ -48,7 +48,6 @@ public:
     const PathData& getPath() const { return pathData; }
     void updateSpline(const Eigen::VectorXd &X_in,const Eigen::VectorXd &Y_in,const Eigen::VectorXd &s_in);
 
-    ArcLengthSpline();
     ArcLengthSpline(const Config& config);
 
 private:

@@ -1,142 +1,106 @@
-/*
- * Copyright (c) The acados authors.
- *
- * This file is part of acados.
- *
- * The 2-Clause BSD License
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *
- * 1. Redistributions of source code must retain the above copyright notice,
- * this list of conditions and the following disclaimer.
- *
- * 2. Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation
- * and/or other materials provided with the distribution.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
- * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- * POSSIBILITY OF SUCH DAMAGE.;
- */
-
-#ifndef MPCC_ACADOS_INTERFACE_H
-#define MPCC_ACADOS_INTERFACE_H
-
-// standard
-#include <stdio.h>
-#include <stdlib.h>
-
-// acados
-#include "acados/utils/print.h"
-#include "acados/utils/math.h"
-#include "acados_c/ocp_nlp_interface.h"
-#include "acados_c/external_function_interface.h"
-#include "acados_solver_acados_mpcc.h"
-
-// blasfeo
-#include "blasfeo/include/blasfeo_d_aux_ext_dep.h"
+#pragma once
 
 #include "config.hpp"
 #include "Params/params.hpp"
 #include "types.hpp"
-#include "solver_interface.hpp"
 
-#define NZ ACADOS_MPCC_NZ
-#define NBX ACADOS_MPCC_NBX
-#define NBX0 ACADOS_MPCC_NBX0
-#define NBU ACADOS_MPCC_NBU
-#define NSBX ACADOS_MPCC_NSBX
-#define NSBU ACADOS_MPCC_NSBU
-#define NSH ACADOS_MPCC_NSH
-#define NSG ACADOS_MPCC_NSG
-#define NSPHI ACADOS_MPCC_NSPHI
-#define NSHN ACADOS_MPCC_NSHN
-#define NSGN ACADOS_MPCC_NSGN
-#define NSPHIN ACADOS_MPCC_NSPHIN
-#define NSBXN ACADOS_MPCC_NSBXN
-#define NSN ACADOS_MPCC_NSN
-#define NG ACADOS_MPCC_NG
-#define NBXN ACADOS_MPCC_NBXN
-#define NGN ACADOS_MPCC_NGN
-#define NY0 ACADOS_MPCC_NY0
-#define NY ACADOS_MPCC_NY
-#define NYN ACADOS_MPCC_NYN
-#define NH ACADOS_MPCC_NH
-#define NPHI ACADOS_MPCC_NPHI
-#define NHN ACADOS_MPCC_NHN
-#define NH0 ACADOS_MPCC_NH0
-#define NPHIN ACADOS_MPCC_NPHIN
-#define NR ACADOS_MPCC_NR
+#include <acados/utils/print.h>
+#include <acados/utils/math.h>
+#include <acados_c/ocp_nlp_interface.h>
+#include <acados_c/external_function_interface.h>
+#include <blasfeo/include/blasfeo_d_aux_ext_dep.h>
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <vector>
 
 namespace mpcc
 {
-struct OptVariables;
-struct solverReturn;
 
-class AcadosInterface : public SolverInterface
+class AcadosInterface
 {
 public:
-  solverReturn solveMPC(
-    std::array<OptVariables, N + 1> &initialGuess, AcadosParameters parameter_,
-    const Bounds &bounds, const Cost &cost);
+  /**
+   * @brief Constructor
+   * @param bounds bounds
+   * @param config config
+   * @param costs costs
+   * @param dt delta time
+   *
+   */
+  AcadosInterface(const Bounds &bounds, const Config &config, const Cost &costs, double dt);
 
-  ~AcadosInterface() { std::cout << "Deleting Acados Interface" << std::endl; }
+  /**
+   * @brief Destructor
+   */
+  virtual ~AcadosInterface();
 
-private:
-  acados_mpcc_solver_capsule *acados_ocp_capsule;
-  double *new_time_steps = NULL;
-  int status;
+  /**
+   * @brief Main function to solve MPC problem
+   * @param initialGuess initial guess
+   * @param parameters parameters values to solve the problem
+   * @return solver return
+   */
+  solverReturn solveMPC(std::vector<OptVariables> &initialGuess, AcadosParameters parameters);
 
-  ocp_nlp_config *nlp_config;
-  ocp_nlp_dims *nlp_dims;
-  ocp_nlp_in *nlp_in;
-  ocp_nlp_out *nlp_out;
-  ocp_nlp_solver *nlp_solver;
-  void *nlp_opts;
+protected:
+  /**
+   * @brief Initialize MPC Acados interface
+   */
+  virtual void initMPC() = 0;
 
-  // initial condition
-  int idxbx0[NBX0];
+  /**
+   * @brief Set initial values for solving the problem
+   * @param initialGuess initial guess
+   */
+  virtual void setInitialValues(std::vector<OptVariables> &initialGuess) = 0;
 
-  double lbx0[NBX0];
-  double ubx0[NBX0];
+  /**
+   * @brief Set parameters values
+   * @param parameters acados parameters
+   */
+  virtual void setParameters(AcadosParameters parameters) = 0;
 
-  // initialization for state values
-  double x_init[NX];
-  double u0[NU];
+  /**
+   * @brief Solve MPC Problem
+   * @return solver return
+   */
+  virtual solverReturn solve() = 0;
 
-  // set parameters
-  double p[NP];
+  /**
+   * @brief Generate solution
+   */
+  virtual void generateSolution() = 0;
 
-  // prepare evaluation
-  int NTIMINGS = 1;
-  double min_time = 1e12;
-  double kkt_norm_inf;
-  double elapsed_time;
-  int sqp_iter;
+  /**
+   * @brief Clear solver interface
+   */
+  virtual void freeSolver() = 0;
 
-  double xtraj[NX * (N + 1)];
-  double utraj[NU * N];
+protected:
+  const Bounds d_bounds;
+  const Config d_config;
+  const Cost d_costs;
+  double d_dt;
 
-  // solve ocp in loop
-  int rti_phase = 0;
+  double *d_newTimeSteps;
+  int d_status;
 
-  void initMPC();
+  void *d_nlpOpts;
 
-  void setInit(const Bounds &bounds, const Cost &cost, std::array<OptVariables, N + 1> &initialGuess);
-  void setParam(AcadosParameters parameter_);
-  solverReturn Solve();
-  void printSol();
-  void getSol();
-  void freeSolver();
+  double d_minTime;
+  double d_kktNormInf;
+  int d_sqpIter;
+
+  double *d_xTraj;
+  double *d_uTraj;
+
+  void *d_acadosOcpCapsule;
+
+  void *d_nlpConfig;
+  void *d_nlpDims;
+  void *d_nlpIn;
+  void *d_nlpOut;
+  void *d_nlpSolver;
 };
 }  // namespace mpcc
-#endif  // MPCC_ACADOS_INTERFACE_H

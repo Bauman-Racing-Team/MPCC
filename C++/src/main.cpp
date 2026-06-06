@@ -29,7 +29,7 @@ using json = nlohmann::json;
 static const std::string AUTONOMOUS_VEHICLE = "brt9d"; // brt8d, brt9d, brtminid
 static const std::string TRACK = "FSG";
 
-static constexpr int SIM_ITERATIONS = 600; // [i] simulation iterations number
+static constexpr int SIM_ITERATIONS = 3000; // [i] simulation iterations number
 static constexpr double Ts = 0.05; // [s] MPCC computation dt
 
 int main()
@@ -60,14 +60,13 @@ int main()
   Config config(configPath);
   Cost cost(costPath);
 
-  MPC mpc(AUTONOMOUS_VEHICLE, bounds, config, cost, car, Ts, tire)
-  
+  MPC mpc(AUTONOMOUS_VEHICLE, bounds, config, cost, car, tire, Ts);
   mpc.setTrack(trackXY.X, trackXY.Y, trackXY.X_outer, trackXY.Y_outer, trackXY.X_inner, trackXY.Y_inner);
-  
+
   double yaw0 = std::atan2(trackXY.Y(1) - trackXY.Y(0), trackXY.X(1) - trackXY.X(0));
-  
-  State13 x0 = {trackXY.X(0),   trackXY.Y(0), yaw0, jsonConfig["v0"], 0., 0., 0., 0., 0., 0.,
-              jsonConfig["v0"], 0., 0.};
+
+  State13 x0 = {trackXY.X(0),   trackXY.Y(0), yaw0, 0., 0., 0., 0., 0., 0., 0.,
+              0., 0., 0.};
   
   Simulator simulator(car, tire, mpc.getTrack());
   
@@ -77,7 +76,7 @@ int main()
     std::cout << "MPC compute time: " << mpcSol.time_total << " ";
 
     // Use ODE integrator
-    x0 = simulator.simTimeStep(x0, mpcSol.u0, jsonConfig["Ts"]);
+    x0 = simulator.simTimeStep(x0, mpcSol.u0, Ts);
 
     log.push_back(mpcSol);
     std::cout << "MPC iter =  " << i + 1 << std::endl;
@@ -102,7 +101,7 @@ int main()
     meanTime += logI.time_total;
     if (logI.time_total > maxTime) maxTime = logI.time_total;
   }
-  std::cout << "mean nmpc time " << meanTime / double(jsonConfig["n_sim"]) << std::endl;
+  std::cout << "mean nmpc time " << meanTime / double(SIM_ITERATIONS) << std::endl;
   std::cout << "max nmpc time " << maxTime << std::endl;
 
   return 0;

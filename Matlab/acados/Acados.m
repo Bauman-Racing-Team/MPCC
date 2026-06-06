@@ -36,7 +36,7 @@ classdef Acados < handle
 
             obj.config = config;
             obj.parameters = parameters;
-            obj.ts = parameters.config.ts;
+            obj.ts = config.Ts;
             obj.car = parameters.car;
 
             obj.carModel = Model(obj.car,parameters.tire);
@@ -46,11 +46,11 @@ classdef Acados < handle
 
             obj.validInitialGuess = false;
 
-            obj.track.centerLine = ArcLengthSpline(config,parameters.mpcModel);
-            obj.track.outerBorder = ArcLengthSpline(config,parameters.mpcModel);
-            obj.track.innerBorder = ArcLengthSpline(config,parameters.mpcModel);
+            obj.track.centerLine = ArcLengthSpline(config,parameters.config);
+            obj.track.outerBorder = ArcLengthSpline(config,parameters.config);
+            obj.track.innerBorder = ArcLengthSpline(config,parameters.config);
 
-            obj.paramVec = zeros(18,obj.config.N+1);
+            obj.paramVec = zeros(18,obj.parameters.config.n+1);
         end
 
         function setTrack(obj,track)
@@ -129,7 +129,7 @@ classdef Acados < handle
 
         function initOcpModel(obj)
             obj.ocpModel.set('name','acados_mpcc');
-            obj.ocpModel.set('T', obj.config.N*obj.ts);
+            obj.ocpModel.set('T', obj.parameters.config.n*obj.ts);
 
             model = getModel(obj.parameters);
 
@@ -262,7 +262,7 @@ classdef Acados < handle
         end
 
         function setOCPOpts(obj)
-            obj.ocpOpts.set('param_scheme_N', obj.config.N);
+            obj.ocpOpts.set('param_scheme_N', obj.parameters.config.n);
             obj.ocpOpts.set('nlp_solver', 'sqp_rti'); % sqp, sqp_rti 
             obj.ocpOpts.set('nlp_solver_exact_hessian', 'false'); % false=gauss_newton, true=exact
             obj.ocpOpts.set('sim_method', 'erk'); % erk, irk, irk_gnsf
@@ -302,7 +302,7 @@ classdef Acados < handle
     
                 obj.ocp.set('init_x', obj.initialStateGuess);
                 obj.ocp.set('init_u', obj.initialControlGuess);
-                obj.ocp.set('init_pi', zeros(obj.config.NX, obj.config.N));
+                obj.ocp.set('init_pi', zeros(obj.config.NX, obj.parameters.config.n));
     
                 obj.ocp.solve();
     
@@ -348,25 +348,25 @@ classdef Acados < handle
         end
 
         function centers = getConstraintsCirclesCenters(obj)
-            centers = zeros(2,obj.config.N+1);
-            for i = 1:obj.config.N+1                
+            centers = zeros(2,obj.parameters.config.n+1);
+            for i = 1:obj.parameters.config.n+1                
                 centers(1,i) = obj.initialStateGuess(1,i);
                 centers(2,i) = obj.initialStateGuess(2,i);
             end
         end
 
         function slacks = getSlacks(obj)
-            slacks.upper = zeros(obj.config.NS,obj.config.N);
-            slacks.lower = zeros(obj.config.NS,obj.config.N);
+            slacks.upper = zeros(obj.config.NS,obj.parameters.config.n);
+            slacks.lower = zeros(obj.config.NS,obj.parameters.config.n);
 
-            for i = 1:obj.config.N-1
+            for i = 1:obj.parameters.config.n-1
                 slacks.upper(:,i) = obj.ocp.get('su',i);
                 slacks.lower(:,i) = obj.ocp.get('sl',i);
             end
         end
 
         function fillParametersVector(obj)
-            for i = 1:obj.config.N+1
+            for i = 1:obj.parameters.config.n+1
                 s0 = obj.initialStateGuess(7,i);
 
                 pos = obj.track.centerLine.getPosition(s0);
@@ -376,7 +376,7 @@ classdef Acados < handle
                 derivs = obj.track.centerLine.getDerivative(s0);
                 phiTrack = atan2(derivs(2), derivs(1));
                 
-                vRef = obj.parameters.mpcModel.vRef;
+                vRef = obj.parameters.config.vRef;
 
                 qC = obj.parameters.costs.qC;
                 qL = obj.parameters.costs.qL;
@@ -422,30 +422,30 @@ classdef Acados < handle
         end
 
         function updateInitialGuess(obj,x0)
-            obj.initialControlGuess(:,1:obj.config.N-1) = obj.initialControlGuess(:,2:obj.config.N);
-            obj.initialControlGuess(:,obj.config.N) = obj.initialControlGuess(:,obj.config.N-1);
+            obj.initialControlGuess(:,1:obj.parameters.config.n-1) = obj.initialControlGuess(:,2:obj.parameters.config.n);
+            obj.initialControlGuess(:,obj.parameters.config.n) = obj.initialControlGuess(:,obj.parameters.config.n-1);
             
             obj.initialStateGuess(:,1) = x0;
-            obj.initialStateGuess(:,2:obj.config.N) = obj.initialStateGuess(:,3:obj.config.N+1);
-            obj.initialStateGuess(:,obj.config.N+1) = full(obj.ode4(obj.initialStateGuess(:,obj.config.N),obj.initialControlGuess(:,obj.config.N)));
+            obj.initialStateGuess(:,2:obj.parameters.config.n) = obj.initialStateGuess(:,3:obj.parameters.config.n+1);
+            obj.initialStateGuess(:,obj.parameters.config.n+1) = full(obj.ode4(obj.initialStateGuess(:,obj.parameters.config.n),obj.initialControlGuess(:,obj.parameters.config.n)));
 
-            for i = 1:obj.config.N+1
-                obj.initialStateGuess(4,i) = max(obj.initialStateGuess(4,i),obj.parameters.mpcModel.vxMin);
-                obj.initialStateGuess(11,i) = max(obj.initialStateGuess(11,i),obj.parameters.mpcModel.vxMin);
+            for i = 1:obj.parameters.config.n+1
+                obj.initialStateGuess(4,i) = max(obj.initialStateGuess(4,i),obj.parameters.config.vxMin);
+                obj.initialStateGuess(11,i) = max(obj.initialStateGuess(11,i),obj.parameters.config.vxMin);
             end
 
             obj.unwrapInitialGuess();
         end
 
         function generateNewInitialGuess(obj,x0)
-            obj.initialStateGuess = zeros(obj.config.NX,obj.config.N+1);
-            obj.initialControlGuess = zeros(obj.config.NU,obj.config.N);
+            obj.initialStateGuess = zeros(obj.config.NX,obj.parameters.config.n+1);
+            obj.initialControlGuess = zeros(obj.config.NU,obj.parameters.config.n);
 
             obj.initialStateGuess(:,1) = x0;
-            obj.initialStateGuess(obj.config.siIndex.vx,1:obj.config.N+1) = max(x0(4),obj.parameters.mpcModel.vxMin);
-            obj.initialStateGuess(obj.config.siIndex.vs,1:obj.config.N+1) = max(x0(4),obj.parameters.mpcModel.vxMin);
+            obj.initialStateGuess(obj.config.siIndex.vx,1:obj.parameters.config.n+1) = max(x0(4),obj.parameters.config.vxMin);
+            obj.initialStateGuess(obj.config.siIndex.vs,1:obj.parameters.config.n+1) = max(x0(4),obj.parameters.config.vxMin);
 
-            for i = 2:obj.config.N+1
+            for i = 2:obj.parameters.config.n+1
               obj.initialStateGuess(obj.config.siIndex.s,i) =...
                 obj.initialStateGuess(obj.config.siIndex.s,i - 1) + obj.ts * obj.initialStateGuess(obj.config.siIndex.vs,i - 1);
               trackPosI = obj.track.centerLine.getPosition(obj.initialStateGuess(obj.config.siIndex.s,i));
@@ -460,7 +460,7 @@ classdef Acados < handle
 
         function unwrapInitialGuess(obj)
             centerLineLength = obj.track.centerLine.getLength();
-            for i = 2:obj.config.N+1
+            for i = 2:obj.parameters.config.n+1
               if (obj.initialStateGuess(obj.config.siIndex.yaw,i) - obj.initialStateGuess(obj.config.siIndex.yaw,i - 1)) < -pi
                 obj.initialStateGuess(obj.config.siIndex.yaw,i) = obj.initialStateGuess(obj.config.siIndex.yaw,i) + 2.0 * pi;
               elseif (obj.initialStateGuess(obj.config.siIndex.yaw,i) - obj.initialStateGuess(obj.config.siIndex.yaw,i - 1)) > pi

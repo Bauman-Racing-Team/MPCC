@@ -16,24 +16,42 @@
 
 #include "mpc.hpp"
 
+#include "Interfaces/acados_interface_brt8d.hpp"
+#include "Interfaces/acados_interface_brt9d.hpp"
+#include "Interfaces/acados_interface_brtminid.hpp"
+
 namespace mpcc
 {
   MPC::MPC(const std::string &autonomousVehicle, const Bounds &bounds, const Config &config, const Cost &cost, const Car &car, const Tire &tire, double ts)
       : d_ts(ts),
-        d_validInitialGuess(false),
-        d_solverInterfacePtr(std::make_unique<AcadosInterface>()),
         d_bounds(bounds),
         d_config(config),
         d_cost(cost),
         d_car(car),
-        d_models(car, tire)
+        d_models(car, tire),
+        d_validInitialGuess(false),
+        d_parameters(Eigen::MatrixXd(NP, config.n + 1)),
+        d_initialGuess(config.n + 1),
+        d_centerLine(config),
+        d_outerBorder(config),
+        d_innerBorder(config)
   {
+    if (autonomousVehicle == "brt8d") {
+    d_solverInterfacePtr = std::make_unique<AcadosInterfaceBrt8D>(bounds, config, cost, d_ts);
+    } else if (autonomousVehicle == "brt9d") {
+      d_solverInterfacePtr = std::make_unique<AcadosInterfaceBrt9D>(bounds, config, cost, d_ts);
+    } else if (autonomousVehicle == "brtminid") {
+      d_solverInterfacePtr = std::make_unique<AcadosInterfaceBrtMiniD>(bounds, config, cost, d_ts);
+    } else {
+      throw std::runtime_error(
+        "Unknown autonomous vehicle name, can not create acados interface for it");
+    }
   }
 
   void MPC::fillParametersVector()
   {
     d_parameters.setZero();
-    for (int timeStep = 0; timeStep <= N; timeStep++)
+    for (int timeStep = 0; timeStep <= d_config.n; timeStep++)
     {
       double carX = d_initialGuess[timeStep].xk(xIdx);
       double carY = d_initialGuess[timeStep].xk(yIdx);
@@ -49,7 +67,7 @@ namespace mpcc
                                                                std::pow((outerBorderPosI(0) - trackPosI(0)),2) + std::pow((innerBorderPosI(1) - trackPosI(1)),2),
                                                                std::pow((innerBorderPosI(0) - trackPosI(0)),2) + std::pow((innerBorderPosI(1) - trackPosI(1)),2)}));
      
-      double sqareOfMinDistFromBorderToCar = std::pow((minDistFromBorderToCarCenter - d_config.safetyDistance - d_car.carW/2),2); 
+      double borderToCarMinDistSqr = std::pow((minDistFromBorderToCarCenter - d_config.safetyDistance - d_car.carW/2),2); 
 
       d_parameters(xTrackP, timeStep) = trackPosI(0);
       d_parameters(yTrackP, timeStep) = trackPosI(1);
@@ -63,24 +81,24 @@ namespace mpcc
       d_parameters(rdSteeringAngleP, timeStep) = d_cost.rdSteeringAngle;
       d_parameters(rdBrakesP, timeStep) = d_cost.rdBrakes;
       d_parameters(rdVsP, timeStep) = d_cost.rdVs;
-      d_parameters(sqareOfMinDistFromBorderToCarP, timeStep) = sqareOfMinDistFromBorderToCar;
+      d_parameters(borderToCarMinDistSqrP, timeStep) = borderToCarMinDistSqr;
     }
   }
 
   void MPC::updateInitialGuess(const State &x0)
   {
-    for (int i = 1; i < N; i++)
+    for (int i = 1; i < d_config.n; i++)
       d_initialGuess[i - 1].uk = d_initialGuess[i].uk;
-    d_initialGuess[N - 1].uk = d_initialGuess[N - 2].uk;
+    d_initialGuess[d_config.n - 1].uk = d_initialGuess[d_config.n - 2].uk;
 
     d_initialGuess[0].xk = x0;
-    for (int i = 1; i < N; i++)
+    for (int i = 1; i < d_config.n; i++)
       d_initialGuess[i].xk = d_initialGuess[i + 1].xk;
 
-    d_initialGuess[N].xk = d_models.ode4(d_initialGuess[N - 1].xk, d_initialGuess[N - 1].uk, d_ts, std::bind(&Models::calculateSimpleCombinedModelDerivatives, &d_models, std::placeholders::_1, std::placeholders::_2));
-    d_initialGuess[N].uk = Input::Zero();
+    d_initialGuess[d_config.n].xk = d_models.ode4(d_initialGuess[d_config.n - 1].xk, d_initialGuess[d_config.n - 1].uk, d_ts, std::bind(&Models::calculateSimpleCombinedModelDerivatives, &d_models, std::placeholders::_1, std::placeholders::_2));
+    d_initialGuess[d_config.n].uk = Input::Zero();
 
-    for (int i = 0; i < N + 1; i++)
+    for (int i = 0; i < d_config.n + 1; i++)
     {
       vxVsNonZero(d_initialGuess[i].xk, d_config.vxMin);
     }
@@ -90,7 +108,7 @@ namespace mpcc
   void MPC::unwrapInitialGuess()
   {
     double centerLineLength = d_centerLine.getLength();
-    for (int i = 1; i <= N; i++)
+    for (int i = 1; i <= d_config.n; i++)
     {
       if ((d_initialGuess[i].xk(yawIdx) - d_initialGuess[i - 1].xk(yawIdx)) < -M_PI)
       {
@@ -114,7 +132,7 @@ namespace mpcc
     vxVsNonZero(d_initialGuess[0].xk, d_config.vxMin);
     d_initialGuess[0].uk.setZero();
 
-    for (int i = 1; i <= N; i++)
+    for (int i = 1; i <= d_config.n; i++)
     {
       d_initialGuess[i].xk = State::Zero();
       d_initialGuess[i].uk = Input::Zero();
@@ -141,6 +159,8 @@ namespace mpcc
     int nNoSolvesSqp = 0;
     int nNoSolvesSqpMax = 0;
 
+    std::vector<OptVariables> tempGuess;
+
     while (nNoSolvesSqpMax < d_config.nSqp)
     {
       if (d_validInitialGuess)
@@ -150,18 +170,22 @@ namespace mpcc
 
       fillParametersVector();
 
-      solverReturn mpcSol = d_solverInterfacePtr->solveMPC(d_initialGuess, d_parameters, d_bounds, d_cost);
+      solverReturn mpcSol = d_solverInterfacePtr->solveMPC(d_initialGuess, d_parameters);
 
       solver_status = mpcSol.status;
 
+      if (solver_status != 0){
+        throw std::runtime_error("solver_status: " + std::to_string(solver_status));
+      }
+
       if (solver_status == 0)
       {
-        d_tempGuess = mpcSol.mpcHorizon;
+        tempGuess = mpcSol.mpcHorizon;
         break;
       }
       if (solver_status == 2 || solver_status == 3)
       {
-        d_tempGuess = mpcSol.mpcHorizon;
+        tempGuess = mpcSol.mpcHorizon;
       }
       if (solver_status != 0)
       {
@@ -177,7 +201,7 @@ namespace mpcc
     }
 
     if (nNoSolvesSqpMax < d_config.nSqp)
-      d_initialGuess = d_tempGuess;
+      d_initialGuess = tempGuess;
 
     auto t2 = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> time_span =

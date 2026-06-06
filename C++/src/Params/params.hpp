@@ -37,7 +37,6 @@ public:
     double vRef;
     double nSqp;
     double nReset;
-    double sqpMixing;
 };
 
 class Cost{
@@ -284,7 +283,7 @@ public:
   double Cy;
 };
 
-using AcadosParameters = Eigen::Matrix<double, NP, N + 1>;
+using AcadosParameters = Eigen::MatrixXd;
 
 enum {
     xTrackP = 0,
@@ -299,7 +298,7 @@ enum {
     rdSteeringAngleP = 9,
     rdBrakesP = 10,
     rdVsP = 11,
-    sqareOfMinDistFromBorderToCarP = 12
+    borderToCarMinDistSqrP = 12
 };
 
 
