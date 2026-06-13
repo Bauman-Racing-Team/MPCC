@@ -3,7 +3,7 @@ function angles(obj)
     f.Name = 'angles';
     f.NumberTitle = 'off';
 
-    states = zeros(obj.config.NX,obj.config.N+1,length(obj.log));
+    states = zeros(obj.config.NX,obj.parameters.config.n+1,length(obj.log));
 
     for i = 1:length(obj.log)
         states(:,:,i) = obj.log(i).mpcHorizon.states;
@@ -17,7 +17,7 @@ function angles(obj)
     hold on;
     
     for i = 1:length(obj.log)
-        plot(steeringAngle,1:obj.config.N+1,states(9,:,i));
+        plot(steeringAngle,1:obj.parameters.config.n+1,states(9,:,i));
     end
 
     ylim padded;
@@ -33,9 +33,9 @@ function angles(obj)
     hold on;
     
     for i = 1:length(obj.log)
-        sideSlipAngles = zeros(obj.config.N+1,1);
+        sideSlipAngles = zeros(obj.parameters.config.n+1,1);
 
-        for j = 1:obj.config.N+1
+        for j = 1:obj.parameters.config.n+1
 
             vx = states(4,j,i);
             vy = states(5,j,i);
@@ -43,7 +43,7 @@ function angles(obj)
             sideSlipAngles(j) = atan2(vy,vx);
         end
 
-        plot(sideSlipAngle,1:obj.config.N+1,sideSlipAngles);
+        plot(sideSlipAngle,1:obj.parameters.config.n+1,sideSlipAngles);
     end
 
     ylim padded;
@@ -57,9 +57,9 @@ function angles(obj)
     hold on;
     
     for i = 1:length(obj.log)
-        kinematicSideSlipAngles = zeros(obj.config.N+1,1);
+        kinematicSideSlipAngles = zeros(obj.parameters.config.n+1,1);
 
-        for j = 1:obj.config.N+1
+        for j = 1:obj.parameters.config.n+1
 
             vx = states(4,j,i);
             l = obj.parameters.car.lf+obj.parameters.car.lr;
@@ -68,7 +68,7 @@ function angles(obj)
             kinematicSideSlipAngles(j) = vx*tan(steeringAngle)/l;
         end
 
-        plot(kinematicSideSlipAngle,1:obj.config.N+1,kinematicSideSlipAngles);
+        plot(kinematicSideSlipAngle,1:obj.parameters.config.n+1,kinematicSideSlipAngles);
     end
 
     ylim padded;
@@ -82,9 +82,9 @@ function angles(obj)
     hold on;
     
     for i = 1:length(obj.log)
-        frontSlipAngles = zeros(obj.config.N+1,1);
+        frontSlipAngles = zeros(obj.parameters.config.n+1,1);
 
-        for j = 1:obj.config.N+1
+        for j = 1:obj.parameters.config.n+1
 
             vx = states(4,j,i);
             vy = states(5,j,i);
@@ -96,12 +96,12 @@ function angles(obj)
             frontSlipAngles(j) = atan2(vy+r*lf,vx)-steeringAngle;
         end
 
-        plot(frontSlipAngle,1:obj.config.N+1,frontSlipAngles);
+        plot(frontSlipAngle,1:obj.parameters.config.n+1,frontSlipAngles);
     end
 
     ylim padded;
-    yline(frontSlipAngle,-obj.parameters.mpcModel.maxAlpha,'--red','minAlpha'); % lower bound
-    yline(frontSlipAngle,obj.parameters.mpcModel.maxAlpha,'--red','maxAlpha'); % upper bound
+    yline(frontSlipAngle,obj.parameters.bounds.lowerConstraintBounds.maxAlphaFrontL,'--red','maxAlphaFrontL'); % lower bound
+    yline(frontSlipAngle,obj.parameters.bounds.upperConstraintBounds.maxAlphaFrontU,'--red','maxAlphaFrontU'); % upper bound
     
     title(frontSlipAngle,'frontSlipAngle');
     ylabel(frontSlipAngle,'frontSlipAngle');
@@ -112,9 +112,9 @@ function angles(obj)
     hold on;
     
     for i = 1:length(obj.log)
-        rearSlipAngles = zeros(obj.config.N+1,1);
+        rearSlipAngles = zeros(obj.parameters.config.n+1,1);
 
-        for j = 1:obj.config.N+1
+        for j = 1:obj.parameters.config.n+1
 
             vx = states(4,j,i);
             vy = states(5,j,i);
@@ -125,12 +125,12 @@ function angles(obj)
             rearSlipAngles(j) = atan2(vy-r*lr,vx);
         end
 
-        plot(rearSlipAngle,1:obj.config.N+1,rearSlipAngles);
+        plot(rearSlipAngle,1:obj.parameters.config.n+1,rearSlipAngles);
     end
 
     ylim padded;
-    yline(rearSlipAngle,-obj.parameters.mpcModel.maxAlpha,'--red','minAlpha'); % lower bound
-    yline(rearSlipAngle,obj.parameters.mpcModel.maxAlpha,'--red','maxAlpha'); % upper bound
+    yline(rearSlipAngle,obj.parameters.bounds.lowerConstraintBounds.maxAlphaRearL,'--red','maxAlphaRearL'); % lower bound
+    yline(rearSlipAngle,obj.parameters.bounds.upperConstraintBounds.maxAlphaRearU,'--red','maxAlphaRearU'); % upper bound
     
     title(rearSlipAngle,'rearSlipAngle');
     ylabel(rearSlipAngle,'rearSlipAngle');

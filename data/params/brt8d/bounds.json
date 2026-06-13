@@ -3,14 +3,14 @@
       "xL":-3000,
       "yL":-3000,
       "yawL": -10,
-      "vxL": 0.0,
+      "vxL": 1.0,
       "vyL": -10.0,
       "rL": -2.5,
       "sL": 0.0,
       "throttleL": 0.0,
       "steeringAngleL": -0.37,
       "brakesL": 0.0,
-      "vsL": 0.0
+      "vsL": 1.0
     },
 
     "upperStateBounds":{
@@ -44,7 +44,8 @@
     "lowerConstraintBounds":{
       "maxAlphaFrontL": -0.06,
       "maxAlphaRearL": -0.06,
-      "rOutL": -9.0,
+      "trackOuterL": 0.0,
+      "trackInnerL": -10.0,
       "ellipseFrontL": 0,
       "ellipseRearL": 0,
       "lonControlL": 0
@@ -53,7 +54,8 @@
     "upperConstraintBounds":{
       "maxAlphaFrontU": 0.06,
       "maxAlphaRearU": 0.06,
-      "rOutU": 0.0,
+      "trackOuterU": 10.0,
+      "trackInnerU": 0.0,
       "ellipseFrontU": 1,
       "ellipseRearU": 1,
       "lonControlU": 0

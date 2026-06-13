@@ -3,7 +3,7 @@ function boundedInputs(obj)
     f.Name = 'bounded inputs';
     f.NumberTitle = 'off';
 
-    inputs = zeros(obj.config.NU,obj.config.N,length(obj.log));
+    inputs = zeros(obj.config.NU,obj.parameters.config.n,length(obj.log));
 
     for i = 1:length(obj.log)
         inputs(:,:,i) = obj.log(i).mpcHorizon.inputs;
@@ -17,7 +17,7 @@ function boundedInputs(obj)
     hold on;
     
     for i = 1:length(obj.log)
-        plot(dThrottle,1:obj.config.N,inputs(1,:,i));
+        plot(dThrottle,1:obj.parameters.config.n,inputs(1,:,i));
     end
     
     ylim padded;
@@ -33,7 +33,7 @@ function boundedInputs(obj)
     hold on;
     
     for i = 1:length(obj.log)
-        plot(dSteeringAngle,1:obj.config.N,inputs(2,:,i));
+        plot(dSteeringAngle,1:obj.parameters.config.n,inputs(2,:,i));
     end
 
     ylim padded;
@@ -49,7 +49,7 @@ function boundedInputs(obj)
     hold on;
     
     for i = 1:length(obj.log)
-        plot(dBrakes,1:obj.config.N,inputs(3,:,i));
+        plot(dBrakes,1:obj.parameters.config.n,inputs(3,:,i));
     end
 
     ylim padded;
@@ -65,7 +65,7 @@ function boundedInputs(obj)
     hold on;
     
     for i = 1:length(obj.log)
-        plot(dVs,1:obj.config.N,inputs(4,:,i));
+        plot(dVs,1:obj.parameters.config.n,inputs(4,:,i));
     end
 
     ylim padded;

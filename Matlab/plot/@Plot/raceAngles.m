@@ -81,8 +81,8 @@ function raceAngles(obj)
     plot(frontSlipAngle,1:length(obj.log),frontSlipAngles);
 
     ylim padded;
-    yline(frontSlipAngle,-obj.parameters.mpcModel.maxAlpha,'--red','minAlpha'); % lower bound
-    yline(frontSlipAngle,obj.parameters.mpcModel.maxAlpha,'--red','maxAlpha'); % upper bound
+    yline(frontSlipAngle,obj.parameters.bounds.lowerConstraintBounds.maxAlphaFrontL,'--red','maxAlphaFrontL'); % lower bound
+    yline(frontSlipAngle,obj.parameters.bounds.upperConstraintBounds.maxAlphaFrontU,'--red','maxAlphaFrontU'); % upper bound
     
     title(frontSlipAngle,'frontSlipAngle');
     ylabel(frontSlipAngle,'frontSlipAngle');
@@ -104,8 +104,8 @@ function raceAngles(obj)
     plot(rearSlipAngle,1:length(obj.log),rearSlipAngles);
 
     ylim padded;
-    yline(rearSlipAngle,-obj.parameters.mpcModel.maxAlpha,'--red','minAlpha'); % lower bound
-    yline(rearSlipAngle,obj.parameters.mpcModel.maxAlpha,'--red','maxAlpha'); % upper bound
+    yline(rearSlipAngle,obj.parameters.bounds.lowerConstraintBounds.maxAlphaRearL,'--red','maxAlphaRearL'); % lower bound
+    yline(rearSlipAngle,obj.parameters.bounds.upperConstraintBounds.maxAlphaRearU,'--red','maxAlphaRearU'); % upper bound
     
     title(rearSlipAngle,'rearSlipAngle');
     ylabel(rearSlipAngle,'rearSlipAngle');

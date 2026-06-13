@@ -9,14 +9,14 @@ function carPositions(obj)
     plot(obj.track.xInner,obj.track.yInner,'black');
     plot(obj.track.x,obj.track.y,'r');
 
-    states = zeros(obj.config.NX,obj.config.N+1,length(obj.log));
+    states = zeros(obj.config.NX,obj.parameters.config.n+1,length(obj.log));
 
     for i = 1:length(obj.log)
         states(:,:,i) = obj.log(i).mpcHorizon.states;
     end
 
     for i = 1:length(obj.log)
-        plot(states(1,1:obj.config.N-10,i),states(2,1:obj.config.N-10,i));
+        plot(states(1,1:obj.parameters.config.n-10,i),states(2,1:obj.parameters.config.n-10,i));
     end
 
 end

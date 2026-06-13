@@ -3,7 +3,7 @@ function boundedStates(obj)
     f.Name = 'bounded states';
     f.NumberTitle = 'off';
 
-    states = zeros(obj.config.NX,obj.config.N+1,length(obj.log));
+    states = zeros(obj.config.NX,obj.parameters.config.n+1,length(obj.log));
 
     for i = 1:length(obj.log)
         states(:,:,i) = obj.log(i).mpcHorizon.states;
@@ -17,7 +17,7 @@ function boundedStates(obj)
     hold on;
 
     for i = 1:length(obj.log)
-        plot(1:obj.config.N+1,states(3,:,i));
+        plot(1:obj.parameters.config.n+1,states(3,:,i));
     end
 
     ylim padded;
@@ -33,7 +33,7 @@ function boundedStates(obj)
     hold on;
     
     for i = 1:length(obj.log)
-        plot(vx,1:obj.config.N+1,states(4,:,i));
+        plot(vx,1:obj.parameters.config.n+1,states(4,:,i));
     end
 
     ylim padded;
@@ -49,7 +49,7 @@ function boundedStates(obj)
     hold on;
     
     for i = 1:length(obj.log)
-        plot(vy,1:obj.config.N+1,states(5,:,i));
+        plot(vy,1:obj.parameters.config.n+1,states(5,:,i));
     end
 
     ylim padded;
@@ -65,7 +65,7 @@ function boundedStates(obj)
     hold on;
     
     for i = 1:length(obj.log)
-        plot(r,1:obj.config.N+1,states(6,:,i));
+        plot(r,1:obj.parameters.config.n+1,states(6,:,i));
     end
 
     ylim padded;
@@ -81,7 +81,7 @@ function boundedStates(obj)
     hold on;
     
     for i = 1:length(obj.log)
-        plot(s,1:obj.config.N+1,states(7,:,i));
+        plot(s,1:obj.parameters.config.n+1,states(7,:,i));
     end
 
     ylim padded;
@@ -97,7 +97,7 @@ function boundedStates(obj)
     hold on;
     
     for i = 1:length(obj.log)
-        plot(throttle,1:obj.config.N+1,states(8,:,i));
+        plot(throttle,1:obj.parameters.config.n+1,states(8,:,i));
     end
 
     ylim padded;
@@ -113,7 +113,7 @@ function boundedStates(obj)
     hold on;
     
     for i = 1:length(obj.log)
-        plot(steeringAngle,1:obj.config.N+1,states(9,:,i));
+        plot(steeringAngle,1:obj.parameters.config.n+1,states(9,:,i));
     end
 
     ylim padded;
@@ -129,7 +129,7 @@ function boundedStates(obj)
     hold on;
     
     for i = 1:length(obj.log)
-        plot(brakes,1:obj.config.N+1,states(10,:,i));
+        plot(brakes,1:obj.parameters.config.n+1,states(10,:,i));
     end
 
     ylim padded;
@@ -145,7 +145,7 @@ function boundedStates(obj)
     hold on;
     
     for i = 1:length(obj.log)
-        plot(vs,1:obj.config.N+1,states(11,:,i));
+        plot(vs,1:obj.parameters.config.n+1,states(11,:,i));
     end
 
     ylim padded;

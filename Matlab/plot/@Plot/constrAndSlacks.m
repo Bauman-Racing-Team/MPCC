@@ -3,7 +3,7 @@ function constrAndSlacks(obj)
     f.Name = 'costs and slacks';
     f.NumberTitle = 'off';
 
-    slacks = zeros(2*obj.config.NS,obj.config.N,length(obj.log)+1); % structure: [su; ... ; su; sl; ... ; sl]
+    slacks = zeros(2*obj.config.NS,obj.parameters.config.n,length(obj.log)+1); % structure: [su; ... ; su; sl; ... ; sl]
 
     for i = 1:length(obj.log)
         slacks(1:obj.config.NS,:,i+1) = obj.log(i).mpcHorizon.slacks.upper;
@@ -121,10 +121,12 @@ function constrAndSlacks(obj)
     plot(frontSlipAngle,1:length(obj.log),frontSlipAngles);
     hold on;
     ylim padded;
-    yline(frontSlipAngle,-obj.parameters.mpcModel.maxAlpha,'--red','minAlpha'); % lower bound
-    yline(frontSlipAngle,obj.parameters.mpcModel.maxAlpha,'--red','maxAlpha'); % upper bound
-    plot(slacks1+obj.parameters.mpcModel.maxAlpha)
-    plot(-slacks2-obj.parameters.mpcModel.maxAlpha)   
+
+    yline(frontSlipAngle,obj.parameters.bounds.lowerConstraintBounds.maxAlphaFrontL,'--red','maxAlphaFrontL'); % lower bound
+    yline(frontSlipAngle,obj.parameters.bounds.upperConstraintBounds.maxAlphaFrontU,'--red','maxAlpha'); % upper bound
+
+    plot(-slacks2+obj.parameters.bounds.lowerConstraintBounds.maxAlphaFrontL)
+    plot(slacks1+obj.parameters.bounds.upperConstraintBounds.maxAlphaFrontU)
 
     title(frontSlipAngle,'frontSlipAngle');
     ylabel(frontSlipAngle,'frontSlipAngle');
@@ -146,10 +148,12 @@ function constrAndSlacks(obj)
     plot(rearSlipAngle,1:length(obj.log),rearSlipAngles);
     hold on;
     ylim padded;
-    yline(rearSlipAngle,-obj.parameters.mpcModel.maxAlpha,'--red','minAlpha'); % lower bound
-    yline(rearSlipAngle,obj.parameters.mpcModel.maxAlpha,'--red','maxAlpha'); % upper bound
-    plot(slacks3+obj.parameters.mpcModel.maxAlpha)
-    plot(-slacks4-obj.parameters.mpcModel.maxAlpha)   
+    
+    yline(rearSlipAngle,obj.parameters.bounds.lowerConstraintBounds.maxAlphaRearL,'--red','maxAlphaRearL'); % lower bound
+    yline(rearSlipAngle,obj.parameters.bounds.upperConstraintBounds.maxAlphaRearU,'--red','maxAlphaRearU'); % upper bound
+ 
+    plot(-slacks4+obj.parameters.bounds.lowerConstraintBounds.maxAlphaRearL)
+    plot(slacks3+obj.parameters.bounds.upperConstraintBounds.maxAlphaRearU)   
     
     title(rearSlipAngle,'rearSlipAngle');
     ylabel(rearSlipAngle,'rearSlipAngle');

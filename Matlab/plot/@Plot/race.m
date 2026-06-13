@@ -14,18 +14,10 @@ function race(obj)
         states(:,i) = obj.log(i).mpcHorizon.states(:,1);
     end
 
-    horizonsPositions = zeros(2,obj.config.N+1,length(obj.log));
+    horizonsPositions = zeros(2,obj.parameters.config.n+1,length(obj.log));
 
     for i = 1:length(obj.log)
         horizonsPositions(:,:,i) = obj.log(i).mpcHorizon.states(1:2,:);
-    end
-
-    circlesCenters = zeros(2,obj.config.N+1,length(obj.log));
-    circlesRadiuses = zeros(obj.config.N+1,length(obj.log));
-
-    for i = 1:length(obj.log)
-        circlesCenters(:,:,i) = obj.log(i).circlesCenters(1:2,:);
-        circlesRadiuses(:,i) = obj.log(i).minDistsFromBorderToCarCenter(:);
     end
 
     bordersCoordinates = zeros(length(obj.log), 4);
@@ -39,14 +31,13 @@ function race(obj)
     for i = 1:length(obj.log)
         carBox = plotCarBox(states(:,i),obj.parameters.car.carW,obj.parameters.car.carL);
         horizonPositions = plotHorizonPositions(horizonsPositions(:,:,i));
-        circles = plotCircleConstraint(circlesCenters(:,:,i),circlesRadiuses(:,i));
         pause(0.05)
         %exportgraphics(gca,"race_FSG_track.gif","Append",true);
         color = colors(mod(i,length(colors))+1);
         circle1 = plotCircle([bordersCoordinates(i, 1), bordersCoordinates(i, 2)], 0.1, color);
         circle2 = plotCircle([bordersCoordinates(i, 3), bordersCoordinates(i, 4)], 0.1, color);
         delete(horizonPositions);
-        delete(circles);
+        delete(carBox);
     end
 
     plot(states(1,:),states(2,:),"green");
@@ -69,21 +60,6 @@ end
 
 function horizonPositions = plotHorizonPositions(horizonsPositions)
     horizonPositions = plot(horizonsPositions(1,:),horizonsPositions(2,:),'red');
-end
-
-function circles = plotCircleConstraint(circleCenters,radiuses)
-    circles = zeros(1,length(circleCenters));
-    theta = linspace(0,2*pi);
-
-    for i = 1:length(circleCenters)
-        xc = circleCenters(1,i);
-        yc = circleCenters(2,i);
-
-        x = radiuses(i)*cos(theta)+xc;
-        y = radiuses(i)*sin(theta)+yc;
-
-        circles(1,i) = plot(x,y,'magenta');
-    end
 end
 
 function circle = plotCircle(circleCenter, r, color)

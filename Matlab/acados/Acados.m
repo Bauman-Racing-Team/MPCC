@@ -50,7 +50,7 @@ classdef Acados < handle
             obj.track.outerBorder = ArcLengthSpline(config,parameters.config);
             obj.track.innerBorder = ArcLengthSpline(config,parameters.config);
 
-            obj.paramVec = zeros(18,obj.parameters.config.n+1);
+            obj.paramVec = zeros(16,obj.parameters.config.n+1);
         end
 
         function setTrack(obj,track)
@@ -115,6 +115,19 @@ classdef Acados < handle
 
             obj.track.outerBorder.updateSpline(outerPerpX,outerPerpY,centerLine.s);
             obj.track.innerBorder.updateSpline(innerPerpX,innerPerpY,centerLine.s);
+
+            obj.track.distToOuter = zeros(1, nPts);
+            obj.track.distToInner = zeros(1, nPts);
+
+            for idx = 1:nPts
+                s = centerLine.s(idx);
+                centerPoint = obj.track.centerLine.getPosition(s);
+                outerPoint = obj.track.outerBorder.getPosition(s);
+                innerPoint = obj.track.innerBorder.getPosition(s);
+
+                obj.track.distToOuter(idx) = hypot(outerPoint(1) - centerPoint(1), outerPoint(2) - centerPoint(2));
+                obj.track.distToInner(idx) = hypot(innerPoint(1) - centerPoint(1), innerPoint(2) - centerPoint(2));
+            end
         end
 
         function track = getTrack(obj)
@@ -242,8 +255,11 @@ classdef Acados < handle
             constr_uh = [constr_uh,obj.parameters.bounds.upperConstraintBounds.maxAlphaRearU];
 
             % track constraint bounds
-            constr_lh = [constr_lh, obj.parameters.bounds.lowerConstraintBounds.rOutL]; %(9 is 3^2 if max track width is 6 [m])
-            constr_uh = [constr_uh, obj.parameters.bounds.upperConstraintBounds.rOutU];
+            constr_lh = [constr_lh, obj.parameters.bounds.lowerConstraintBounds.trackOuterL];
+            constr_uh = [constr_uh, obj.parameters.bounds.upperConstraintBounds.trackOuterU];
+
+            constr_lh = [constr_lh, obj.parameters.bounds.lowerConstraintBounds.trackInnerL];
+            constr_uh = [constr_uh, obj.parameters.bounds.upperConstraintBounds.trackInnerU];
 
             % front wheels friction ellipse constraint bounds
             constr_lh = [constr_lh, obj.parameters.bounds.lowerConstraintBounds.ellipseFrontL];
@@ -342,8 +358,7 @@ classdef Acados < handle
                 sol.solverStatus = status;
                 sol.cost = obj.ocp.get_cost;
                 sol.circlesCenters = obj.getConstraintsCirclesCenters();
-                sol.minDistsFromBorderToCarCenter = obj.paramVec(18,:);
-                sol.bordersCoordinates = [obj.paramVec(14,1), obj.paramVec(15,1), obj.paramVec(16,1), obj.paramVec(17,1)];
+                sol.bordersCoordinates = [obj.paramVec(13,1), obj.paramVec(14,1), obj.paramVec(15,1), obj.paramVec(16,1)];
             end
         end
 
@@ -394,30 +409,19 @@ classdef Acados < handle
                 rightBorder = obj.track.innerBorder.getPosition(s0);
                 rightBorderX = rightBorder(1);
                 rightBorderY = rightBorder(2);
-
-                carX = obj.initialStateGuess(1,i);
-                carY = obj.initialStateGuess(2,i);
-
-                minDistFromBorderToCarCenter = sqrt(min([(leftBorderX - carX)^2 + (leftBorderY - carY)^2, ...
-                                                (rightBorderX - carX)^2 + (rightBorderY - carY)^2, ...
-                                                (leftBorderX - xTrack)^2 + (leftBorderY - yTrack)^2, ...
-                                                (rightBorderX - xTrack)^2 + (rightBorderY - yTrack)^2]));
                 
-                sqareOfMinDistFromBorderToCar = (minDistFromBorderToCarCenter - obj.parameters.mpcModel.safetyDistance - obj.parameters.car.carW/2)^2;               
                 obj.ocp.set('p',[xTrack;yTrack;phiTrack;s0;vRef; ...
                                  qC;qL;qVs;rdThrottle;rdSteeringAngle; ...
                                  rdBrakes;rdVs; ...
-                                 sqareOfMinDistFromBorderToCar],i-1);
+                                 leftBorderX;leftBorderY;rightBorderX;rightBorderY],i-1);
 
                 obj.paramVec(:,i) = [xTrack;yTrack;phiTrack;s0;vRef; ...
                                      qC;qL;qVs;rdThrottle;rdSteeringAngle; ...
                                      rdBrakes;rdVs; ...
-                                     sqareOfMinDistFromBorderToCar; ...
                                      leftBorderX; ...
                                      leftBorderY; ...
                                      rightBorderX; ...
-                                     rightBorderY; ...
-                                     minDistFromBorderToCarCenter];                              
+                                     rightBorderY];                              
             end            
         end
 

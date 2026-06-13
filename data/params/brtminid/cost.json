@@ -10,7 +10,7 @@
 
     "scQuadAlphaFront": 1E4,
     "scQuadAlphaRear": 1E4,
-    "scQuadROut": 1E3,
+    "scQuadROut": 1E5,
     "scQuadEllipseFront": 1E2,
     "scQuadEllipseRear": 1E2,
     "scQuadLonControl": 1E7,

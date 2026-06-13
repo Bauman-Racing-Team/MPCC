@@ -3,7 +3,7 @@ function costsAndSlacks(obj)
     f.Name = 'costs and slacks';
     f.NumberTitle = 'off';
 
-    slacks = zeros(2*obj.config.NS,obj.config.N,length(obj.log)); % structure: [su; ... ; su; sl; ... ; sl]
+    slacks = zeros(2*obj.config.NS,obj.parameters.config.n,length(obj.log)); % structure: [su; ... ; su; sl; ... ; sl]
 
     for i = 1:length(obj.log)
         slacks(1:obj.config.NS,:,i) = obj.log(i).mpcHorizon.slacks.upper;
@@ -37,7 +37,7 @@ function costsAndSlacks(obj)
     hold on;
 
     for i = 1:length(obj.log)
-        plot(frontSlipAngleUpperSlack,1:obj.config.N,slacks(1,:,i));
+        plot(frontSlipAngleUpperSlack,1:obj.parameters.config.n,slacks(1,:,i));
     end
 
     ylim auto;
@@ -51,7 +51,7 @@ function costsAndSlacks(obj)
     hold on;
 
     for i = 1:length(obj.log)
-        plot(frontSlipAngleLowerSlack,1:obj.config.N,slacks(obj.config.NS+1,:,i));
+        plot(frontSlipAngleLowerSlack,1:obj.parameters.config.n,slacks(obj.config.NS+1,:,i));
     end
 
     ylim auto;
@@ -65,7 +65,7 @@ function costsAndSlacks(obj)
     hold on;
 
     for i = 1:length(obj.log)
-        plot(rearSlipAngleUpperSlack,1:obj.config.N,slacks(2,:,i));
+        plot(rearSlipAngleUpperSlack,1:obj.parameters.config.n,slacks(2,:,i));
     end
 
     ylim auto;
@@ -79,7 +79,7 @@ function costsAndSlacks(obj)
     hold on;
 
     for i = 1:length(obj.log)
-        plot(rearSlipAngleLowerSlack,1:obj.config.N,slacks(obj.config.NS+2,:,i));
+        plot(rearSlipAngleLowerSlack,1:obj.parameters.config.n,slacks(obj.config.NS+2,:,i));
     end
 
     ylim auto;
@@ -96,7 +96,7 @@ function costsAndSlacks(obj)
     hold on;
 
     for i = 1:length(obj.log)
-        plot(trackRUpperSlack,1:obj.config.N,slacks(3,:,i));
+        plot(trackRUpperSlack,1:obj.parameters.config.n,slacks(3,:,i));
     end
 
     ylim auto;
@@ -113,7 +113,7 @@ function costsAndSlacks(obj)
     hold on;
 
     for i = 1:length(obj.log)
-        plot(trackRLowerSlack,1:obj.config.N,slacks(obj.config.NS+3,:,i));
+        plot(trackRLowerSlack,1:obj.parameters.config.n,slacks(obj.config.NS+3,:,i));
     end
 
     ylim auto;
@@ -128,7 +128,7 @@ function costsAndSlacks(obj)
     hold on;
 
     for i = 1:length(obj.log)
-        plot(frontFrictionUpperSlack,1:obj.config.N,slacks(4,:,i));
+        plot(frontFrictionUpperSlack,1:obj.parameters.config.n,slacks(4,:,i));
     end
 
     ylim auto;
@@ -142,7 +142,7 @@ function costsAndSlacks(obj)
     hold on;
 
     for i = 1:length(obj.log)
-        plot(frontFrictionLowerSlack,1:obj.config.N,slacks(obj.config.NS+4,:,i));
+        plot(frontFrictionLowerSlack,1:obj.parameters.config.n,slacks(obj.config.NS+4,:,i));
     end
 
     ylim auto;
@@ -156,7 +156,7 @@ function costsAndSlacks(obj)
     hold on;
 
     for i = 1:length(obj.log)
-        plot(rearFrictionUpperSlack,1:obj.config.N,slacks(5,:,i));
+        plot(rearFrictionUpperSlack,1:obj.parameters.config.n,slacks(5,:,i));
     end
 
     ylim auto;
@@ -170,7 +170,7 @@ function costsAndSlacks(obj)
     hold on;
 
     for i = 1:length(obj.log)
-        plot(rearFrictionLowerSlack,1:obj.config.N,slacks(obj.config.NS+5,:,i));
+        plot(rearFrictionLowerSlack,1:obj.parameters.config.n,slacks(obj.config.NS+5,:,i));
     end
 
     ylim auto;

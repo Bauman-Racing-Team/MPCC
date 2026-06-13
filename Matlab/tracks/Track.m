@@ -12,17 +12,10 @@ classdef Track  < handle
     
     methods (Access = public)
         function obj = Track(conesBlue,conesYellow,centerLine)
-            if(size(conesBlue,2) > size(conesYellow,2))
-                obj.xOuter = [conesBlue(:,1);conesBlue(1,1)];
-                obj.yOuter = [conesBlue(:,2);conesBlue(1,2)];
-                obj.xInner = [conesYellow(:,1);conesYellow(1,1)];
-                obj.yInner = [conesYellow(:,2);conesYellow(1,2)];
-            else
-                obj.xOuter = [conesYellow(:,1);conesYellow(1,1)];
-                obj.yOuter = [conesYellow(:,2);conesYellow(1,2)];
-                obj.xInner = [conesBlue(:,1);conesBlue(1,1)];
-                obj.yInner = [conesBlue(:,2);conesBlue(1,2)];
-            end
+            obj.xOuter = [conesBlue(:,1);conesBlue(1,1)];
+            obj.yOuter = [conesBlue(:,2);conesBlue(1,2)];
+            obj.xInner = [conesYellow(:,1);conesYellow(1,1)];
+            obj.yInner = [conesYellow(:,2);conesYellow(1,2)];
             if nargin > 2
                 obj.x = centerLine(:,1);
                 obj.y = centerLine(:,2);
