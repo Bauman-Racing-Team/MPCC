@@ -28,8 +28,8 @@ namespace mpcc
 
 #define NX 11 // number of state variables
 #define NU 4 // number of control inputs 
-#define NP 13 // number of parameters
-#define NS 6 // number of soft constraints
+#define NP 16 // number of parameters
+#define NS 7 // number of soft constraints
 
 static constexpr double INF = 1E5;
 static constexpr int N_SPLINE = 5000; // number of points in a spline

@@ -28,8 +28,8 @@
  * POSSIBILITY OF SUCH DAMAGE.;
  */
 
-#ifndef CONTROL__CONTROL__CONTROL_CORE__ACADOS_MPCC_SOLVER__BRT8D__ACADOS_MPCC_MODEL__ACADOS_MPCC_MODEL_H_
-#define CONTROL__CONTROL__CONTROL_CORE__ACADOS_MPCC_SOLVER__BRT8D__ACADOS_MPCC_MODEL__ACADOS_MPCC_MODEL_H_
+#ifndef acados_mpcc_MODEL
+#define acados_mpcc_MODEL
 
 #ifdef __cplusplus
 extern "C" {
@@ -71,4 +71,4 @@ real_t* acados_mpcc_expl_vde_adj_get_pool_double(const char*);
 } /* extern "C" */
 #endif
 
-#endif  // CONTROL__CONTROL__CONTROL_CORE__ACADOS_MPCC_SOLVER__BRT8D__ACADOS_MPCC_MODEL__ACADOS_MPCC_MODEL_H_
+#endif  // acados_mpcc_MODEL

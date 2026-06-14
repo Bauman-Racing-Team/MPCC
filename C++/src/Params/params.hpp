@@ -121,19 +121,21 @@ enum {
 enum {
     maxAlphaFrontL = 0,
     maxAlphaRearL = 1,
-    rOutL = 2,
-    ellipseFrontL = 3,
-    ellipseRearL = 4,
-    lonControlL = 5
+    trackOuterBorderL = 2,
+    trackInnerBorderL = 3,
+    ellipseFrontL = 4,
+    ellipseRearL = 5,
+    lonControlL = 6
 };
 
 enum {
     maxAlphaFrontU = 0,
     maxAlphaRearU = 1,
-    rOutU = 2,
-    ellipseFrontU = 3,
-    ellipseRearU = 4,
-    lonControlU = 5
+    trackOuterBorderU = 2,
+    trackInnerBorderU = 3,
+    ellipseFrontU = 4,
+    ellipseRearU = 5,
+    lonControlU = 6
 };
 
 class Bounds{
@@ -298,7 +300,10 @@ enum {
     rdSteeringAngleP = 9,
     rdBrakesP = 10,
     rdVsP = 11,
-    borderToCarMinDistSqrP = 12
+    xOuterBorderP = 12,
+    yOuterBorderP = 13,
+    xInnerBorderP = 14,
+    yInnerBorderP = 15
 };
 
 

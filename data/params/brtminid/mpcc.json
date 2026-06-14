@@ -1,9 +1,9 @@
 {
     "n": 75,
     "maxDistProj": 3.0,
-    "safetyDistance": 0.4,
+    "safetyDistance": 1.5,
     "vxMin": 1.0,
-    "vRef": 30.0,
+    "vRef": 15.0,
     "nSqp": 5,
     "nReset": 2
 }

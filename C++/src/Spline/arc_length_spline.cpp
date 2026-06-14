@@ -117,7 +117,7 @@ RawPath ArcLengthSpline::outlierRemoval(const Eigen::VectorXd &xOriginal,const E
     int j = 0;
 
     if (xOriginal.size() != yOriginal.size()){
-        //error
+        throw std::runtime_error("X and Y should be equal in size");
     }
 //    std::cout << xOriginal << std::endl;
 
@@ -213,8 +213,6 @@ void ArcLengthSpline::fitSpline(const Eigen::VectorXd &X,const Eigen::VectorXd &
     // Final spline fit with fixed Delta_s
     splineX.genSpline(pathData.s,pathData.X,true);
     splineY.genSpline(pathData.s,pathData.Y,true);
-
-
 }
 
 void ArcLengthSpline::gen2DSpline(const Eigen::VectorXd &X,const Eigen::VectorXd &Y)

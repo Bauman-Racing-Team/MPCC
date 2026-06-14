@@ -29,8 +29,8 @@
  */
 
 
-#ifndef CONTROL__CONTROL__CONTROL_CORE__ACADOS_MPCC_SOLVER__BRT8D__ACADOS_MPCC_COST__ACADOS_MPCC_COST_H_
-#define CONTROL__CONTROL__CONTROL_CORE__ACADOS_MPCC_SOLVER__BRT8D__ACADOS_MPCC_COST__ACADOS_MPCC_COST_H_
+#ifndef acados_mpcc_COST
+#define acados_mpcc_COST
 
 #ifdef __cplusplus
 extern "C" {
@@ -136,4 +136,4 @@ real_t* acados_mpcc_cost_ext_cost_e_fun_jac_get_pool_double(const char*);
 } /* extern "C" */
 #endif
 
-#endif  // CONTROL__CONTROL__CONTROL_CORE__ACADOS_MPCC_SOLVER__BRT8D__ACADOS_MPCC_COST__ACADOS_MPCC_COST_H_
+#endif  // acados_mpcc_COST

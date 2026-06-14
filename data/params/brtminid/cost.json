@@ -3,9 +3,9 @@
     "qL": 100.0,
     "qVs": 0.2,
 
-    "rdThrottle": 1E2,
+    "rdThrottle": 47E6,
     "rdSteeringAngle": 5E2,
-    "rdBrakes": 1E2,
+    "rdBrakes": 135E6,
     "rdVs": 25E-4,
 
     "scQuadAlphaFront": 1E4,

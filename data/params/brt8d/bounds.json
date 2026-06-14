@@ -44,8 +44,8 @@
     "lowerConstraintBounds":{
       "maxAlphaFrontL": -0.06,
       "maxAlphaRearL": -0.06,
-      "trackOuterL": 0.0,
-      "trackInnerL": -10.0,
+      "trackOuterBorderL": 0.0,
+      "trackInnerBorderL": -10.0,
       "ellipseFrontL": 0,
       "ellipseRearL": 0,
       "lonControlL": 0
@@ -54,8 +54,8 @@
     "upperConstraintBounds":{
       "maxAlphaFrontU": 0.06,
       "maxAlphaRearU": 0.06,
-      "trackOuterU": 10.0,
-      "trackInnerU": 0.0,
+      "trackOuterBorderU": 10.0,
+      "trackInnerBorderU": 0.0,
       "ellipseFrontU": 1,
       "ellipseRearU": 1,
       "lonControlU": 0

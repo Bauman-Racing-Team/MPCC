@@ -177,30 +177,34 @@ void AcadosInterfaceBrt9D::setInitialValues(std::vector<OptVariables> &initialGu
   Zl[0] = d_costs.scQuadAlphaFront;
   Zl[1] = d_costs.scQuadAlphaRear;
   Zl[2] = d_costs.scQuadROut;
-  Zl[3] = d_costs.scQuadEllipseFront;
-  Zl[4] = d_costs.scQuadEllipseRear;
-  Zl[5] = d_costs.scQuadLonControl;
+  Zl[3] = d_costs.scQuadROut;
+  Zl[4] = d_costs.scQuadEllipseFront;
+  Zl[5] = d_costs.scQuadEllipseRear;
+  Zl[6] = d_costs.scQuadLonControl;
 
   Zu[0] = d_costs.scQuadAlphaFront;
   Zu[1] = d_costs.scQuadAlphaRear;
   Zu[2] = d_costs.scQuadROut;
-  Zu[3] = d_costs.scQuadEllipseFront;
-  Zu[4] = d_costs.scQuadEllipseRear;
-  Zu[5] = d_costs.scQuadLonControl;
+  Zu[3] = d_costs.scQuadROut;
+  Zu[4] = d_costs.scQuadEllipseFront;
+  Zu[5] = d_costs.scQuadEllipseRear;
+  Zu[6] = d_costs.scQuadLonControl;
 
   zl[0] = d_costs.scLinAlphaFront;
   zl[1] = d_costs.scLinAlphaRear;
   zl[2] = d_costs.scLinROut;
-  zl[3] = d_costs.scLinEllipseFront;
-  zl[4] = d_costs.scLinEllipseRear;
-  zl[5] = d_costs.scLinLonControl;
+  zl[3] = d_costs.scLinROut;
+  zl[4] = d_costs.scLinEllipseFront;
+  zl[5] = d_costs.scLinEllipseRear;
+  zl[6] = d_costs.scLinLonControl;
 
   zu[0] = d_costs.scLinAlphaFront;
   zu[1] = d_costs.scLinAlphaRear;
   zu[2] = d_costs.scLinROut;
-  zu[3] = d_costs.scLinEllipseFront;
-  zu[4] = d_costs.scLinEllipseRear;
-  zu[5] = d_costs.scLinLonControl;
+  zu[3] = d_costs.scLinROut;
+  zu[4] = d_costs.scLinEllipseFront;
+  zu[5] = d_costs.scLinEllipseRear;
+  zu[6] = d_costs.scLinLonControl;
 
   for (int i = 1; i < d_config.n; i++) {
     ocp_nlp_cost_model_set(castedNlpConfig, castedNlpDims, castedNlpIn, i, "Zl", Zl);
@@ -229,7 +233,10 @@ void AcadosInterfaceBrt9D::setParameters(AcadosParameters parameters)
     p[9] = parameters(rdSteeringAngleP, i);
     p[10] = parameters(rdBrakesP, i);
     p[11] = parameters(rdVsP, i);
-    p[12] = parameters(borderToCarMinDistSqrP, i);
+    p[12] = parameters(xOuterBorderP, i);
+    p[13] = parameters(yOuterBorderP, i);
+    p[14] = parameters(xInnerBorderP, i);
+    p[15] = parameters(yInnerBorderP, i);
     acados_mpcc_acados_update_params(castedAcadosOcpCapsule, i, p, NP);
   }
 }

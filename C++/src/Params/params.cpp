@@ -124,14 +124,16 @@ Bounds::Bounds(const std::string& file)
 
   constraintsLowerBounds(maxAlphaFrontL) = lowerConstraintBounds["maxAlphaFrontL"];
   constraintsLowerBounds(maxAlphaRearL) = lowerConstraintBounds["maxAlphaRearL"];
-  constraintsLowerBounds(rOutL) = lowerConstraintBounds["rOutL"];
+  constraintsLowerBounds(trackOuterBorderL) = lowerConstraintBounds["trackOuterBorderL"];
+  constraintsLowerBounds(trackInnerBorderL) = lowerConstraintBounds["trackInnerBorderL"];
   constraintsLowerBounds(ellipseFrontL) = lowerConstraintBounds["ellipseFrontL"];
   constraintsLowerBounds(ellipseRearL) = lowerConstraintBounds["ellipseRearL"];
   constraintsLowerBounds(lonControlL) = lowerConstraintBounds["lonControlL"];
 
   constraintsUpperBounds(maxAlphaFrontU) = upperConstraintBounds["maxAlphaFrontU"];
   constraintsUpperBounds(maxAlphaRearU) = upperConstraintBounds["maxAlphaRearU"];
-  constraintsUpperBounds(rOutU) = upperConstraintBounds["rOutU"];
+  constraintsUpperBounds(trackOuterBorderU) = upperConstraintBounds["trackOuterBorderU"];
+  constraintsUpperBounds(trackInnerBorderU) = upperConstraintBounds["trackInnerBorderU"];
   constraintsUpperBounds(ellipseFrontU) = upperConstraintBounds["ellipseFrontU"];
   constraintsUpperBounds(ellipseRearU) = upperConstraintBounds["ellipseRearU"];
   constraintsUpperBounds(lonControlU) = upperConstraintBounds["lonControlU"];

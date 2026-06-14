@@ -28,8 +28,8 @@
  * POSSIBILITY OF SUCH DAMAGE.;
  */
 
-#ifndef CONTROL__CONTROL__CONTROL_CORE__ACADOS_MPCC_SOLVER__BRT9D__ACADOS_SOLVER_ACADOS_MPCC_H_
-#define CONTROL__CONTROL__CONTROL_CORE__ACADOS_MPCC_SOLVER__BRT9D__ACADOS_SOLVER_ACADOS_MPCC_H_
+#ifndef ACADOS_SOLVER_acados_mpcc_H_
+#define ACADOS_SOLVER_acados_mpcc_H_
 
 #include "acados/utils/types.h"
 
@@ -39,13 +39,13 @@
 #define ACADOS_MPCC_NX     11
 #define ACADOS_MPCC_NZ     0
 #define ACADOS_MPCC_NU     4
-#define ACADOS_MPCC_NP     13
+#define ACADOS_MPCC_NP     16
 #define ACADOS_MPCC_NBX    11
 #define ACADOS_MPCC_NBX0   11
 #define ACADOS_MPCC_NBU    4
 #define ACADOS_MPCC_NSBX   0
 #define ACADOS_MPCC_NSBU   0
-#define ACADOS_MPCC_NSH    6
+#define ACADOS_MPCC_NSH    7
 #define ACADOS_MPCC_NSH0   0
 #define ACADOS_MPCC_NSG    0
 #define ACADOS_MPCC_NSPHI  0
@@ -54,7 +54,7 @@
 #define ACADOS_MPCC_NSPHIN 0
 #define ACADOS_MPCC_NSPHI0 0
 #define ACADOS_MPCC_NSBXN  0
-#define ACADOS_MPCC_NS     6
+#define ACADOS_MPCC_NS     7
 #define ACADOS_MPCC_NS0    0
 #define ACADOS_MPCC_NSN    0
 #define ACADOS_MPCC_NG     0
@@ -63,8 +63,8 @@
 #define ACADOS_MPCC_NY0    0
 #define ACADOS_MPCC_NY     0
 #define ACADOS_MPCC_NYN    0
-#define ACADOS_MPCC_N      100
-#define ACADOS_MPCC_NH     6
+#define ACADOS_MPCC_N      75
+#define ACADOS_MPCC_NH     7
 #define ACADOS_MPCC_NHN    0
 #define ACADOS_MPCC_NH0    0
 #define ACADOS_MPCC_NPHI0  0
@@ -185,4 +185,4 @@ ACADOS_SYMBOL_EXPORT ocp_nlp_plan_t *acados_mpcc_acados_get_nlp_plan(acados_mpcc
 } /* extern "C" */
 #endif
 
-#endif  // CONTROL__CONTROL__CONTROL_CORE__ACADOS_MPCC_SOLVER__BRT9D__ACADOS_SOLVER_ACADOS_MPCC_H_
+#endif  // ACADOS_SOLVER_acados_mpcc_H_

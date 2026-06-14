@@ -115,19 +115,6 @@ classdef Acados < handle
 
             obj.track.outerBorder.updateSpline(outerPerpX,outerPerpY,centerLine.s);
             obj.track.innerBorder.updateSpline(innerPerpX,innerPerpY,centerLine.s);
-
-            obj.track.distToOuter = zeros(1, nPts);
-            obj.track.distToInner = zeros(1, nPts);
-
-            for idx = 1:nPts
-                s = centerLine.s(idx);
-                centerPoint = obj.track.centerLine.getPosition(s);
-                outerPoint = obj.track.outerBorder.getPosition(s);
-                innerPoint = obj.track.innerBorder.getPosition(s);
-
-                obj.track.distToOuter(idx) = hypot(outerPoint(1) - centerPoint(1), outerPoint(2) - centerPoint(2));
-                obj.track.distToInner(idx) = hypot(innerPoint(1) - centerPoint(1), innerPoint(2) - centerPoint(2));
-            end
         end
 
         function track = getTrack(obj)
@@ -255,11 +242,11 @@ classdef Acados < handle
             constr_uh = [constr_uh,obj.parameters.bounds.upperConstraintBounds.maxAlphaRearU];
 
             % track constraint bounds
-            constr_lh = [constr_lh, obj.parameters.bounds.lowerConstraintBounds.trackOuterL];
-            constr_uh = [constr_uh, obj.parameters.bounds.upperConstraintBounds.trackOuterU];
+            constr_lh = [constr_lh, obj.parameters.bounds.lowerConstraintBounds.trackOuterBorderL];
+            constr_uh = [constr_uh, obj.parameters.bounds.upperConstraintBounds.trackOuterBorderU];
 
-            constr_lh = [constr_lh, obj.parameters.bounds.lowerConstraintBounds.trackInnerL];
-            constr_uh = [constr_uh, obj.parameters.bounds.upperConstraintBounds.trackInnerU];
+            constr_lh = [constr_lh, obj.parameters.bounds.lowerConstraintBounds.trackInnerBorderL];
+            constr_uh = [constr_uh, obj.parameters.bounds.upperConstraintBounds.trackInnerBorderU];
 
             % front wheels friction ellipse constraint bounds
             constr_lh = [constr_lh, obj.parameters.bounds.lowerConstraintBounds.ellipseFrontL];

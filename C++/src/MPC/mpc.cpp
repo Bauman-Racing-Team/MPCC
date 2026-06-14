@@ -62,13 +62,6 @@ namespace mpcc
       Eigen::Vector2d innerBorderPosI = d_innerBorder.getPostion(carS);
       Eigen::Vector2d trackDposI = d_centerLine.getDerivative(carS);
 
-      double minDistFromBorderToCarCenter = std::sqrt(std::min({std::pow((outerBorderPosI(0) - carX),2) + std::pow((outerBorderPosI(1) - carY),2),
-                                                               std::pow((innerBorderPosI(0) - carX),2) + std::pow((innerBorderPosI(1) - carY),2),
-                                                               std::pow((outerBorderPosI(0) - trackPosI(0)),2) + std::pow((innerBorderPosI(1) - trackPosI(1)),2),
-                                                               std::pow((innerBorderPosI(0) - trackPosI(0)),2) + std::pow((innerBorderPosI(1) - trackPosI(1)),2)}));
-     
-      double borderToCarMinDistSqr = std::pow((minDistFromBorderToCarCenter - d_config.safetyDistance - d_car.carW/2),2); 
-
       d_parameters(xTrackP, timeStep) = trackPosI(0);
       d_parameters(yTrackP, timeStep) = trackPosI(1);
       d_parameters(yawTrackP, timeStep) = std::atan2(trackDposI(1), trackDposI(0));
@@ -81,7 +74,10 @@ namespace mpcc
       d_parameters(rdSteeringAngleP, timeStep) = d_cost.rdSteeringAngle;
       d_parameters(rdBrakesP, timeStep) = d_cost.rdBrakes;
       d_parameters(rdVsP, timeStep) = d_cost.rdVs;
-      d_parameters(borderToCarMinDistSqrP, timeStep) = borderToCarMinDistSqr;
+      d_parameters(xOuterBorderP, timeStep) = outerBorderPosI(0);
+      d_parameters(yOuterBorderP, timeStep) = outerBorderPosI(1);
+      d_parameters(xInnerBorderP, timeStep) = innerBorderPosI(0);
+      d_parameters(yInnerBorderP, timeStep) = innerBorderPosI(1);
     }
   }
 
