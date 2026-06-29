@@ -23,15 +23,20 @@ ArcLengthSpline::ArcLengthSpline(const Config& config)
 {
 }
 
-void ArcLengthSpline::setData(const Eigen::VectorXd &X_in,const Eigen::VectorXd &Y_in)
+void ArcLengthSpline::setPath(const Eigen::VectorXd& xIn, const Eigen::VectorXd& yIn)
+{
+    setData(xIn, yIn);
+}
+
+void ArcLengthSpline::setData(const Eigen::VectorXd &xIn, const Eigen::VectorXd &yIn)
 {
     // set input data if x and y have same length
     // compute arc length based on an piecewise linear approximation
-    if(X_in.size() == Y_in.size()){
-        pathData.X = X_in;
-        pathData.Y = Y_in;
-        pathData.n_points = X_in.size();
-        pathData.s = compArcLength(X_in,Y_in);
+    if(xIn.size() == yIn.size()){
+        pathData.X = xIn;
+        pathData.Y = yIn;
+        pathData.n_points = xIn.size();
+        pathData.s = compArcLength(xIn,yIn);
     }
     else{
         std::cout << "input data does not have the same length" << std::endl;
@@ -183,13 +188,9 @@ void ArcLengthSpline::fitSpline(const Eigen::VectorXd &X,const Eigen::VectorXd &
 {
     // successively fit spline -> re-sample path -> compute arc length
     // temporary spline class only used for fitting
-    Eigen::VectorXd s_approximation;
-    PathData first_refined_path,second_refined_path;
-    double total_arc_length;
 
-    s_approximation = compArcLength(X,Y);
-//    std::cout << s_approximation << std::endl;
-    total_arc_length = s_approximation(s_approximation.size()-1);
+    Eigen::VectorXd s_approximation = compArcLength(X,Y);
+    double total_arc_length = s_approximation(s_approximation.size()-1);
 
     CubicSpline first_spline_x,first_spline_y;
     CubicSpline second_spline_x,second_spline_y;
@@ -197,7 +198,7 @@ void ArcLengthSpline::fitSpline(const Eigen::VectorXd &X,const Eigen::VectorXd &
     first_spline_x.genSpline(s_approximation,X,false);
     first_spline_y.genSpline(s_approximation,Y,false);
     // 1. re-sample
-    first_refined_path = resamplePath(first_spline_x,first_spline_y,total_arc_length);
+    PathData first_refined_path = resamplePath(first_spline_x,first_spline_y,total_arc_length);
     s_approximation = compArcLength(first_refined_path.X,first_refined_path.Y);
 
     total_arc_length = s_approximation(s_approximation.size()-1);
@@ -206,7 +207,7 @@ void ArcLengthSpline::fitSpline(const Eigen::VectorXd &X,const Eigen::VectorXd &
     second_spline_x.genSpline(s_approximation,first_refined_path.X,false);
     second_spline_y.genSpline(s_approximation,first_refined_path.Y,false);
     // 2. re-sample
-    second_refined_path = resamplePath(second_spline_x,second_spline_y,total_arc_length);
+    PathData second_refined_path = resamplePath(second_spline_x,second_spline_y,total_arc_length);
     ////////////////////////////////////////////
     setRegularData(second_refined_path.X,second_refined_path.Y,second_refined_path.s);
 //    setData(second_refined_path.X,second_refined_path.Y);
@@ -220,15 +221,14 @@ void ArcLengthSpline::gen2DSpline(const Eigen::VectorXd &X,const Eigen::VectorXd
     // generate 2-D arc length parametrized spline given X-Y data
 
     // remove outliers, depending on how iregular the points are this can help
-    RawPath clean_path;
-    clean_path = outlierRemoval(X,Y);
+    RawPath clean_path = outlierRemoval(X,Y);
     // successively fit spline and re-sample
     fitSpline(clean_path.X,clean_path.Y);
 
 }
 
 
-Eigen::Vector2d ArcLengthSpline::getPostion(const double s) const
+Eigen::Vector2d ArcLengthSpline::getPosition(const double s) const
 {
     Eigen::Vector2d s_path;
     s_path(0) = splineX.getPoint(s);
@@ -266,7 +266,7 @@ double ArcLengthSpline::porjectOnSpline(const State &x) const
     pos(0) = x(xIdx);
     pos(1) = x(yIdx);
     double s_guess = x(sIdx);
-    Eigen::Vector2d pos_path = getPostion(s_guess);
+    Eigen::Vector2d pos_path = getPosition(s_guess);
 
     double s_opt = s_guess;
     double dist = (pos-pos_path).norm();
@@ -284,7 +284,7 @@ double ArcLengthSpline::porjectOnSpline(const State &x) const
     double s_old = s_opt;
     for(int i=0; i<20; i++)
     {
-        pos_path = getPostion(s_opt);
+        pos_path = getPosition(s_opt);
         Eigen::Vector2d ds_path = getDerivative(s_opt);
         Eigen::Vector2d dds_path = getSecondDerivative(s_opt);
         Eigen::Vector2d diff = pos_path - pos;
@@ -304,7 +304,7 @@ double ArcLengthSpline::porjectOnSpline(const State &x) const
     return s_guess;
 }
 
-void ArcLengthSpline::updateSpline(const Eigen::VectorXd &X_in,const Eigen::VectorXd &Y_in,const Eigen::VectorXd &s_in){
+void ArcLengthSpline::genBorderInterpolation(const Eigen::VectorXd &X_in,const Eigen::VectorXd &Y_in,const Eigen::VectorXd &s_in){
     setRegularData(X_in, Y_in, s_in);
     splineX.genSpline(pathData.s, pathData.X, true);
     splineY.genSpline(pathData.s, pathData.Y, true);

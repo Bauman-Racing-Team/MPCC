@@ -61,6 +61,7 @@ private:
   void generateNewInitialGuess(const State &x0);
   void unwrapInitialGuess();
   void calculateBordersInterpolations();
+  std::pair<double, double> findRayBorderIntersection(double cx, double cy, double nx, double ny, const Eigen::VectorXd& bx, const Eigen::VectorXd& by);
 
 private:
   const double d_ts;

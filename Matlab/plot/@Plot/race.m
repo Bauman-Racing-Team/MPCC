@@ -37,7 +37,7 @@ function race(obj)
         circle1 = plotCircle([bordersCoordinates(i, 1), bordersCoordinates(i, 2)], 0.1, color);
         circle2 = plotCircle([bordersCoordinates(i, 3), bordersCoordinates(i, 4)], 0.1, color);
         delete(horizonPositions);
-        delete(carBox);
+        %delete(carBox);
     end
 
     plot(states(1,:),states(2,:),"green");

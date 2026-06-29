@@ -57,9 +57,9 @@ namespace mpcc
       double carY = d_initialGuess[timeStep].xk(yIdx);
       double carS = d_initialGuess[timeStep].xk(sIdx);
             
-      Eigen::Vector2d trackPosI = d_centerLine.getPostion(carS);
-      Eigen::Vector2d outerBorderPosI = d_outerBorder.getPostion(carS);
-      Eigen::Vector2d innerBorderPosI = d_innerBorder.getPostion(carS);
+      Eigen::Vector2d trackPosI = d_centerLine.getPosition(carS);
+      Eigen::Vector2d outerBorderPosI = d_outerBorder.getPosition(carS);
+      Eigen::Vector2d innerBorderPosI = d_innerBorder.getPosition(carS);
       Eigen::Vector2d trackDposI = d_centerLine.getDerivative(carS);
 
       d_parameters(xTrackP, timeStep) = trackPosI(0);
@@ -135,7 +135,7 @@ namespace mpcc
       vxVsNonZero(d_initialGuess[i].xk, d_config.vxMin);
 
       d_initialGuess[i].xk(sIdx) = d_initialGuess[i - 1].xk(sIdx) + d_ts * d_initialGuess[i - 1].xk(vsIdx);
-      Eigen::Vector2d trackPosI = d_centerLine.getPostion(d_initialGuess[i].xk(sIdx));
+      Eigen::Vector2d trackPosI = d_centerLine.getPosition(d_initialGuess[i].xk(sIdx));
       Eigen::Vector2d trackDposI = d_centerLine.getDerivative(d_initialGuess[i].xk(sIdx));
       d_initialGuess[i].xk(xIdx) = trackPosI(0);
       d_initialGuess[i].xk(yIdx) = trackPosI(1);
@@ -212,8 +212,8 @@ namespace mpcc
                      const Eigen::VectorXd &XInner, const Eigen::VectorXd &YInner)
   {
     d_centerLine.gen2DSpline(X, Y);
-    d_outerBorder.gen2DSpline(XOuter, YOuter);
-    d_innerBorder.gen2DSpline(XInner, YInner);
+    d_outerBorder.setPath(XOuter, YOuter);
+    d_innerBorder.setPath(XInner, YInner);
     
     calculateBordersInterpolations();
   }
@@ -242,68 +242,86 @@ namespace mpcc
     const Eigen::VectorXd& innerX = innerBorderPath.X;
     const Eigen::VectorXd& innerY = innerBorderPath.Y;
 
-    for (int i = 0; i < nPts; i++) {
-        // Center point and tangent/normal
-        double s = centerLinePath.s(i);
-        Eigen::Vector2d centerPos = d_centerLine.getPostion(s);
-        Eigen::Vector2d tangent = d_centerLine.getDerivative(s);
-        
-        double cx = centerPos(0);
-        double cy = centerPos(1);
-        double tx = tangent(0);
-        double ty = tangent(1);
-        
-        double tnorm = std::sqrt(tx * tx + ty * ty);
-        if (tnorm > 0) {
-            tx /= tnorm;
-            ty /= tnorm;
-        }
-        // Left-hand normal (rotate tangent 90 degrees counterclockwise)
-        double nx = -ty;
-        double ny = tx;
+    for (int i = 0; i < nPts; i++)
+    {
+      double s = centerLinePath.s(i);
+      Eigen::Vector2d centerPos = d_centerLine.getPosition(s);
+      Eigen::Vector2d tangent = d_centerLine.getDerivative(s);
 
-        // Nearest outer point
-        Eigen::ArrayXd dxo = outerX.array() - cx;
-        Eigen::ArrayXd dyo = outerY.array() - cy;
-        Eigen::ArrayXd distSqOuter = dxo.square() + dyo.square();
-        int idxO = 0;
-        double minDistOuter = distSqOuter(0);
-        for (int j = 1; j < outerX.size(); j++) {
-            if (distSqOuter(j) < minDistOuter) {
-                minDistOuter = distSqOuter(j);
-                idxO = j;
-            }
-        }
-        double pxo = outerX(idxO);
-        double pyo = outerY(idxO);
+      double cx = centerPos(0);
+      double cy = centerPos(1);
+      double tx = tangent(0);
+      double ty = tangent(1);
+      
+      double tnorm = std::hypot(tx,ty);
+      if(tnorm > 0)
+      {
+        tx = tx/tnorm; 
+        ty = ty/tnorm;
+      }
 
-        // Nearest inner point
-        Eigen::ArrayXd dxi = innerX.array() - cx;
-        Eigen::ArrayXd dyi = innerY.array() - cy;
-        Eigen::ArrayXd distSqInner = dxi.square() + dyi.square();
-        int idxI = 0;
-        double minDistInner = distSqInner(0);
-        for (int j = 1; j < innerX.size(); j++) {
-            if (distSqInner(j) < minDistInner) {
-                minDistInner = distSqInner(j);
-                idxI = j;
-            }
-        }
-        double pxi = innerX(idxI);
-        double pyi = innerY(idxI);
+      double nx = -ty; 
+      double ny = tx; // Левая нормаль
 
-        // Perpendicular distances along normal
-        double wLeft = (pxo - cx) * nx + (pyo - cy) * ny;   // signed along +N
-        double wRight = -((pxi - cx) * nx + (pyi - cy) * ny); // make positive to the right
+      /* --- РАСЧЕТ ДЛЯ ВНЕШНЕЙ ГРАНИЦЫ (Вдоль +N) */
+      auto [xO, yO] = findRayBorderIntersection(cx, cy, nx, ny, outerX, outerY);
+      outerPerpX(i) = xO;
+      outerPerpY(i) = yO;
 
-        outerPerpX(i) = cx + wLeft * nx;
-        outerPerpY(i) = cy + wLeft * ny;
-        innerPerpX(i) = cx - wRight * nx;
-        innerPerpY(i) = cy - wRight * ny;
+      /* --- РАСЧЕТ ДЛЯ ВНУТРЕННЕЙ ГРАНИЦЫ (Вдоль -N) */
+      auto [xI, yI] = findRayBorderIntersection(cx, cy, -nx, -ny, innerX, innerY);
+      innerPerpX(i) = xI;
+      innerPerpY(i) = yI;
     }
 
-    d_outerBorder.updateSpline(outerPerpX, outerPerpY, centerLinePath.s);
-    d_innerBorder.updateSpline(innerPerpX, innerPerpY, centerLinePath.s);
+    d_outerBorder.genBorderInterpolation(outerPerpX, outerPerpY, centerLinePath.s);
+    d_innerBorder.genBorderInterpolation(innerPerpX, innerPerpY, centerLinePath.s);
+  }
+
+  std::pair<double, double> MPC::findRayBorderIntersection(double cx, double cy, double nx, double ny, const Eigen::VectorXd& bx, const Eigen::VectorXd& by){        
+    double bestX = cx; 
+    double bestY = cy;
+    double minT = 1e9; // Ищем минимальный положительный шаг вдоль луча
+    
+    double nSegs = bx.rows() - 1;
+    
+    for(int j = 0; j < nSegs; j++){
+      // Вершины текущего сегмента границы
+      double x1 = bx(j);   
+      double y1 = by(j);
+      double x2 = bx(j+1); 
+      double y2 = by(j+1);
+      
+      // Вектор сегмента границы
+      double dx = x2 - x1;
+      double dy = y2 - y1;
+      
+      // Знаменатель (определитель матрицы системы)
+      double det = nx * dy - ny * dx;
+      
+      // Если det == 0, луч и сегмент параллельны
+      if(std::abs(det) < 1e-9)
+      {
+        continue;
+      }
+
+      // Решение системы линейных уравнений по правилу Крамера
+      // t - расстояние вдоль луча нормали
+      // u - положение точки на отрезке границы (от 0 до 1)
+      double t = ((x1 - cx) * dy - (y1 - cy) * dx) / det;
+      double u = ((x1 - cx) * ny - (y1 - cy) * nx) / det;
+      
+      // Проверяем, что пересечение впереди по лучу и попадает на отрезок
+      if(t >= 0 && u >= 0 && u <= 1){
+        if(t < minT)
+        {
+          minT = t;
+          bestX = cx + t * nx;
+          bestY = cy + t * ny;
+        }
+      }
+    }
+    return {bestX, bestY};
   }
 
   ArcLengthSpline MPC::getTrack() const

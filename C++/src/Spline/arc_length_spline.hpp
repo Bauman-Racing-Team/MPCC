@@ -40,13 +40,14 @@ class ArcLengthSpline {
 public:
     // X and Y spline used for final spline fit
     void gen2DSpline(const Eigen::VectorXd &X,const Eigen::VectorXd &Y);
-    Eigen::Vector2d getPostion(double) const;
+    Eigen::Vector2d getPosition(double) const;
     Eigen::Vector2d getDerivative(double) const;
     Eigen::Vector2d getSecondDerivative(double) const;
     double getLength() const;
     double porjectOnSpline(const State &x) const;
     const PathData& getPath() const { return pathData; }
-    void updateSpline(const Eigen::VectorXd &X_in,const Eigen::VectorXd &Y_in,const Eigen::VectorXd &s_in);
+    void setPath(const Eigen::VectorXd& xIn, const Eigen::VectorXd& yIn);
+    void genBorderInterpolation(const Eigen::VectorXd &X_in,const Eigen::VectorXd &Y_in,const Eigen::VectorXd &s_in);
 
     ArcLengthSpline(const Config& config);
 

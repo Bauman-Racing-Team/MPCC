@@ -132,7 +132,7 @@ int testArcLengthSpline(const PathToJson &path){
     Eigen::Vector2d pos;
 
     for(int i=0;i<NV;i++){
-        pos = twoDspline.getPostion(phiv(i));
+        pos = twoDspline.getPosition(phiv(i));
         error(i) = std::sqrt(std::pow(pos(0) - std::cos(phiv(i)),2) + std::pow(pos(1) -std::sin(phiv(i)),2));
     }
     std::cout << "norm of error = " << error.norm() << std::endl;
@@ -152,7 +152,7 @@ int testArcLengthSpline(const PathToJson &path){
 //    std::vector<double> kappa;
 //    for(int i=0;i<1000;i++){
 //        std::cout << s(i) << std::endl;
-//        pos = two_d_spline.getPostion(s(i));
+//        pos = two_d_spline.getPosition(s(i));
 //        plot_x.push_back(pos(0));
 //        plot_y.push_back(pos(1));
 //        // reference path derivatives

@@ -55,8 +55,8 @@ classdef Acados < handle
 
         function setTrack(obj,track)
             obj.track.centerLine.gen2DSpline(track.x,track.y);
-            obj.track.outerBorder.gen2DSpline(track.xOuter,track.yOuter);
-            obj.track.innerBorder.gen2DSpline(track.xInner,track.yInner);
+            obj.track.outerBorder.setPath(track.xOuter,track.yOuter);
+            obj.track.innerBorder.setPath(track.xInner,track.yInner);
 
             centerLine = obj.track.centerLine.getPath();
             centerLineDerivatives = zeros(2,length(centerLine.s));
@@ -68,22 +68,19 @@ classdef Acados < handle
         end
 
         function calculateBordersInterpolations(obj, centerLine, centerLineDerivatives)
-            % Build perpendicular-offset border interpolations w.r.t. centerline normals
             nPts = length(centerLine.s);
             outerPerpX = zeros(nPts,1);
             outerPerpY = zeros(nPts,1);
             innerPerpX = zeros(nPts,1);
             innerPerpY = zeros(nPts,1);
 
-            % Use resampled border paths for nearest-neighbor search
             outerBorder = obj.track.outerBorder.getPath();
             innerBorder = obj.track.innerBorder.getPath();
 
-            outerXY = [outerBorder.x, outerBorder.y];
-            innerXY = [innerBorder.x, innerBorder.y];
+            ox = outerBorder.x; oy = outerBorder.y;
+            ix = innerBorder.x; iy = innerBorder.y;
 
             for i = 1:nPts
-                % Center point and tangent/normal
                 cx = centerLine.x(i);
                 cy = centerLine.y(i);
                 tx = centerLineDerivatives(1,i);
@@ -92,29 +89,65 @@ classdef Acados < handle
                 if tnorm > 0
                     tx = tx/tnorm; ty = ty/tnorm;
                 end
-                nx = -ty; ny = tx; % left-hand normal
+                nx = -ty; ny = tx; % Левая нормаль
 
-                % Nearest outer and inner points
-                dxo = outerXY(:,1) - cx; dyo = outerXY(:,2) - cy;
-                [~, idxO] = min(dxo.*dxo + dyo.*dyo);
-                pxo = outerXY(idxO,1); pyo = outerXY(idxO,2);
+                % --- РАСЧЕТ ДЛЯ ВНЕШНЕЙ ГРАНИЦЫ (Вдоль +N) ---
+                [xO, yO] = obj.findRayBorderIntersection(cx, cy, nx, ny, ox, oy);
+                outerPerpX(i) = xO;
+                outerPerpY(i) = yO;
 
-                dxi = innerXY(:,1) - cx; dyi = innerXY(:,2) - cy;
-                [~, idxI] = min(dxi.*dxi + dyi.*dyi);
-                pxi = innerXY(idxI,1); pyi = innerXY(idxI,2);
-
-                % Perpendicular distances along normal
-                wLeft = (pxo - cx)*nx + (pyo - cy)*ny;   % signed along +N
-                wRight = -((pxi - cx)*nx + (pyi - cy)*ny); % make positive to the right
-
-                outerPerpX(i) = cx + wLeft*nx;
-                outerPerpY(i) = cy + wLeft*ny;
-                innerPerpX(i) = cx - wRight*nx;
-                innerPerpY(i) = cy - wRight*ny;
+                % --- РАСЧЕТ ДЛЯ ВНУТРЕННЕЙ ГРАНИЦЫ (Вдоль -N) ---
+                [xI, yI] = obj.findRayBorderIntersection(cx, cy, -nx, -ny, ix, iy);
+                innerPerpX(i) = xI;
+                innerPerpY(i) = yI;
             end
 
-            obj.track.outerBorder.updateSpline(outerPerpX,outerPerpY,centerLine.s);
-            obj.track.innerBorder.updateSpline(innerPerpX,innerPerpY,centerLine.s);
+            obj.track.outerBorder.genBorderInterpolation(outerPerpX,outerPerpY,centerLine.s);
+            obj.track.innerBorder.genBorderInterpolation(innerPerpX,innerPerpY,centerLine.s);
+        end
+
+        function [bestX, bestY] = findRayBorderIntersection(obj, cx, cy, nx, ny, bx, by)
+            % Функция находит ближайшую точку пересечения луча (cx,cy)+t*(nx,ny) 
+            % с ломаной линией (bx, by).
+            
+            bestX = cx; 
+            bestY = cy;
+            minT = Inf; % Ищем минимальный положительный шаг вдоль луча
+            
+            nSegs = length(bx) - 1;
+            
+            for j = 1:nSegs
+                % Вершины текущего сегмента границы
+                x1 = bx(j);   y1 = by(j);
+                x2 = bx(j+1); y2 = by(j+1);
+                
+                % Вектор сегмента границы
+                dx = x2 - x1;
+                dy = y2 - y1;
+                
+                % Знаменатель (определитель матрицы системы)
+                det = nx * dy - ny * dx;
+                
+                % Если det == 0, луч и сегмент параллельны
+                if abs(det) < 1e-9
+                    continue;
+                end
+                
+                % Решение системы линейных уравнений по правилу Крамера
+                % t - расстояние вдоль луча нормали
+                % u - положение точки на отрезке границы (от 0 до 1)
+                t = ((x1 - cx) * dy - (y1 - cy) * dx) / det;
+                u = ((x1 - cx) * ny - (y1 - cy) * nx) / det;
+                
+                % Проверяем, что пересечение впереди по лучу и попадает на отрезок
+                if t >= 0 && u >= 0 && u <= 1
+                    if t < minT
+                        minT = t;
+                        bestX = cx + t * nx;
+                        bestY = cy + t * ny;
+                    end
+                end
+            end
         end
 
         function track = getTrack(obj)

@@ -10,14 +10,14 @@
 
     "scQuadAlphaFront": 1E4,
     "scQuadAlphaRear": 1E4,
-    "scQuadROut": 1E5,
+    "scQuadROut": 1E7,
     "scQuadEllipseFront": 1E2,
     "scQuadEllipseRear": 1E2,
     "scQuadLonControl": 1E7,
     
     "scLinAlphaFront": 1E2,
     "scLinAlphaRear": 1E2,
-    "scLinROut": 1E2,
+    "scLinROut": 1E6,
     "scLinEllipseFront": 1E2,
     "scLinEllipseRear": 1E2,
     "scLinLonControl": 1E6

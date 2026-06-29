@@ -29,7 +29,7 @@ using json = nlohmann::json;
 static const std::string AUTONOMOUS_VEHICLE = "brt9d"; // brt8d, brt9d, brtminid
 static const std::string TRACK = "FSG";
 
-static constexpr int SIM_ITERATIONS = 3000; // [i] simulation iterations number
+static constexpr int SIM_ITERATIONS = 600; // [i] simulation iterations number
 static constexpr double Ts = 0.05; // [s] MPCC computation dt
 
 int main()
