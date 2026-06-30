@@ -25,6 +25,7 @@ add_executable(MPCC
         src/Interfaces/acados_interface_brt9d.cpp
         src/Interfaces/acados_interface_brtminid.cpp
         src/MPC/mpc.cpp
+        src/MPC/mpc_track.cpp
         src/Models/models.cpp
         src/Track/track.cpp
         src/Plotting/plotting.cpp)

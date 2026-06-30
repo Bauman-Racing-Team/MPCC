@@ -29,7 +29,7 @@ using json = nlohmann::json;
 static const std::string AUTONOMOUS_VEHICLE = "brt9d"; // brt8d, brt9d, brtminid
 static const std::string TRACK = "FSG";
 
-static constexpr int SIM_ITERATIONS = 600; // [i] simulation iterations number
+static constexpr int SIM_ITERATIONS = 3000; // [i] simulation iterations number
 static constexpr double Ts = 0.05; // [s] MPCC computation dt
 
 int main()
@@ -61,14 +61,14 @@ int main()
   Cost cost(costPath);
 
   MPC mpc(AUTONOMOUS_VEHICLE, bounds, config, cost, car, tire, Ts);
-  mpc.setTrack(trackXY.X, trackXY.Y, trackXY.X_outer, trackXY.Y_outer, trackXY.X_inner, trackXY.Y_inner);
+  mpc.genMpcTrack(trackXY.X, trackXY.Y, trackXY.X_outer, trackXY.Y_outer, trackXY.X_inner, trackXY.Y_inner);
 
   double yaw0 = std::atan2(trackXY.Y(1) - trackXY.Y(0), trackXY.X(1) - trackXY.X(0));
 
   State13 x0 = {trackXY.X(0),   trackXY.Y(0), yaw0, 0., 0., 0., 0., 0., 0., 0.,
               0., 0., 0.};
   
-  Simulator simulator(car, tire, mpc.getTrack());
+  Simulator simulator(car, tire, mpc.getMpcTrackCenterLine());
   
   for (int i = 0; i < SIM_ITERATIONS; i++) {
     MPCReturn mpcSol = mpc.runMPC(x0.head<NX>());
@@ -91,8 +91,8 @@ int main()
   }
 
   // Plot data
-  plotter.plotRun(log, trackXY);
-  plotter.plotSim(log, trackXY);
+  plotter.plotRun(log, trackXY, mpc.getMpcTrack());
+  plotter.plotSim(log, trackXY, mpc.getMpcTrack());
 
   double meanTime = 0.0;
   double maxTime = 0.0;

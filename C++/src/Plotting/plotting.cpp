@@ -22,11 +22,23 @@ namespace mpcc
 {
 
 Plotting::Plotting(double Ts, const Car& car) : d_car(car) {}
-void Plotting::plotRun(const std::vector<MPCReturn> &log, const TrackPos &track_xy) const
+
+void Plotting::plotTrack(const TrackPos &track_xy, std::optional<long> fig) const
 {
+  if(track_xy.X.rows() == 0 || track_xy.Y.rows() == 0 || 
+     track_xy.X_inner.rows() == 0 || track_xy.Y_inner.rows() == 0 || 
+     track_xy.X_outer.rows() == 0 || track_xy.Y_outer.rows() == 0 )
+  {
+    throw std::runtime_error("track_xy element(s) length is zero");
+  }
+
+  if(!fig)
+  {
+    plt::figure();
+  }
+
   std::vector<double> plot_xc(track_xy.X.data(), track_xy.X.data() + track_xy.X.size());
   std::vector<double> plot_yc(track_xy.Y.data(), track_xy.Y.data() + track_xy.Y.size());
-
   std::vector<double> plot_xi(
     track_xy.X_inner.data(), track_xy.X_inner.data() + track_xy.X_inner.size());
   std::vector<double> plot_yi(
@@ -36,6 +48,59 @@ void Plotting::plotRun(const std::vector<MPCReturn> &log, const TrackPos &track_
   std::vector<double> plot_yo(
     track_xy.Y_outer.data(), track_xy.Y_outer.data() + track_xy.Y_outer.size());
 
+  // duplicate first points to close track loop
+  plot_xc.push_back(plot_xc[0]);
+  plot_yc.push_back(plot_yc[0]);
+  plot_xi.push_back(plot_xi[0]);
+  plot_yi.push_back(plot_yi[0]);
+  plot_xo.push_back(plot_xo[0]);
+  plot_yo.push_back(plot_yo[0]);
+
+  plt::plot(plot_xc, plot_yc, "r--");
+  plt::plot(plot_xi, plot_yi, "k-");
+  plt::plot(plot_xo, plot_yo, "k-");
+
+  if(!fig)
+  {
+    plt::show();
+  }
+}
+
+void Plotting::plotMpcTrack(const MpcTrack& mpcTrack, std::optional<long> fig) const
+{
+  if(!fig)
+  {
+    plt::figure();
+  }
+
+  auto centerLinePath = mpcTrack.getCenterLine().getPath();
+  auto innerBorderPath = mpcTrack.getInnerBorder().getPath();
+  auto outerBorderPath = mpcTrack.getOuterBorder().getPath();
+
+  std::vector<double> plot_xc(centerLinePath.X.data(), centerLinePath.X.data() + centerLinePath.X.size());
+  std::vector<double> plot_yc(centerLinePath.Y.data(), centerLinePath.Y.data() + centerLinePath.Y.size());
+  std::vector<double> plot_xi(
+    innerBorderPath.X.data(), innerBorderPath.X.data() + innerBorderPath.X.size());
+  std::vector<double> plot_yi(
+    innerBorderPath.Y.data(), innerBorderPath.Y.data() + innerBorderPath.Y.size());
+  std::vector<double> plot_xo(
+    outerBorderPath.X.data(), outerBorderPath.X.data() + outerBorderPath.X.size());
+  std::vector<double> plot_yo(
+    outerBorderPath.Y.data(), outerBorderPath.Y.data() + outerBorderPath.Y.size());
+
+  plt::plot(plot_xc, plot_yc, "p--");
+  plt::plot(plot_xi, plot_yi, "g");
+  plt::plot(plot_xo, plot_yo, "g");
+
+  if(!fig)
+  {
+    plt::show();
+  }
+}
+
+
+void Plotting::plotRun(const std::vector<MPCReturn> &log, const TrackPos &track_xy, const MpcTrack& mpcTrack) const
+{
   std::vector<double> plot_x;
   std::vector<double> plot_y;
   std::vector<double> plot_phi;
@@ -81,10 +146,10 @@ void Plotting::plotRun(const std::vector<MPCReturn> &log, const TrackPos &track_
     plot_alpha_f.push_back(alpha_f);
   }
 
-  plt::figure();
-  plt::plot(plot_xc, plot_yc, "r--");
-  plt::plot(plot_xi, plot_yi, "k-");
-  plt::plot(plot_xo, plot_yo, "k-");
+  auto fig = plt::figure();
+  
+  plotTrack(track_xy, fig);
+  plotMpcTrack(mpcTrack, fig);
   plt::plot(plot_x, plot_y, "b-");
   plt::axis("equal");
   plt::xlabel("X [m]");
@@ -149,24 +214,12 @@ void Plotting::plotRun(const std::vector<MPCReturn> &log, const TrackPos &track_
 
   plt::show();
 }
-void Plotting::plotSim(const std::vector<MPCReturn> &log, const TrackPos &track_xy) const
+void Plotting::plotSim(const std::vector<MPCReturn> &log, const TrackPos &track_xy, const MpcTrack& mpcTrack) const
 {
-  std::vector<double> plot_xc(track_xy.X.data(), track_xy.X.data() + track_xy.X.size());
-  std::vector<double> plot_yc(track_xy.Y.data(), track_xy.Y.data() + track_xy.Y.size());
-
-  std::vector<double> plot_xi(
-    track_xy.X_inner.data(), track_xy.X_inner.data() + track_xy.X_inner.size());
-  std::vector<double> plot_yi(
-    track_xy.Y_inner.data(), track_xy.Y_inner.data() + track_xy.Y_inner.size());
-  std::vector<double> plot_xo(
-    track_xy.X_outer.data(), track_xy.X_outer.data() + track_xy.X_outer.size());
-  std::vector<double> plot_yo(
-    track_xy.Y_outer.data(), track_xy.Y_outer.data() + track_xy.Y_outer.size());
-
   std::vector<double> plot_x;
   std::vector<double> plot_y;
 
-  plt::figure();
+  auto fig = plt::figure();
   for (MPCReturn log_i : log) {
     plot_x.resize(0);
     plot_y.resize(0);
@@ -180,9 +233,8 @@ void Plotting::plotSim(const std::vector<MPCReturn> &log, const TrackPos &track_
     double min_y = *std::min_element(plot_y.begin(), plot_y.end());
 
     plt::clf();
-    plt::plot(plot_xc, plot_yc, "r--");
-    plt::plot(plot_xi, plot_yi, "k-");
-    plt::plot(plot_xo, plot_yo, "k-");
+    plotTrack(track_xy, fig);
+    plotMpcTrack(mpcTrack, fig);
     plotBox(log_i.mpc_horizon[0].xk);
     plt::plot(plot_x, plot_y, "b-");
     plt::axis("equal");

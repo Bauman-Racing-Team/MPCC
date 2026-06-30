@@ -18,6 +18,7 @@
 #define MPCC_MPC_H
 
 #include "config.hpp"
+#include "mpc_track.hpp"
 #include "types.hpp"
 #include "Models/models.hpp"
 #include "Params/params.hpp"
@@ -48,11 +49,12 @@ public:
   
   MPCReturn runMPC(const State &x0);
 
-  void setTrack(const Eigen::VectorXd &X, const Eigen::VectorXd &Y, 
-    const Eigen::VectorXd &XOuter, const Eigen::VectorXd &YOuter, 
-    const Eigen::VectorXd &XInner, const Eigen::VectorXd &YInner);
+  void genMpcTrack(const Eigen::VectorXd &x, const Eigen::VectorXd &y, 
+    const Eigen::VectorXd &xOuter, const Eigen::VectorXd &yOuter, 
+    const Eigen::VectorXd &xInner, const Eigen::VectorXd &yInner);
 
-  ArcLengthSpline getTrack() const;
+  ArcLengthSpline getMpcTrackCenterLine() const;
+  MpcTrack getMpcTrack() const;
 
 private:
   void fillParametersVector();
@@ -79,9 +81,7 @@ private:
 
   std::vector<OptVariables> d_initialGuess;
 
-  ArcLengthSpline d_centerLine;
-  ArcLengthSpline d_outerBorder;
-  ArcLengthSpline d_innerBorder;
+  MpcTrack d_mpcTrack;
 
   std::unique_ptr<AcadosInterface> d_solverInterfacePtr;
 };

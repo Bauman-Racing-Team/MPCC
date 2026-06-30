@@ -224,7 +224,6 @@ void ArcLengthSpline::gen2DSpline(const Eigen::VectorXd &X,const Eigen::VectorXd
     RawPath clean_path = outlierRemoval(X,Y);
     // successively fit spline and re-sample
     fitSpline(clean_path.X,clean_path.Y);
-
 }
 
 

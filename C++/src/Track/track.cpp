@@ -26,18 +26,24 @@ Track::Track(std::string file)
     iTrack >> jsonTrack;
     // Model Parameters
     std::vector<double> x = jsonTrack["X"];
+    x.push_back(x[0]);
     X = Eigen::Map<Eigen::VectorXd>(x.data(), x.size());
     std::vector<double> y = jsonTrack["Y"];
+    y.push_back(y[0]);
     Y = Eigen::Map<Eigen::VectorXd>(y.data(), y.size());
     
     std::vector<double> x_inner = jsonTrack["X_i"];
+    x_inner.push_back(x_inner[0]);
     X_inner = Eigen::Map<Eigen::VectorXd>(x_inner.data(), x_inner.size());
     std::vector<double> y_inner = jsonTrack["Y_i"];
+    y_inner.push_back(y_inner[0]);
     Y_inner = Eigen::Map<Eigen::VectorXd>(y_inner.data(), y_inner.size());
 
     std::vector<double> x_outer = jsonTrack["X_o"];
+    x_outer.push_back(x_outer[0]);
     X_outer = Eigen::Map<Eigen::VectorXd>(x_outer.data(), x_outer.size());
     std::vector<double> y_outer = jsonTrack["Y_o"];
+    y_outer.push_back(y_outer[0]);
     Y_outer = Eigen::Map<Eigen::VectorXd>(y_outer.data(), y_outer.size());
 }
 

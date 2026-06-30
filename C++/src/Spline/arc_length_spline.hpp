@@ -45,7 +45,7 @@ public:
     Eigen::Vector2d getSecondDerivative(double) const;
     double getLength() const;
     double porjectOnSpline(const State &x) const;
-    const PathData& getPath() const { return pathData; }
+    PathData getPath() const { return pathData; }
     void setPath(const Eigen::VectorXd& xIn, const Eigen::VectorXd& yIn);
     void genBorderInterpolation(const Eigen::VectorXd &X_in,const Eigen::VectorXd &Y_in,const Eigen::VectorXd &s_in);
 

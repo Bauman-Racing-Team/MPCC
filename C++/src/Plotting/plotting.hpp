@@ -22,9 +22,11 @@
 #include "Params/params.hpp"
 #include "Track/track.hpp"
 #include "MPC/mpc.hpp"
+#include "MPC/mpc_track.hpp"
 
 #include <matplotlibcpp.h>
 
+#include <optional>
 #include <vector>
 
 namespace plt = matplotlibcpp;
@@ -32,12 +34,14 @@ namespace plt = matplotlibcpp;
 namespace mpcc {
 class Plotting {
 public:
-    void plotRun(const std::vector<MPCReturn> &log, const TrackPos &track_xy) const;
-    void plotSim(const std::vector<MPCReturn> &log, const TrackPos &track_xy) const;
+    void plotRun(const std::vector<MPCReturn> &log, const TrackPos &track_xy, const MpcTrack& mpcTrack) const;
+    void plotSim(const std::vector<MPCReturn> &log, const TrackPos &track_xy, const MpcTrack& mpcTrack) const;
 
     Plotting(double Ts, const Car& car);
 
 private:
+    void plotTrack(const TrackPos &track_xy, std::optional<long> fig = std::nullopt) const;
+    void plotMpcTrack(const MpcTrack& mpcTrack, std::optional<long> fig = std::nullopt) const;
     void plotBox(const State &x0) const;
 
     Car d_car;
